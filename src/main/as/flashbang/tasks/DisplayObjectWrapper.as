@@ -18,7 +18,7 @@
 
 package flashbang.tasks {
 
-import flash.display.DisplayObject;
+import starling.display.DisplayObject;
 
 import flashbang.components.DisplayComponent;
 import flashbang.components.LocationComponent;

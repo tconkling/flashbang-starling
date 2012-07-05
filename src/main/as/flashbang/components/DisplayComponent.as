@@ -18,7 +18,7 @@
 
 package flashbang.components {
 
-import flash.display.DisplayObject;
+import starling.display.DisplayObject;
 
 public interface DisplayComponent
 {

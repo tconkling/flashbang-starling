@@ -18,15 +18,11 @@
 
 package flashbang {
 
-import flash.display.Sprite;
-import flash.events.Event;
-import flash.events.KeyboardEvent;
-
 import org.osflash.signals.Signal;
 
-import com.threerings.util.Assert;
+import starling.display.Sprite;
 
-import com.threerings.display.DisplayUtil;
+import com.threerings.util.Assert;
 
 import flashbang.audio.*;
 import flashbang.resource.*;
@@ -182,22 +178,6 @@ public class Viewport
         }
     }
 
-    public function onKeyDown (e :KeyboardEvent) :void
-    {
-        var topMode :AppMode = this.topMode;
-        if (null != topMode) {
-            topMode.onKeyDown(e);
-        }
-    }
-
-    public function onKeyUp (e :KeyboardEvent) :void
-    {
-        var topMode :AppMode = this.topMode;
-        if (null != topMode) {
-            topMode.onKeyUp(e);
-        }
-    }
-
     internal function handleModeTransitions () :void
     {
         if (_pendingModeTransitionQueue.length <= 0) {
@@ -336,7 +316,7 @@ public class Viewport
         clearModeStackNow();
         _modeStack = null;
         _pendingModeTransitionQueue = null;
-        DisplayUtil.detach(_topSprite);
+        _topSprite.removeFromParent(/*dispose=*/true);
         _topSprite = null;
         this.destroyed.dispatch();
     }

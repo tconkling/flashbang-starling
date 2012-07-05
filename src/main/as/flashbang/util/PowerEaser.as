@@ -18,8 +18,6 @@
 
 package flashbang.util {
 
-import flashbang.Easing;
-
 public class PowerEaser
 {
     public function PowerEaser (pow :int)

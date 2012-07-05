@@ -18,7 +18,7 @@
 
 package flashbang.objects {
 
-import flash.display.DisplayObject;
+import starling.display.DisplayObject;
 
 import flashbang.GameObject;
 import flashbang.components.DisplayComponent;

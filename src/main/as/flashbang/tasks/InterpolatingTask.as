@@ -18,8 +18,6 @@
 
 package flashbang.tasks {
 
-import com.threerings.util.MathUtil;
-
 import flashbang.Easing;
 import flashbang.GameObject;
 import flashbang.ObjectTask;

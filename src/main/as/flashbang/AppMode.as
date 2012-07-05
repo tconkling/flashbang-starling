@@ -18,22 +18,22 @@
 
 package flashbang {
 
-import com.threerings.display.DisplayUtil;
+import flash.events.KeyboardEvent;
+
+import org.osflash.signals.Signal;
+
+import starling.display.DisplayObject;
+import starling.display.DisplayObjectContainer;
+import starling.display.Sprite;
+
 import com.threerings.util.Arrays;
 import com.threerings.util.Map;
 import com.threerings.util.Maps;
 import com.threerings.util.Preconditions;
 
-import flash.display.DisplayObject;
-import flash.display.DisplayObjectContainer;
-import flash.display.Sprite;
-import flash.events.KeyboardEvent;
-
 import flashbang.components.DisplayComponent;
 import flashbang.input.MouseInput;
 import flashbang.util.SignalAndEventRegistrations;
-
-import org.osflash.signals.Signal;
 
 public class AppMode
     implements Updatable
@@ -63,12 +63,6 @@ public class AppMode
         return objs;
     }
 
-    public function AppMode ()
-    {
-        _modeSprite.mouseEnabled = false;
-        _modeSprite.mouseChildren = false;
-    }
-
     public final function get modeSprite () :Sprite
     {
         return _modeSprite;
@@ -82,7 +76,7 @@ public class AppMode
 
     public function get mouseInput () :MouseInput
     {
-        return _mouseInput;
+        throw new Error("No mouse in starling flashbang");
     }
 
     /**
@@ -194,7 +188,7 @@ public class AppMode
             // so that it will no longer be drawn to the screen
             var disp :DisplayObject = DisplayComponent(obj).display;
             if (null != disp) {
-                DisplayUtil.detach(disp);
+                disp.removeFromParent();
             }
         }
 
@@ -421,8 +415,6 @@ public class AppMode
     internal function setupInternal (viewport :Viewport) :void
     {
         _viewport = viewport;
-        _mouseInput = new MouseInput(_modeSprite.stage);
-        _mouseInputWasEnabled = true;
         setup();
     }
 
@@ -454,36 +446,20 @@ public class AppMode
         _regs = null;
 
         _viewport = null;
-
-        _mouseInput.removeAllListeners();
-        _mouseInput = null;
     }
 
     internal function enterInternal () :void
     {
-        _modeSprite.mouseEnabled = true;
-        _modeSprite.mouseChildren = true;
-
-        this.mouseInput.enabled = _mouseInputWasEnabled;
-
         enter();
     }
 
     internal function exitInternal () :void
     {
-        _modeSprite.mouseEnabled = false;
-        _modeSprite.mouseChildren = false;
-
         exit();
-
-        _mouseInputWasEnabled = this.mouseInput.enabled;
-        this.mouseInput.enabled = false;
     }
 
     protected var _modeSprite :Sprite = new Sprite();
     protected var _viewport :Viewport;
-    protected var _mouseInput :MouseInput;
-    protected var _mouseInputWasEnabled :Boolean;
 
     protected var _runningTime :Number = 0;
 

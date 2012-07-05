@@ -18,12 +18,12 @@
 
 package flashbang.audio {
 
-import com.threerings.util.F;
-import com.threerings.util.Log;
-
 import flash.events.Event;
 import flash.media.SoundTransform;
 import flash.utils.getTimer;
+
+import com.threerings.util.F;
+import com.threerings.util.Log;
 
 import flashbang.Flashbang;
 import flashbang.Updatable;

@@ -17,9 +17,10 @@
 // along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
 package flashbang.tasks {
-import com.threerings.util.Preconditions;
 
-import flash.display.DisplayObject;
+import starling.display.DisplayObject;
+
+import com.threerings.util.Preconditions;
 
 import flashbang.GameObject;
 import flashbang.components.DisplayComponent;

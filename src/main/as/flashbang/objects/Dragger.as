@@ -18,14 +18,13 @@
 
 package flashbang.objects {
 
-import com.threerings.util.Preconditions;
-import com.threerings.util.Registration;
-
 import flash.events.MouseEvent;
 import flash.geom.Point;
 
+import com.threerings.util.Preconditions;
+import com.threerings.util.Registration;
+
 import flashbang.GameObject;
-import flashbang.input.MouseListener;
 
 public class Dragger extends GameObject
 {
@@ -88,7 +87,6 @@ import flash.events.MouseEvent;
 import flash.geom.Point;
 
 import flashbang.input.MouseReactor;
-import flashbang.objects.Dragger;
 
 class DragListener extends MouseReactor
 {

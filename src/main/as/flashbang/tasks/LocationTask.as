@@ -18,9 +18,9 @@
 
 package flashbang.tasks {
 
-import com.threerings.util.Preconditions;
+import starling.display.DisplayObject;
 
-import flash.display.DisplayObject;
+import com.threerings.util.Preconditions;
 
 import flashbang.Easing;
 import flashbang.GameObject;

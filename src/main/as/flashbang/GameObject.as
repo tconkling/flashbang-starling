@@ -18,16 +18,16 @@
 
 package flashbang {
 
+import org.osflash.signals.Signal;
+
+import starling.display.DisplayObjectContainer;
+
 import com.threerings.util.Preconditions;
 import com.threerings.util.StringUtil;
-
-import flash.display.DisplayObjectContainer;
 
 import flashbang.tasks.ParallelTask;
 import flashbang.tasks.TaskContainer;
 import flashbang.util.SignalAndEventRegistrations;
-
-import org.osflash.signals.Signal;
 
 public class GameObject
 {
@@ -394,7 +394,7 @@ public class GameObject
 
 }
 
-import flash.display.DisplayObjectContainer;
+import starling.display.DisplayObjectContainer;
 
 import flashbang.GameObject;
 import flashbang.tasks.ParallelTask;

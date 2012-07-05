@@ -18,9 +18,9 @@
 
 package flashbang.tasks {
 
-import com.threerings.util.Preconditions;
-
 import flash.display.MovieClip;
+
+import com.threerings.util.Preconditions;
 
 import flashbang.GameObject;
 import flashbang.components.DisplayComponent;

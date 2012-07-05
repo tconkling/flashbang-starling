@@ -3,16 +3,15 @@
 
 package flashbang.input {
 
-import com.threerings.util.Arrays;
-import com.threerings.util.Registration;
-import com.threerings.util.Registrations;
-
 import flash.display.InteractiveObject;
 import flash.events.EventDispatcher;
 import flash.events.EventPhase;
 import flash.events.IEventDispatcher;
 import flash.events.MouseEvent;
-import flash.geom.Point;
+
+import com.threerings.util.Arrays;
+import com.threerings.util.Registration;
+import com.threerings.util.Registrations;
 
 public class MouseInput
 {

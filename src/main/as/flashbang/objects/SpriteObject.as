@@ -18,7 +18,7 @@
 
 package flashbang.objects {
 
-import flash.display.Sprite;
+import starling.display.Sprite;
 
 /**
  * A SceneObject that creates and manages a Sprite as its displayObject.

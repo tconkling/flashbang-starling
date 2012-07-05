@@ -65,25 +65,28 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.starling-framework</groupId>
+      <artifactId>starling</artifactId>
+      <version>7b604d3</version>
+      <type>swc</type>
+    </dependency>
+    <dependency>
       <groupId>com.threerings</groupId>
       <artifactId>aspirin</artifactId>
       <version>1.14-SNAPSHOT</version>
       <type>swc</type>
-      <scope>external</scope>
     </dependency>
     <dependency>
       <groupId>nochump</groupId>
       <artifactId>zip</artifactId>
       <version>1.0</version>
       <type>swc</type>
-      <scope>external</scope>
     </dependency>
     <dependency>
       <groupId>org.osflash</groupId>
       <artifactId>signals</artifactId>
       <version>0.8.1-varargs</version>
       <type>swc</type>
-      <scope>external</scope>
     </dependency>
     <dependency>
       <groupId>com.adobe.flex.framework</groupId>

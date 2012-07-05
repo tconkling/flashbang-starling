@@ -18,23 +18,20 @@
 
 package flashbang {
 
-import flashbang.audio.*;
-import flashbang.resource.*;
+import org.osflash.signals.Signal;
+
+import starling.display.Sprite;
+import starling.events.Event;
+
 import com.threerings.util.Arrays;
 import com.threerings.util.EventHandlerManager;
 import com.threerings.util.Map;
 import com.threerings.util.Maps;
 import com.threerings.util.Preconditions;
 
-import flash.display.Sprite;
-import flash.display.Stage;
-import flash.events.Event;
-import flash.events.EventDispatcher;
-import flash.events.IEventDispatcher;
-import flash.events.KeyboardEvent;
-import flash.utils.getTimer;
-
-import org.osflash.signals.Signal;
+import flashbang.audio.*;
+import flashbang.audio.AudioManager;
+import flashbang.resource.ResourceManager;
 
 public class FlashbangApp
 {
@@ -65,15 +62,9 @@ public class FlashbangApp
     {
         Preconditions.checkState(!_running, "already running");
 
-        var stage :Stage = _hostSprite.stage;
-        Preconditions.checkNotNull(stage, "The Flashbang host Sprite must be on the stage");
-        _keyDispatcher = stage;
-
         _running = true;
 
-        _events.registerListener(_hostSprite, Event.ENTER_FRAME, update);
-        _events.registerListener(_keyDispatcher, KeyboardEvent.KEY_DOWN, onKeyDown);
-        _events.registerListener(_keyDispatcher, KeyboardEvent.KEY_UP, onKeyUp);
+        _hostSprite.addEventListener(Event.ENTER_FRAME, update);
 
         _lastTime = getAppTime();
 
@@ -217,7 +208,6 @@ public class FlashbangApp
         _viewports = null;
 
         _hostSprite = null;
-        _keyDispatcher = null;
         _updatables = null;
 
         _events.shutdown();
@@ -229,30 +219,11 @@ public class FlashbangApp
         didShutdown.dispatch();
     }
 
-    protected function onKeyDown (e :KeyboardEvent) :void
-    {
-        _viewports.forEach(function (name :String, viewport :Viewport) :void {
-            if (!viewport.isDestroyed) {
-                viewport.onKeyDown(e);
-            }
-        });
-    }
-
-    protected function onKeyUp (e :KeyboardEvent) :void
-    {
-        _viewports.forEach(function (name :String, viewport :Viewport) :void {
-            if (!viewport.isDestroyed) {
-                viewport.onKeyUp(e);
-            }
-        });
-    }
-
     internal var _rsrcs :ResourceManager = new ResourceManager();
     internal var _audio :AudioManager;
 
     protected var _minFrameRate :Number;
     protected var _hostSprite :Sprite;
-    protected var _keyDispatcher :IEventDispatcher;
     protected var _events :EventHandlerManager = new EventHandlerManager();
 
     protected var _running :Boolean;

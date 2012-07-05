@@ -18,14 +18,14 @@
 
 package flashbang.util {
 
-import com.threerings.util.Registration;
-import com.threerings.util.RegistrationList;
-import com.threerings.util.Registrations;
-
 import flash.events.Event;
 import flash.events.IEventDispatcher;
 
 import org.osflash.signals.ISignal;
+
+import com.threerings.util.Registration;
+import com.threerings.util.RegistrationList;
+import com.threerings.util.Registrations;
 
 public class SignalAndEventRegistrations extends RegistrationList
 {
