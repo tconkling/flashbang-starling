@@ -19,9 +19,10 @@
 package flashbang.util {
 
 import flash.events.Event;
-import flash.events.IEventDispatcher;
 
 import org.osflash.signals.ISignal;
+
+import starling.events.EventDispatcher;
 
 import com.threerings.util.Registration;
 import com.threerings.util.RegistrationList;
@@ -57,12 +58,11 @@ public class SignalAndEventRegistrations extends RegistrationList
      * Adds a listener to the specified EventDispatcher for the specified event type.
      * @return a Registration object that will disconnect the listener from the EventDispatcher.
      */
-    public function addEventListener (dispatcher :IEventDispatcher, type :String, l :Function,
-        useCapture :Boolean = false, priority :int = 0) :Registration
+    public function addEventListener (dispatcher :EventDispatcher, type :String, l :Function) :Registration
     {
-        dispatcher.addEventListener(type, l, useCapture, priority);
+        dispatcher.addEventListener(type, l);
         return add(Registrations.createWithFunction(function () :void {
-            dispatcher.removeEventListener(type, l, useCapture);
+            dispatcher.removeEventListener(type, l);
         }));
     }
 
@@ -71,15 +71,15 @@ public class SignalAndEventRegistrations extends RegistrationList
      * It will be removed after being dispatched once.
      * @return a Registration object that will disconnect the listener from the EventDispatcher.
      */
-    public function addOneShotEventListener (dispatcher :IEventDispatcher, type :String,
-        l :Function, useCapture :Boolean = false, priority :int = 0) :Registration
+    public function addOneShotEventListener (dispatcher :EventDispatcher, type :String,
+        l :Function) :Registration
     {
         var eventListener :Function = function (e :Event) :void {
-            dispatcher.removeEventListener(type, l, useCapture);
+            dispatcher.removeEventListener(type, l);
             l(e);
         };
 
-        return addEventListener(dispatcher, type, eventListener, useCapture, priority);
+        return addEventListener(dispatcher, type, eventListener);
     }
 }
 }
