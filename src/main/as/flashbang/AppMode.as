@@ -32,7 +32,7 @@ import com.threerings.util.Maps;
 import com.threerings.util.Preconditions;
 
 import flashbang.components.DisplayComponent;
-import flashbang.input.MouseInput;
+import flashbang.input.TouchInput;
 import flashbang.util.SignalAndEventRegistrations;
 
 public class AppMode
@@ -63,6 +63,10 @@ public class AppMode
         return objs;
     }
 
+    public function AppMode () {
+        _modeSprite.touchable = false;
+    }
+
     public final function get modeSprite () :Sprite
     {
         return _modeSprite;
@@ -74,9 +78,9 @@ public class AppMode
         return _viewport;
     }
 
-    public function get mouseInput () :MouseInput
+    public function get touchInput () :TouchInput
     {
-        throw new Error("No mouse in starling flashbang");
+        return _touchInput;
     }
 
     /**
@@ -415,6 +419,7 @@ public class AppMode
     internal function setupInternal (viewport :Viewport) :void
     {
         _viewport = viewport;
+        _touchInput = new TouchInput(_modeSprite.stage);
         setup();
     }
 
@@ -446,20 +451,34 @@ public class AppMode
         _regs = null;
 
         _viewport = null;
+
+        _touchInput.removeAllListeners();
+        _touchInput = null;
     }
 
     internal function enterInternal () :void
     {
+        _modeSprite.touchable = true;
+
+        _touchInput.enabled = _touchInputWasEnabled;
+
         enter();
     }
 
     internal function exitInternal () :void
     {
+        _modeSprite.touchable = false;
+
         exit();
+
+        _touchInputWasEnabled = _touchInput.enabled;
+        _touchInput.enabled = false;
     }
 
     protected var _modeSprite :Sprite = new Sprite();
     protected var _viewport :Viewport;
+    protected var _touchInput :TouchInput;
+    protected var _touchInputWasEnabled :Boolean = true;
 
     protected var _runningTime :Number = 0;
 

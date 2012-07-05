@@ -18,8 +18,9 @@
 
 package flashbang.objects {
 
-import flash.events.MouseEvent;
 import flash.geom.Point;
+
+import starling.events.Touch;
 
 import com.threerings.util.Preconditions;
 import com.threerings.util.Registration;
@@ -33,17 +34,17 @@ public class Dragger extends GameObject
         return _dragReg != null;
     }
 
-    public function startDrag (e :MouseEvent) :void
+    public function startDrag (e :Touch) :void
     {
         Preconditions.checkState(!this.dragging, "already dragging");
-        _listener = new DragListener(new Point(e.stageX, e.stageY), this.onDragged,
+        _listener = new DragListener(new Point(e.globalX, e.globalY), this.onDragged,
             function (current :Point, start :Point) :void {
                 // stop the drag before calling onDragEnd, to allow safe destruction of the
                 // dragger from within onDragEnd
                 stopDrag(true);
                 onDragEnd(current, start);
             });
-        _dragReg = this.mode.mouseInput.registerListener(_listener);
+        _dragReg = this.mode.touchInput.registerListener(_listener);
 
         onDragStart(_listener.start);
     }
@@ -82,19 +83,20 @@ public class Dragger extends GameObject
     protected var _dragReg :Registration;
 }
 }
-
-import flash.events.MouseEvent;
 import flash.geom.Point;
 
-import flashbang.input.MouseReactor;
+import starling.events.Touch;
 
-class DragListener extends MouseReactor
+import flashbang.input.TouchReactor;
+
+// TODO handle multitouch
+class DragListener extends TouchReactor
 {
-    public function DragListener (start :Point, onMouseMove :Function, onMouseUp :Function)
+    public function DragListener (start :Point, onTouchMove :Function, onTouchEnd :Function)
     {
         _start = start;
-        _onMouseMove = onMouseMove;
-        _onMouseUp = onMouseUp;
+        _onTouchMove = onTouchMove;
+        _onTouchEnd = onTouchEnd;
     }
 
     public function get start () :Point
@@ -107,23 +109,23 @@ class DragListener extends MouseReactor
         return _current;
     }
 
-    override public function onMouseMove (e :MouseEvent) :Boolean
+    override public function onTouchMove (e :Touch) :Boolean
     {
-        _current = new Point(e.stageX, e.stageY);
-        _onMouseMove(_current, _start);
+        _current = new Point(e.globalX, e.globalY);
+        _onTouchMove(_current, _start);
         return true;
     }
 
-    override public function onMouseUp (e :MouseEvent) :Boolean
+    override public function onTouchEnd (e :Touch) :Boolean
     {
-        _current = new Point(e.stageX, e.stageY);
-        _onMouseUp(_current, _start);
+        _current = new Point(e.globalX, e.globalY);
+        _onTouchEnd(_current, _start);
         return true;
     }
 
     protected var _start :Point;
     protected var _current :Point;
 
-    protected var _onMouseMove :Function;
-    protected var _onMouseUp :Function;
+    protected var _onTouchMove :Function;
+    protected var _onTouchEnd :Function;
 }

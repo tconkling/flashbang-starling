@@ -18,22 +18,17 @@
 
 package flashbang.input {
 
-import flash.events.MouseEvent;
+import starling.events.Touch;
 
 /**
- * A MouseListener implementation that returns true (i.e. "handled") for every MouseEvent
+ * Used with TouchInput to intercept touch events.
+ * Return true from any of the listener methods to indicate that the event has been
+ * fully handled, and processing should stop.
  */
-public class MouseReactor
-    implements MouseListener
+public interface TouchListener
 {
-    public function onMouseDown (e :MouseEvent) :Boolean { return true; }
-    public function onMouseMove (e :MouseEvent) :Boolean { return true; }
-    public function onMouseUp (e :MouseEvent) :Boolean { return true; }
-    public function onClick (e :MouseEvent) :Boolean { return true; }
-    public function onMouseOver (e :MouseEvent) :Boolean { return true; }
-    public function onMouseOut (e :MouseEvent) :Boolean { return true; }
-    public function onRollOver (e :MouseEvent) :Boolean { return true; }
-    public function onRollOut (e :MouseEvent) :Boolean { return true; }
-    public function onMouseWheel (e :MouseEvent) :Boolean { return true; }
+    function onTouchBegin (e :Touch) :Boolean;
+    function onTouchMove (e :Touch) :Boolean;
+    function onTouchEnd (e :Touch) :Boolean;
 }
 }
