@@ -24,14 +24,13 @@ import starling.display.Sprite;
 import starling.events.Event;
 
 import com.threerings.util.Arrays;
-import com.threerings.util.EventHandlerManager;
 import com.threerings.util.Map;
 import com.threerings.util.Maps;
 import com.threerings.util.Preconditions;
 
-import flashbang.audio.*;
 import flashbang.audio.AudioManager;
 import flashbang.resource.ResourceManager;
+import flashbang.util.SignalAndEventRegistrations;
 
 public class FlashbangApp
 {
@@ -64,7 +63,7 @@ public class FlashbangApp
 
         _running = true;
 
-        _hostSprite.addEventListener(Event.ENTER_FRAME, update);
+        _regs.addEventListener(_hostSprite, Event.ENTER_FRAME, update);
 
         _lastTime = getAppTime();
 
@@ -193,7 +192,7 @@ public class FlashbangApp
         // should the MainLoop be stopped?
         if (_shutdownPending) {
             _running = false;
-            _events.freeAllHandlers();
+            _regs.cancel();
             shutdownNow();
         }
 
@@ -210,8 +209,8 @@ public class FlashbangApp
         _hostSprite = null;
         _updatables = null;
 
-        _events.shutdown();
-        _events = null;
+        _regs.cancel();
+        _regs = null;
 
         _audio.shutdown();
         _rsrcs.shutdown();
@@ -224,7 +223,7 @@ public class FlashbangApp
 
     protected var _minFrameRate :Number;
     protected var _hostSprite :Sprite;
-    protected var _events :EventHandlerManager = new EventHandlerManager();
+    protected var _regs :SignalAndEventRegistrations = new SignalAndEventRegistrations();
 
     protected var _running :Boolean;
     protected var _shutdownPending :Boolean;
