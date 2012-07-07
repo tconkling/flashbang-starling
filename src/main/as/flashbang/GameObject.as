@@ -125,8 +125,19 @@ public class GameObject
     }
 
     /** Adds a named task to this GameObject. */
-    public function addNamedTask (name :String, task :ObjectTask,
-        removeExistingTasks :Boolean = false) :void
+    public function addNamedTask (name :String, task :ObjectTask) :void
+    {
+        modifyNamedTask(name, task, false);
+    }
+
+    /** Adds a named task to this GameObject, replacing existing tasks of the name if they exist. */
+    public function replaceNamedTask (name :String, task :ObjectTask) :void
+    {
+        modifyNamedTask(name, task, true);
+    }
+
+    private function modifyNamedTask (name :String, task :ObjectTask,
+        removeExistingTasks :Boolean) :void
     {
         if (null == task) {
             throw new ArgumentError("task must be non-null");
@@ -397,7 +408,6 @@ public class GameObject
 import starling.display.DisplayObjectContainer;
 
 import flashbang.GameObject;
-import flashbang.tasks.ParallelTask;
 
 class PendingDependentObject
 {
