@@ -30,6 +30,7 @@ import com.threerings.util.Arrays;
 import com.threerings.util.Map;
 import com.threerings.util.Maps;
 import com.threerings.util.Preconditions;
+import com.threerings.util.maps.ValueComputingMap;
 
 import flashbang.components.DisplayComponent;
 import flashbang.input.TouchInput;
@@ -137,14 +138,8 @@ public class AppMode
         }
 
         // add this object to the groups it belongs to
-        for each (var groupName :String in obj.objectGroups) {
-            var groupArray :Array = (_groupedObjects.get(groupName) as Array);
-            if (null == groupArray) {
-                groupArray = [];
-                _groupedObjects.put(groupName, groupArray);
-            }
-
-            groupArray.push(ref);
+        for each (var groupId :Object in obj.objectGroups) {
+            _groupedObjects.get(groupId).push(ref);
         }
 
         obj.addedToModeInternal();
@@ -164,9 +159,9 @@ public class AppMode
     }
 
     /** Removes all GameObjects in the given group from the ObjectDB. */
-    public function destroyObjectsInGroup (groupName :String) :void
+    public function destroyObjectsInGroup (groupId :Object) :void
     {
-        for each (var ref :GameObjectRef in getObjectRefsInGroup(groupName)) {
+        for each (var ref :GameObjectRef in getObjectRefsInGroup(groupId)) {
             if (!ref.isNull) {
                 ref.object.destroySelf();
             }
@@ -233,11 +228,9 @@ public class AppMode
      * Note: the returned Array will contain null object refs for objects that were destroyed
      * this frame and haven't yet been cleaned up.
      */
-    public function getObjectRefsInGroup (groupName :String) :Array
+    public function getObjectRefsInGroup (groupId :Object) :Array
     {
-        var refs :Array = (_groupedObjects.get(groupName) as Array);
-
-        return (null != refs ? refs : []);
+        return _groupedObjects.get(groupId);
     }
 
     /**
@@ -247,9 +240,9 @@ public class AppMode
      *
      * This function is not as performant as getObjectRefsInGroup().
      */
-    public function getObjectsInGroup (groupName :String) :Array
+    public function getObjectsInGroup (groupId :Object) :Array
     {
-        return getObjects(getObjectRefsInGroup(groupName));
+        return getObjects(getObjectRefsInGroup(groupId));
     }
 
     /** Called once per update tick. Updates all objects in the mode. */
@@ -357,13 +350,8 @@ public class AppMode
         // because client code might be iterating an
         // object group Array when destroyObject is called)
         var ref :GameObjectRef = obj._ref;
-        for each (var groupName :String in obj.objectGroups) {
-            var groupArray :Array = (_groupedObjects.get(groupName) as Array);
-            Preconditions.checkNotNull(groupArray,
-                "destroyed GameObject is returning different object groups than it did on creation",
-                "obj", obj);
-
-            var wasInArray :Boolean = Arrays.removeFirst(groupArray, ref);
+        for each (var groupId :Object in obj.objectGroups) {
+            var wasInArray :Boolean = Arrays.removeFirst(_groupedObjects.get(groupId), ref);
             Preconditions.checkState(wasInArray,
                 "destroyed GameObject is returning different object groups than it did on creation",
                 "obj", obj);
@@ -491,8 +479,7 @@ public class AppMode
     /** stores a mapping from String to Object */
     protected var _namedObjects :Map = Maps.newMapOf(String);
 
-    /** stores a mapping from String to Array */
-    protected var _groupedObjects :Map = Maps.newMapOf(String);
+    protected var _groupedObjects :Map = ValueComputingMap.newArrayMapOf(Object);
 
     protected var _regs :SignalAndEventRegistrations = new SignalAndEventRegistrations();
 

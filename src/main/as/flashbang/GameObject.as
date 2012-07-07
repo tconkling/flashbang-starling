@@ -92,7 +92,7 @@ public class GameObject
      * <code>
      * override public function get objectGroups () :Array
      * {
-     *     return [ "Foo", "Bar" ].concat(super.objectGroups);
+     *     return [ "Foo", MyClass ].concat(super.objectGroups);
      * }
      * </code>
      */
@@ -413,6 +413,7 @@ class PendingDependentObject
         this.displayIdx = displayIdx;
     }
 }
+import flashbang.tasks.ParallelTask;
 
 class NamedParallelTask extends ParallelTask
 {
