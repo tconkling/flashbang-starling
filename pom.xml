@@ -7,39 +7,10 @@
     <version>7</version>
   </parent>
 
-  <groupId>com.threerings</groupId>
-  <artifactId>flashbang</artifactId>
+  <groupId>com.timconkling</groupId>
+  <artifactId>flashbang-starling</artifactId>
   <packaging>swc</packaging>
-  <version>2.0-SNAPSHOT</version>
-
-  <name>Flashbang</name>
-  <description>A simple game framework written in ActionScript.</description>
-  <url>http://github.com/threerings/flashbang/</url>
-  <issueManagement>
-    <url>http://github.com/threerings/flashbang/issues/list</url>
-  </issueManagement>
-
-  <licenses>
-    <license>
-      <name>GNU Lesser General Public License (LGPL), Version 3</name>
-      <url>http://www.fsf.org/licensing/licenses/lgpl.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-
-  <developers>
-    <developer>
-      <id>tconkling</id>
-      <name>Tim Conkling</name>
-      <email>tconkling@gmail.com</email>
-    </developer>
-  </developers>
-
-  <scm>
-    <connection>scm:git:git://github.com/threerings/flashbang.git</connection>
-    <developerConnection>scm:git:git@github.com:threerings/flashbang.git</developerConnection>
-    <url>http://github.com/threerings/flashbang/</url>
-  </scm>
+  <version>1.0-SNAPSHOT</version>
 
   <properties>
     <flex.version>4.6.0.23201</flex.version>
@@ -71,9 +42,9 @@
       <type>swc</type>
     </dependency>
     <dependency>
-      <groupId>com.threerings</groupId>
-      <artifactId>aspirin</artifactId>
-      <version>1.14-SNAPSHOT</version>
+      <groupId>com.timconkling</groupId>
+      <artifactId>aspire</artifactId>
+      <version>1.0-SNAPSHOT</version>
       <type>swc</type>
     </dependency>
     <dependency>
