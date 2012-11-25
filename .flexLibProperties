@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<flexLibProperties includeAllClasses="false" useMultiPlatformConfig="false" version="1">
+<flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="1">
   <includeClasses>
     <classEntry path="flashbang.AppMode"/>
     <classEntry path="flashbang.Config"/>
@@ -21,12 +21,7 @@
     <classEntry path="flashbang.components.DisplayComponent"/>
     <classEntry path="flashbang.components.LocationComponent"/>
     <classEntry path="flashbang.components.MeterComponent"/>
-    <classEntry path="flashbang.debug.FramerateView"/>
-    <classEntry path="flashbang.debug.MouseLocView"/>
     <classEntry path="flashbang.debug.Profiler"/>
-    <classEntry path="flashbang.input.MouseInput"/>
-    <classEntry path="flashbang.input.MouseListener"/>
-    <classEntry path="flashbang.input.MouseReactor"/>
     <classEntry path="flashbang.objects.Dragger"/>
     <classEntry path="flashbang.objects.SceneObject"/>
     <classEntry path="flashbang.objects.SimpleTimer"/>
@@ -42,7 +37,6 @@
     <classEntry path="flashbang.tasks.After"/>
     <classEntry path="flashbang.tasks.AlphaTask"/>
     <classEntry path="flashbang.tasks.AnimateValueTask"/>
-    <classEntry path="flashbang.tasks.ColorMatrixBlendTask"/>
     <classEntry path="flashbang.tasks.ComplexLocationTask"/>
     <classEntry path="flashbang.tasks.CuePointTask"/>
     <classEntry path="flashbang.tasks.DisplayObjectTask"/>
