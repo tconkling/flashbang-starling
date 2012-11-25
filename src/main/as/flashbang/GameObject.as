@@ -20,11 +20,13 @@ package flashbang {
 
 import org.osflash.signals.Signal;
 
+import starling.display.DisplayObject;
 import starling.display.DisplayObjectContainer;
 
 import com.threerings.util.Preconditions;
 import com.threerings.util.StringUtil;
 
+import flashbang.components.DisplayComponent
 import flashbang.tasks.ParallelTask;
 import flashbang.tasks.TaskContainer;
 import flashbang.util.SignalAndEventRegistrations;
