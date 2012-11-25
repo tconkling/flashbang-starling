@@ -26,30 +26,6 @@ import flashbang.ObjectTask;
 
 public class AlphaTask extends DisplayObjectTask
 {
-    public static function CreateLinear (alpha :Number, time :Number, disp :DisplayObject = null)
-        :AlphaTask
-    {
-        return new AlphaTask(alpha, time, Easing.linear, disp);
-    }
-
-    public static function CreateSmooth (alpha :Number, time :Number, disp :DisplayObject = null)
-        :AlphaTask
-    {
-        return new AlphaTask(alpha, time, Easing.cubic.easeInOut, disp);
-    }
-
-    public static function CreateEaseIn (alpha :Number, time :Number, disp :DisplayObject = null)
-        :AlphaTask
-    {
-        return new AlphaTask(alpha, time, Easing.cubic.easeIn, disp);
-    }
-
-    public static function CreateEaseOut (alpha :Number, time :Number, disp :DisplayObject = null)
-        :AlphaTask
-    {
-        return new AlphaTask(alpha, time, Easing.cubic.easeOut, disp);
-    }
-
     public function AlphaTask (alpha :Number, time :Number = 0, easingFn :Function = null,
         disp :DisplayObject = null)
     {

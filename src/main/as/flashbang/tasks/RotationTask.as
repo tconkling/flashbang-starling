@@ -26,30 +26,6 @@ import flashbang.ObjectTask;
 
 public class RotationTask extends DisplayObjectTask
 {
-    public static function CreateLinear (rotationDegrees :Number, time :Number,
-        disp :DisplayObject = null) :RotationTask
-    {
-        return new RotationTask(rotationDegrees, time, Easing.linear, disp);
-    }
-
-    public static function CreateSmooth (rotationDegrees :Number, time :Number,
-        disp :DisplayObject = null) :RotationTask
-    {
-        return new RotationTask(rotationDegrees, time, Easing.cubic.easeInOut, disp);
-    }
-
-    public static function CreateEaseIn (rotationDegrees :Number, time :Number,
-        disp :DisplayObject = null) :RotationTask
-    {
-        return new RotationTask(rotationDegrees, time, Easing.cubic.easeIn, disp);
-    }
-
-    public static function CreateEaseOut (rotationDegrees :Number, time :Number,
-        disp :DisplayObject = null) :RotationTask
-    {
-        return new RotationTask(rotationDegrees, time, Easing.cubic.easeOut, disp);
-    }
-
     public function RotationTask (rotationDegrees :Number, time :Number = 0,
         easingFn :Function = null, disp :DisplayObject = null)
     {

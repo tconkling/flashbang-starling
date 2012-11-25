@@ -29,30 +29,6 @@ import flashbang.components.LocationComponent;
 
 public class LocationTask extends DisplayObjectTask
 {
-    public static function CreateLinear (x :Number, y :Number, time :Number,
-        disp :DisplayObject = null) :LocationTask
-    {
-        return new LocationTask(x, y, time, Easing.linear, disp);
-    }
-
-    public static function CreateSmooth (x :Number, y :Number, time :Number,
-        disp :DisplayObject = null) :LocationTask
-    {
-        return new LocationTask(x, y, time, Easing.cubic.easeInOut, disp);
-    }
-
-    public static function CreateEaseIn (x :Number, y :Number, time :Number,
-        disp :DisplayObject = null) :LocationTask
-    {
-        return new LocationTask(x, y, time, Easing.cubic.easeIn, disp);
-    }
-
-    public static function CreateEaseOut (x :Number, y :Number, time :Number,
-        disp :DisplayObject = null) :LocationTask
-    {
-        return new LocationTask(x, y, time, Easing.cubic.easeOut, disp);
-    }
-
     public function LocationTask (x :Number, y :Number, time :Number = 0,
         easingFn :Function = null, disp :DisplayObject = null)
     {

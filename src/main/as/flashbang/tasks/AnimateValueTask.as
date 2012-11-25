@@ -25,46 +25,6 @@ import flashbang.util.BoxedNumber;
 
 public class AnimateValueTask extends InterpolatingTask
 {
-    public static function CreateLinear (value :BoxedNumber, targetValue :Number, time :Number)
-        :AnimateValueTask
-    {
-        return new AnimateValueTask(
-            value,
-            targetValue,
-            time,
-            Easing.linear);
-    }
-
-    public static function CreateSmooth (value :BoxedNumber, targetValue :Number, time :Number)
-        :AnimateValueTask
-    {
-        return new AnimateValueTask(
-            value,
-            targetValue,
-            time,
-            Easing.cubic.easeInOut);
-    }
-
-    public static function CreateEaseIn (value :BoxedNumber, targetValue :Number, time :Number)
-        :AnimateValueTask
-    {
-        return new AnimateValueTask(
-            value,
-            targetValue,
-            time,
-            Easing.cubic.easeIn);
-    }
-
-    public static function CreateEaseOut (value :BoxedNumber, targetValue :Number, time :Number)
-        :AnimateValueTask
-    {
-        return new AnimateValueTask(
-            value,
-            targetValue,
-            time,
-            Easing.cubic.easeOut);
-    }
-
     public function AnimateValueTask (value :BoxedNumber, targetValue :Number, time :Number = 0,
         easingFn :Function = null)
     {
