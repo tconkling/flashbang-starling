@@ -18,7 +18,7 @@
 
 package flashbang {
 
-import com.threerings.util.Enum;
+import aspire.util.Enum;
 
 public final class ModeTransition extends Enum
 {

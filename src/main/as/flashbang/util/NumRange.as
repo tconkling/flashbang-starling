@@ -18,7 +18,7 @@
 
 package flashbang.util {
 
-import com.threerings.util.Randoms;
+import aspire.util.Randoms;
 
 public class NumRange
 {

@@ -18,7 +18,7 @@
 
 package flashbang {
 
-import com.threerings.util.Preconditions;
+import aspire.util.Preconditions;
 
 import flashbang.audio.AudioManager;
 import flashbang.resource.ResourceManager;

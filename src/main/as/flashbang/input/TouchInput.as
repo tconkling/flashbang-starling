@@ -8,9 +8,9 @@ import starling.events.Touch;
 import starling.events.TouchEvent;
 import starling.events.TouchPhase;
 
-import com.threerings.util.Arrays;
-import com.threerings.util.Registration;
-import com.threerings.util.Registrations;
+import aspire.util.Arrays;
+import aspire.util.Registration;
+import aspire.util.Registrations;
 
 public class TouchInput
 {

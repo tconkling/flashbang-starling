@@ -24,9 +24,9 @@ import org.osflash.signals.ISignal;
 
 import starling.events.EventDispatcher;
 
-import com.threerings.util.Registration;
-import com.threerings.util.RegistrationList;
-import com.threerings.util.Registrations;
+import aspire.util.Registration;
+import aspire.util.RegistrationList;
+import aspire.util.Registrations;
 
 public class SignalAndEventRegistrations extends RegistrationList
 {

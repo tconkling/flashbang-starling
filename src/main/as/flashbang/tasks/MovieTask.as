@@ -20,7 +20,7 @@ package flashbang.tasks {
 
 import flash.display.MovieClip;
 
-import com.threerings.util.Preconditions;
+import aspire.util.Preconditions;
 
 import flashbang.GameObject;
 import flashbang.components.DisplayComponent;

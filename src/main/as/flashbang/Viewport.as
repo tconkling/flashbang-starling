@@ -18,14 +18,14 @@
 
 package flashbang {
 
-import org.osflash.signals.Signal;
-
-import starling.display.Sprite;
-
-import com.threerings.util.Assert;
+import aspire.util.Preconditions;
 
 import flashbang.audio.*;
 import flashbang.resource.*;
+
+import org.osflash.signals.Signal;
+
+import starling.display.Sprite;
 
 /**
  * Viewport contains the AppMode stack. The topmost AppMode in the stack gets ticked on every
@@ -275,7 +275,7 @@ public class Viewport
                     doRemoveMode(-1);
                 }
 
-                Assert.isTrue(this.topMode == mode || _modeStack.length == 0);
+                Preconditions.checkState(this.topMode == mode || _modeStack.length == 0);
 
                 if (_modeStack.length == 0 && null != mode) {
                     doPushMode(mode);

@@ -26,11 +26,11 @@ import starling.display.DisplayObject;
 import starling.display.DisplayObjectContainer;
 import starling.display.Sprite;
 
-import com.threerings.util.Arrays;
-import com.threerings.util.Map;
-import com.threerings.util.Maps;
-import com.threerings.util.Preconditions;
-import com.threerings.util.maps.ValueComputingMap;
+import aspire.util.Arrays;
+import aspire.util.Map;
+import aspire.util.Maps;
+import aspire.util.Preconditions;
+import aspire.util.maps.ValueComputingMap;
 
 import flashbang.components.DisplayComponent;
 import flashbang.input.TouchInput;

@@ -17,7 +17,7 @@
 // along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
 package flashbang.util {
-import com.threerings.util.Randoms;
+import aspire.util.Randoms;
 
 public class IntRange
 {

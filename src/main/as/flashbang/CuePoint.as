@@ -18,8 +18,8 @@
 
 package flashbang {
 
-import com.threerings.util.Map;
-import com.threerings.util.Maps;
+import aspire.util.Map;
+import aspire.util.Maps;
 
 /**
  * A simple mechanism for synchronizing logic across objects.

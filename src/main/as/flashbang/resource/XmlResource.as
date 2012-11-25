@@ -27,7 +27,7 @@ import flash.net.URLLoaderDataFormat;
 import flash.net.URLRequest;
 import flash.utils.ByteArray;
 
-import com.threerings.util.XmlUtil;
+import aspire.util.XmlUtil;
 
 public class XmlResource extends Resource
 {

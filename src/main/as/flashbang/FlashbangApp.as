@@ -23,10 +23,10 @@ import org.osflash.signals.Signal;
 import starling.display.Sprite;
 import starling.events.Event;
 
-import com.threerings.util.Arrays;
-import com.threerings.util.Map;
-import com.threerings.util.Maps;
-import com.threerings.util.Preconditions;
+import aspire.util.Arrays;
+import aspire.util.Map;
+import aspire.util.Maps;
+import aspire.util.Preconditions;
 
 import flashbang.audio.AudioManager;
 import flashbang.resource.ResourceManager;

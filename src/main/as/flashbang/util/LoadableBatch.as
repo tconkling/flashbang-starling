@@ -18,7 +18,7 @@
 
 package flashbang.util {
 
-import com.threerings.util.Preconditions;
+import aspire.util.Preconditions;
 
 public class LoadableBatch extends Loadable
 {

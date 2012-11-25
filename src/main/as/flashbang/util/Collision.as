@@ -21,7 +21,7 @@ package flashbang.util {
 import flash.display.DisplayObject;
 import flash.geom.Point;
 
-import com.threerings.geom.Vector2;
+import aspire.geom.Vector2;
 
 import flashbang.*;
 

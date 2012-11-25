@@ -18,8 +18,8 @@
 
 package flashbang.tasks {
 
-import com.threerings.util.Arrays;
-import com.threerings.util.Assert;
+import aspire.util.Arrays;
+import aspire.util.Preconditions;
 
 import flashbang.GameObject;
 import flashbang.ObjectTask;
@@ -138,7 +138,7 @@ public class TaskContainer
 
     protected function cloneSubtasks () :Array
     {
-        Assert.isTrue(_tasks.length == _completedTasks.length);
+        Preconditions.checkState(_tasks.length == _completedTasks.length);
 
         var out :Array = new Array(_tasks.length);
 
@@ -147,7 +147,7 @@ public class TaskContainer
         for (var ii :int = 0; ii < n; ++ii) {
             var task :ObjectTask =
                 (null != _tasks[ii] ? _tasks[ii] as ObjectTask : _completedTasks[ii] as ObjectTask);
-            Assert.isNotNull(task);
+            Preconditions.checkNotNull(task);
             out[ii] = task.clone();
         }
 

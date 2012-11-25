@@ -33,9 +33,9 @@ import flash.utils.Dictionary;
 
 import ru.etcs.utils.getDefinitionNames;
 
-import com.threerings.util.ClassUtil;
-import com.threerings.util.Log;
-import com.threerings.util.Preconditions;
+import aspire.util.ClassUtil;
+import aspire.util.Log;
+import aspire.util.Preconditions;
 
 import flashbang.Flashbang;
 

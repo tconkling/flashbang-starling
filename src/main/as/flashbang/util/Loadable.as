@@ -21,7 +21,7 @@ package flashbang.util {
 import flash.events.TimerEvent;
 import flash.utils.Timer;
 
-import com.threerings.util.Log;
+import aspire.util.Log;
 
 public class Loadable
 {

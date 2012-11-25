@@ -18,9 +18,9 @@
 
 package flashbang.resource {
 
-import com.threerings.util.ClassUtil;
-import com.threerings.util.Joiner;
-import com.threerings.util.StringUtil;
+import aspire.util.ClassUtil;
+import aspire.util.Joiner;
+import aspire.util.StringUtil;
 
 import flashbang.util.Loadable;
 

@@ -18,7 +18,7 @@
 
 package flashbang.tasks {
 
-import com.threerings.util.Randoms;
+import aspire.util.Randoms;
 
 import flashbang.GameObject;
 import flashbang.ObjectTask;

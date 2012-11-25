@@ -22,8 +22,8 @@ import flash.geom.Point;
 
 import starling.events.Touch;
 
-import com.threerings.util.Preconditions;
-import com.threerings.util.Registration;
+import aspire.util.Preconditions;
+import aspire.util.Registration;
 
 import flashbang.GameObject;
 
