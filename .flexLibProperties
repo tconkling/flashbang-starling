@@ -24,14 +24,11 @@
     <classEntry path="flashbang.objects.SceneObject"/>
     <classEntry path="flashbang.objects.SimpleTimer"/>
     <classEntry path="flashbang.objects.SpriteObject"/>
-    <classEntry path="flashbang.resource.ImageResource"/>
     <classEntry path="flashbang.resource.Resource"/>
     <classEntry path="flashbang.resource.ResourceManager"/>
     <classEntry path="flashbang.resource.ResourceSet"/>
     <classEntry path="flashbang.resource.SoundResource"/>
-    <classEntry path="flashbang.resource.SwfResource"/>
     <classEntry path="flashbang.resource.XmlResource"/>
-    <classEntry path="flashbang.resource.ZipResource"/>
     <classEntry path="flashbang.tasks.After"/>
     <classEntry path="flashbang.tasks.AlphaTask"/>
     <classEntry path="flashbang.tasks.AnimateValueTask"/>
@@ -66,7 +63,6 @@
     <classEntry path="flashbang.util.NumRange"/>
     <classEntry path="flashbang.util.PowerEaser"/>
     <classEntry path="flashbang.util.SignalAndEventRegistrations"/>
-    <classEntry path="ru.etcs.utils.getDefinitionNames"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

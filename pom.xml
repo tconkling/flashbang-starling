@@ -48,12 +48,6 @@
       <type>swc</type>
     </dependency>
     <dependency>
-      <groupId>nochump</groupId>
-      <artifactId>zip</artifactId>
-      <version>1.0</version>
-      <type>swc</type>
-    </dependency>
-    <dependency>
       <groupId>org.osflash</groupId>
       <artifactId>signals</artifactId>
       <version>fd03bf873</version>

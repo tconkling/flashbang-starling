@@ -40,8 +40,6 @@ public class ResourceManager
 
     public function registerDefaultResourceTypes () :void
     {
-        registerResourceType("image", ImageResource);
-        registerResourceType("swf", SwfResource);
         registerResourceType("xml", XmlResource);
         registerResourceType("sound", SoundResource);
     }

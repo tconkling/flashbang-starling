@@ -34,7 +34,6 @@
         </excludedEntries>
       </libraryPathEntry>
       <libraryPathEntry kind="3" linkType="1" path="${M2_REPO}/org/osflash/signals/fd03bf873/signals-fd03bf873.swc" sourcepath="/export/as3-signals-groves/src" useDefaultLinkType="false"/>
-      <libraryPathEntry kind="3" linkType="1" path="${M2_REPO}/nochump/zip/1.0/zip-1.0.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="/Starling/bin-debug/Starling.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="/aspire/dist/aspire.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="/flump-runtime/dist/flump-runtime.swc" useDefaultLinkType="false"/>
