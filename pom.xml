@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.sonatype.oss</groupId>
-    <artifactId>oss-parent</artifactId>
-    <version>7</version>
-  </parent>
 
   <groupId>com.timconkling</groupId>
   <artifactId>flashbang-starling</artifactId>
@@ -22,23 +17,16 @@
       <url>http://ooo-maven.googlecode.com/hg/repository</url>
     </repository>
     <repository>
-      <id>flexmojos</id>
-      <url>http://repository.sonatype.org/content/groups/flexgroup/</url>
+      <id>tconkling</id>
+      <url>https://raw.github.com/tconkling/maven-repo/master</url>
     </repository>
   </repositories>
 
-  <pluginRepositories>
-    <pluginRepository>
-      <id>flexmojos</id>
-      <url>http://repository.sonatype.org/content/groups/flexgroup/</url>
-    </pluginRepository>
-  </pluginRepositories>
-
   <dependencies>
     <dependency>
-      <groupId>org.starling-framework</groupId>
-      <artifactId>starling</artifactId>
-      <version>1.2-ooo</version>
+      <groupId>com.gamua</groupId>
+      <artifactId>starling-framework</artifactId>
+      <version>272c8a8</version>
       <type>swc</type>
     </dependency>
     <dependency>
@@ -61,78 +49,4 @@
       <optional>true</optional>
     </dependency>
   </dependencies>
-
-  <build>
-    <sourceDirectory>src/main/as</sourceDirectory>
-    <plugins>
-      <plugin>
-        <groupId>org.sonatype.flexmojos</groupId>
-        <artifactId>flexmojos-maven-plugin</artifactId>
-        <extensions>true</extensions>
-        <version>3.9</version>
-        <configuration>
-          <omitTraceStatements>false</omitTraceStatements>
-          <debug>true</debug>
-          <incremental>false</incremental>
-          <useNetwork>false</useNetwork>
-          <verboseStacktraces>true</verboseStacktraces>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>com.adobe.flex</groupId>
-            <artifactId>compiler</artifactId>
-            <version>${flex.version}</version>
-            <type>pom</type>
-          </dependency>
-          <dependency>
-            <groupId>com.adobe.flex.compiler</groupId>
-            <artifactId>asdoc</artifactId>
-            <version>${flex.version}</version>
-            <classifier>template</classifier>
-            <type>zip</type>
-          </dependency>
-        </dependencies>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-install-plugin</artifactId>
-        <version>2.3.1</version>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <version>2.5</version>
-      </plugin>
-    </plugins>
-  </build>
-
-  <profiles>
-    <profile>
-      <id>release-sign-artifacts</id>
-      <activation>
-        <property><name>performRelease</name><value>true</value></property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <version>1.1</version>
-            <executions>
-              <execution>
-                <id>sign-artifacts</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <keyname>mdb@samskivert.com</keyname>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 </project>
