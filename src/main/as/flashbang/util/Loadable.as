@@ -19,15 +19,30 @@
 package flashbang.util {
 
 import aspire.util.Log;
+import aspire.util.Preconditions;
 
 public class Loadable
 {
+    public function get isLoaded () :Boolean
+    {
+        return _state == STATE_SUCCEEDED;
+    }
+
+    /** Return the result of the load (if successful), or the load error (if the load failed) */
+    public function get result () :*
+    {
+        return _result;
+    }
+
     public function load (onLoaded :Function = null, onLoadErr :Function = null) :void
     {
-        if (_loaded && onLoaded != null) {
+        if (_state == STATE_SUCCEEDED && onLoaded != null) {
             onLoaded();
 
-        } else if (!_loaded) {
+        } else if (_state == STATE_FAILED && onLoadErr != null) {
+            onLoadErr(_result);
+
+        } else if (_state == STATE_NOT_LOADED || _state == STATE_LOADING) {
             if (onLoaded != null) {
                 _onLoadedCallbacks.push(onLoaded);
             }
@@ -35,52 +50,55 @@ public class Loadable
                 _onLoadErrCallbacks.push(onLoadErr);
             }
 
-            if (!_loading) {
-                _loading = true;
-                doLoad();
+            if (_state == STATE_NOT_LOADED) {
+                _state = STATE_LOADING;
+                try {
+                    doLoad();
+                } catch (e :Error) {
+                    fail(e);
+                }
             }
         }
     }
 
     public function unload () :void
     {
-        if (_loading) {
+        if (_state == STATE_LOADING) {
             onLoadCanceled();
         }
 
-        _loaded = false;
-        _loading = false;
+        _state = STATE_NOT_LOADED;
         _onLoadedCallbacks = [];
         _onLoadErrCallbacks = [];
 
         doUnload();
     }
 
-    public function get isLoaded () :Boolean
+    protected function succeed (result :* = undefined) :void
     {
-        return _loaded;
-    }
+        Preconditions.checkState(_state == STATE_LOADING, "not loading");
 
-    protected function onLoaded () :void
-    {
+        _result = result;
         var callbacks :Array = _onLoadedCallbacks;
 
         _onLoadedCallbacks = [];
         _onLoadErrCallbacks = [];
-        _loaded = true;
-        _loading = false;
+        _state = STATE_SUCCEEDED;
 
         for each (var callback :Function in callbacks) {
             callback();
         }
     }
 
-    protected function onLoadErr (err :String) :void
+    protected function fail (e :Error) :void
     {
+        Preconditions.checkState(_state == STATE_LOADING, "not loading");
+
+        _result = e;
+        _state = STATE_FAILED;
         var callbacks :Array = _onLoadErrCallbacks;
-        unload();
         for each (var callback :Function in callbacks) {
-            callback(err);
+            callback(e);
         }
     }
 
@@ -111,10 +129,16 @@ public class Loadable
 
     protected var _onLoadedCallbacks :Array = [];
     protected var _onLoadErrCallbacks :Array = [];
-    protected var _loading :Boolean;
-    protected var _loaded :Boolean;
+
+    protected var _state :int = 0;
+    protected var _result :* = undefined;
 
     protected static const log :Log = Log.getLog(Loadable);
+
+    protected static const STATE_NOT_LOADED :int = 0;
+    protected static const STATE_LOADING :int = 1;
+    protected static const STATE_SUCCEEDED :int = 2;
+    protected static const STATE_FAILED :int = 3;
 }
 
 }

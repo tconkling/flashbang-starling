@@ -1,0 +1,35 @@
+//
+// flashbang
+
+package flashbang.audio {
+
+import flash.media.Sound;
+
+public class LoadedSound
+{
+    public function LoadedSound (name :String, sound :Sound, type :SoundType, priority :int,
+        volume :Number, pan :Number)
+    {
+        _name = name;
+        _sound = sound;
+        _type = type;
+        _priority = priority;
+        _volume = volume;
+        _pan = pan;
+    }
+
+    public function get name () :String { return _name; }
+    public function get sound () :Sound { return _sound; }
+    public function get type () :SoundType { return _type; }
+    public function get priority () :int { return _priority; }
+    public function get volume () :Number { return _volume; }
+    public function get pan () :Number { return _pan; }
+
+    protected var _name :String;
+    protected var _sound :Sound;
+    protected var _type :SoundType;
+    protected var _priority :int;
+    protected var _volume :Number;
+    protected var _pan :Number;
+}
+}

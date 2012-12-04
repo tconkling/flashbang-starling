@@ -19,11 +19,9 @@
 package flashbang.resource {
 
 import aspire.util.Log;
-import aspire.util.Map;
-import aspire.util.Maps;
-import aspire.util.Preconditions;
 
 import flashbang.Flashbang;
+import flashbang.util.Loadable;
 import flashbang.util.LoadableBatch;
 
 public class ResourceSet extends LoadableBatch
@@ -33,69 +31,29 @@ public class ResourceSet extends LoadableBatch
         super(loadInSequence);
     }
 
-    /**
-     * @return true if this ResourceSet contains a resource of the given name, regardless of
-     * whether that resource has been loaded or not.
-     */
-    public function containsResource (resourceName :String) :Boolean
+    public function addResource (type :String, name: String, loadParams :*) :void
     {
-        return _resources.containsKey(resourceName);
+        addLoadable(Flashbang.rsrcs.createResource(type, name, loadParams));
     }
 
-    public function queueResourceLoad (resourceType :String, resourceName: String, loadParams :*)
-        :void
+    override protected function succeed (result :* = undefined) :void
     {
-        Preconditions.checkArgument(!_resources.containsKey(resourceName),
-            "A resource named '" + resourceName + "' already exists");
-
-        var rsrc :Resource = Flashbang.rsrcs.createResource(resourceType, resourceName, loadParams);
-        Preconditions.checkArgument(null != rsrc,
-            "Unrecognized Resource type '" + resourceType + "'");
-
-        addLoadable(rsrc.loadable);
-        _resources.put(resourceName, rsrc);
-    }
-
-    override protected function doLoad () :void
-    {
-        Flashbang.rsrcs.setResourceSetLoading(this, true);
-        super.doLoad();
-    }
-
-    override protected function onLoaded () :void
-    {
-        Flashbang.rsrcs.setResourceSetLoading(this, false);
-        if(addLoadedResources()) {
-            super.onLoaded();
-        }
-    }
-
-    protected function addLoadedResources () :Boolean
-    {
-        // add resources to the ResourceManager
-        try {
-            Flashbang.rsrcs.addResources(_resources.values());
-        } catch (e :Error) {
-            onLoadErr(e.message);
-            return false;
-        }
-
-        return true;
-    }
-
-    override protected function onLoadCanceled () :void
-    {
-        Flashbang.rsrcs.setResourceSetLoading(this, false);
-        super.onLoadCanceled();
+        Flashbang.rsrcs.addResources(this);
+        super.succeed(result);
     }
 
     override protected function doUnload () :void
     {
         super.doUnload();
-        Flashbang.rsrcs.removeResources(_resources.values());
+        Flashbang.rsrcs.removeResources(this);
     }
 
-    protected var _resources :Map = Maps.newMapOf(String);
+    internal function get resources () :Array
+    {
+        return _loadedObjects.filter(function (l :Loadable, ..._) :Boolean {
+            return l is Resource;
+        });
+    }
 
     protected static const log :Log = Log.getLog(ResourceSet);
 }

@@ -18,70 +18,40 @@
 
 package flashbang.resource {
 
-import aspire.util.Arrays;
 import aspire.util.ClassUtil;
 import aspire.util.Log;
 import aspire.util.Map;
 import aspire.util.Maps;
 import aspire.util.Preconditions;
+import aspire.util.Set;
+import aspire.util.Sets;
 
 public class ResourceManager
 {
     public function ResourceManager ()
     {
-        registerDefaultResourceTypes();
+        registerDefaultFactories();
     }
 
     public function shutdown () :void
     {
-        cancelLoad();
         unloadAll();
     }
 
-    public function registerDefaultResourceTypes () :void
+    public function registerDefaultFactories () :void
     {
-        registerResourceType("xml", XmlResource);
-        registerResourceType("sound", SoundResource);
+        registerFactory("xml", XmlResource.createFactory());
+        registerFactory("sound", SoundResource.createFactory());
     }
 
-    public function registerResourceType (resourceType :String, theClass :Class) :void
+    public function registerFactory (resourceType :String, factory :ResourceFactory) :void
     {
-        _resourceClasses.put(resourceType, theClass);
+        _factories.put(resourceType, factory);
     }
 
-    public function queueResourceLoad (resourceType :String, resourceName: String, loadParams :*)
-        :void
+    public function getResource (resourceName :String) :*
     {
-        if (_pendingSet == null) {
-            _pendingSet = new ResourceSet();
-        }
-
-        _pendingSet.queueResourceLoad(resourceType, resourceName, loadParams);
-    }
-
-    public function loadQueuedResources (onLoaded :Function = null, onLoadErr :Function = null)
-        :void
-    {
-        Preconditions.checkNotNull(_pendingSet, "No resources queued for loading");
-
-        var loadingSet :ResourceSet = _pendingSet;
-        _pendingSet = null;
-        loadingSet.load(onLoaded, onLoadErr);
-    }
-
-    public function cancelLoad () :void
-    {
-        var loadingSets :Array = _loadingSets;
-        for each (var rsrcSet :ResourceSet in loadingSets) {
-            rsrcSet.unload();
-        }
-
-        _pendingSet = null;
-    }
-
-    public function getResource (resourceName :String) :Resource
-    {
-        return (_resources.get(resourceName) as Resource);
+        return _resources.get(resourceName);
     }
 
     public function requireResource (resourceName :String, type :Class) :*
@@ -102,65 +72,52 @@ public class ResourceManager
         return (null != getResource(name));
     }
 
-    public function get isLoading () :Boolean
+    public function unloadAll () :void
     {
-        return _loadingSets.length > 0;
-    }
-
-    protected function unloadAll () :void
-    {
-        for each (var rsrc :Resource in _resources.values()) {
-            rsrc.loadable.unload();
-        }
-
-        _resources.clear();
-    }
-
-    internal function createResource (resourceType :String, resourceName :String, loadParams :*)
-        :Resource
-    {
-        var loaderClass :Class = _resourceClasses.get(resourceType);
-        if (null != loaderClass) {
-            return (new loaderClass(resourceName, loadParams) as Resource);
-        }
-
-        return null;
-    }
-
-    internal function setResourceSetLoading (resourceSet :ResourceSet, loading :Boolean) :void
-    {
-        if (loading) {
-            _loadingSets.push(resourceSet);
-        } else {
-            Arrays.removeFirst(_loadingSets, resourceSet);
+        for each (var rset :ResourceSet in _resourceSets.toArray()) {
+            rset.unload();
         }
     }
 
-    internal function addResources (resources :Array) :void
+    internal function createResource (type :String, name :String, loadParams :*) :Resource
+    {
+        var factory :ResourceFactory = _factories.get(type);
+        if (factory == null) {
+            throw new Error("Unrecognized resource type: '" + type + "'");
+        }
+        return factory.create(name, loadParams);
+    }
+
+    internal function addResources (resourceSet :ResourceSet) :void
     {
         var rsrc :Resource;
+        var resources :Array = resourceSet.resources;
         // validate all resources before adding them
         for each (rsrc in resources) {
-            Preconditions.checkArgument(getResource(rsrc.resourceName) == null,
-                "A resource named '" + rsrc.resourceName + "' already exists");
+            Preconditions.checkArgument(getResource(rsrc.name) == null,
+                "A resource named '" + rsrc.name + "' already exists");
         }
+
         for each (rsrc in resources) {
-            _resources.put(rsrc.resourceName, rsrc);
+            _resources.put(rsrc.name, rsrc);
         }
+        _resourceSets.add(resourceSet);
     }
 
-    internal function removeResources (resources :Array) :void
+    internal function removeResources (resourceSet :ResourceSet) :void
     {
-        for each (var rsrc :Resource in resources) {
-            _resources.remove(rsrc.resourceName);
+        var removed :Boolean = _resourceSets.remove(resourceSet);
+        Preconditions.checkState(removed, "ResourceSet was not loaded");
+
+        for each (var rsrc :Resource in resourceSet.resources) {
+            _resources.remove(rsrc.name);
         }
     }
 
     protected var _resources :Map = Maps.newMapOf(String); // Map<name, resource>
-    protected var _pendingSet :ResourceSet;
-    protected var _loadingSets :Array = [];
+    protected var _resourceSets :Set = Sets.newSetOf(ResourceSet);
 
-    protected var _resourceClasses :Map = Maps.newMapOf(String);
+    protected var _factories :Map = Maps.newMapOf(String);
 
     protected static var log :Log = Log.getLog(ResourceManager);
 }

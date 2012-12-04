@@ -25,7 +25,6 @@ import flash.utils.getTimer;
 import aspire.util.F;
 import aspire.util.Log;
 
-import flashbang.Flashbang;
 import flashbang.Updatable;
 import flashbang.resource.SoundResource;
 
@@ -114,26 +113,26 @@ public class AudioManager
     public function playSoundNamed (name :String, parentControls :AudioControls = null,
         loopCount :int = 0) :AudioChannel
     {
-        var rsrc :SoundResource = Flashbang.rsrcs.getResource(name) as SoundResource;
-        if (null == rsrc) {
+        var sound :LoadedSound = SoundResource.get(name);
+        if (null == sound) {
             log.info("Discarding sound '" + name + "' (sound does not exist)");
             return new AudioChannel();
         }
 
-        return playSound(rsrc, parentControls, loopCount);
+        return playSound(sound, parentControls, loopCount);
     }
 
-    public function playSound (soundResource :SoundResource, parentControls :AudioControls = null,
+    public function playSound (sound :LoadedSound, parentControls :AudioControls = null,
         loopCount :int = 0) :AudioChannel
     {
-        if (null == soundResource.sound) {
-            log.info("Discarding sound '" + soundResource.resourceName + "' (sound is null)");
+        if (null == sound.sound) {
+            log.info("Discarding sound '" + sound.name + "' (sound is null)");
             return new AudioChannel();
         }
 
         // get the appropriate parent controls
         if (null == parentControls) {
-            parentControls = getControlsForSoundType(soundResource.type);
+            parentControls = getControlsForSoundType(sound.type);
             if (null == parentControls) {
                 parentControls = _masterControls;
             }
@@ -142,7 +141,7 @@ public class AudioManager
         // don't play the sound if its parent controls are stopped
         var audioState :AudioState = parentControls.updateStateNow();
         if (audioState.stopped) {
-            log.info("Discarding sound '" + soundResource.resourceName +
+            log.info("Discarding sound '" + sound.name +
                 "' (parent controls are stopped)");
             return new AudioChannel();
         }
@@ -156,7 +155,7 @@ public class AudioManager
         for (var ii :int = 0; ii < _activeChannels.length; ++ii) {
             var activeChannel :AudioChannel = _activeChannels[ii];
             if (activeChannel.isPlaying) {
-                if (activeChannel.sound == soundResource &&
+                if (activeChannel.sound == sound &&
                     (timeNow - activeChannel.startTime) < SOUND_PLAYED_RECENTLY_DELTA) {
                     /*log.info("Discarding sound '" + soundResource.resourceName +
                                "' (recently played)");*/
@@ -176,17 +175,17 @@ public class AudioManager
         if (_activeChannels.length >= _maxChannels) {
             // Can we shut down a playing channel?
             if (null != lowestPriorityChannel &&
-                soundResource.priority > lowestPriorityChannel.priority) {
+                sound.priority > lowestPriorityChannel.priority) {
                 // steal the channel from a lower-priority sound
                 if (lowestPriorityChannel.sound != null) {
-                    log.info("Interrupting sound '" + lowestPriorityChannel.sound.resourceName +
-                        "' for higher-priority sound '" + soundResource.resourceName + "'");
+                    log.info("Interrupting sound '" + lowestPriorityChannel.sound.name +
+                        "' for higher-priority sound '" + sound.name + "'");
                 }
                 stop(lowestPriorityChannel);
                 _activeChannels.splice(lowestPriorityChannelIdx, 1);
             } else {
                 // We're out of luck
-                log.info("Discarding sound '" + soundResource.resourceName +
+                log.info("Discarding sound '" + sound.name +
                     "' (no free AudioChannels)");
                 return new AudioChannel();
             }
@@ -197,7 +196,7 @@ public class AudioManager
         channel.completeHandler = F.callback(handleComplete, channel);
         channel.controls = new AudioControls(parentControls);
         channel.controls.retain();
-        channel.sound = soundResource;
+        channel.sound = sound;
         channel.playPosition = 0;
         channel.startTime = timeNow;
         channel.loopCount = loopCount;
@@ -208,7 +207,7 @@ public class AudioManager
 
             // Flash must've run out of sound channels
             if (null == channel.channel) {
-                log.info("Discarding sound '" + soundResource.resourceName +
+                log.info("Discarding sound '" + sound.name +
                     "' (Flash is out of channels)");
                 channel.controls.release();
                 return new AudioChannel();

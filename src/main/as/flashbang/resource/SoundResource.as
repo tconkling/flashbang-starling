@@ -1,34 +1,22 @@
 //
-// Flashbang - a framework for creating Flash games
-// Copyright (C) 2008-2012 Three Rings Design, Inc., All Rights Reserved
-// http://github.com/threerings/flashbang
-//
-// This library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with this library.  If not, see <http://www.gnu.org/licenses/>.
+// flashbang
 
 package flashbang.resource {
 
+import flash.errors.IOError;
 import flash.events.Event;
 import flash.events.IOErrorEvent;
 import flash.media.Sound;
 import flash.net.URLRequest;
 
+import aspire.util.F;
+
+import flashbang.Flashbang;
+import flashbang.audio.LoadedSound;
 import flashbang.audio.SoundType;
 
 public class SoundResource extends Resource
 {
-    /** Load params */
-
     /** A String containing the URL to load the Sound from.
      * (Mutually exclusive with EMBEDDED_CLASS).*/
     public static const URL :String = "url";
@@ -57,130 +45,87 @@ public class SoundResource extends Resource
      */
     public static const STREAM :String = "stream";
 
-    public function SoundResource (resourceName :String, loadParams :Object)
+    public static function get (name :String) :LoadedSound
     {
-        super(resourceName, loadParams);
+        var rsrc :SoundResource = Flashbang.rsrcs.getResource(name);
+        return (rsrc != null ? rsrc.result : null);
     }
 
-    public function get sound () :Sound
+    public static function require (name :String) :LoadedSound
     {
-        return _sound;
+        return Flashbang.rsrcs.requireResource(name, SoundResource).result;
     }
 
-    public function get type () :SoundType
+    public static function createFactory () :ResourceFactory
     {
-        return _type;
+        return new SoundFactory();
     }
 
-    public function get priority () :int
+    public function SoundResource (name :String, params :Object)
     {
-        return _priority;
+        super(name, params);
     }
 
-    public function get volume () :Number
+    override protected function doLoad () :void
     {
-        return _volume;
-    }
-
-    public function get pan () :Number
-    {
-        return _pan;
-    }
-
-    override protected function load (onLoaded :Function, onLoadErr :Function) :void
-    {
-        _completeCallback = onLoaded;
-        _errorCallback = onLoadErr;
-
         // parse loadParams
         var typeName :String = getLoadParam(TYPE, SoundType.SFX.name());
-        try {
-            _type = SoundType.valueOf(typeName.toUpperCase());
-        } catch (e :Error) {
-            onError(e.message);
-            return;
-        }
+        var type :SoundType = SoundType.valueOf(typeName.toUpperCase());
+        var priority :int = getLoadParam(PRIORITY, 0);
+        var volume :Number = getLoadParam(VOLUME, 1);
+        var pan :Number = getLoadParam(PAN, 0);
 
-        _priority = getLoadParam(PRIORITY, 0);
-        _volume = getLoadParam(VOLUME, 1);
-        _pan = getLoadParam(PAN, 0);
-
+        // load the sound
+        var sound :Sound = null;
         if (hasLoadParam(URL)) {
-            _sound = new Sound();
+            sound = new Sound();
 
             // Immediately set up the error listener to protect against blowing up
-            _sound.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
+            sound.addEventListener(IOErrorEvent.IO_ERROR, function (e :IOErrorEvent) :void {
+                fail(new IOError(e.text, e.errorID));
+            });
 
             // And THEN start it loading
-            _sound.load(new URLRequest(getLoadParam(URL)));
+            sound.load(new URLRequest(getLoadParam(URL)));
 
-            var stream :Boolean =
-                getLoadParam(STREAM, false) ||
-                getLoadParam("completeImmediately", false); // legacy param name
+            var result :LoadedSound = new LoadedSound(_name, sound, type, priority, volume, pan);
 
             // If this is a streaming sound, we don't wait for it to finish loading before
             // we make it available. Sounds loaded in this manner can be played without
             // issue as long as they download quickly enough.
-            if (stream) {
-                onInit();
+            if (getLoadParam(STREAM, false)) {
+                succeed(result);
             } else {
-                _sound.addEventListener(Event.COMPLETE, onInit);
+                sound.addEventListener(Event.COMPLETE, F.callback(succeed, result));
             }
 
         } else if (hasLoadParam(EMBEDDED_CLASS)) {
-            try {
-                var embeddedClass :Class = getLoadParam(EMBEDDED_CLASS);
-                if (embeddedClass == null) {
-                    onError("missing embedded class!");
-                } else {
-                    _sound = Sound(new embeddedClass());
-                }
-            } catch (e :Error) {
-                onError(e.message);
-                return;
-            }
-            onInit();
+            var embeddedClass :Class = getLoadParam(EMBEDDED_CLASS);
+            sound = Sound(new embeddedClass());
+            succeed(new LoadedSound(_name, sound, type, priority, volume, pan));
 
         } else {
             throw new Error("either 'url' or 'embeddedClass' must be specified in loadParams");
         }
     }
 
-    override protected function unload () :void
+    override protected function doUnload () :void
     {
-        try {
-            if (null != _sound) {
-                _sound.close();
-            }
-        } catch (e :Error) {
-            // swallow the exception
-        }
-        _sound = null;
+        LoadedSound(_result).sound.close();
     }
-
-    protected function onInit (...ignored) :void
-    {
-        _completeCallback();
-    }
-
-    protected function onIOError (e :IOErrorEvent) :void
-    {
-        onError(e.text);
-    }
-
-    protected function onError (errText :String) :void
-    {
-        _errorCallback(createLoadErrorString(errText));
-    }
-
-    protected var _sound :Sound;
-    protected var _type :SoundType;
-    protected var _priority :int;
-    protected var _volume :Number;
-    protected var _pan :Number;
-
-    protected var _completeCallback :Function;
-    protected var _errorCallback :Function;
+}
 }
 
+import flashbang.resource.Resource;
+import flashbang.resource.ResourceFactory;
+import flashbang.resource.SoundResource;
+
+class SoundFactory
+    implements ResourceFactory
+{
+    public function create (name :String, params :Object) :Resource
+    {
+        return new SoundResource(name, params);
+    }
 }
+

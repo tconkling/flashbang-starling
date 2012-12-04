@@ -22,8 +22,6 @@ import flash.media.SoundChannel;
 
 import org.osflash.signals.Signal;
 
-import flashbang.resource.SoundResource;
-
 public class AudioChannel
 {
     /**
@@ -65,7 +63,7 @@ public class AudioChannel
 
     internal var completeHandler :Function;
     internal var controls :AudioControls;
-    internal var sound :SoundResource;
+    internal var sound :LoadedSound;
     internal var channel :SoundChannel;
     internal var playPosition :Number;
     internal var startTime :int;

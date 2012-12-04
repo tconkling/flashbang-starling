@@ -24,39 +24,27 @@ import aspire.util.StringUtil;
 
 import flashbang.util.Loadable;
 
-public class Resource
+public class Resource extends Loadable
 {
-    public function Resource (resourceName :String, loadParams :Object)
+    public function Resource (name :String, params :Object)
     {
-        _resourceName = resourceName;
-        _loadParams = loadParams;
-
-        _loadable = new LoadableResource(load, unload);
+        _name = name;
+        _params = params;
     }
 
-    public function get resourceName () :String
+    public function get name () :String
     {
-        return _resourceName;
-    }
-
-    protected function load (onLoaded :Function, onLoadErr :Function) :void
-    {
-        // subclasses implement
-    }
-
-    protected function unload () :void
-    {
-        // subclasses implement
+        return _name;
     }
 
     protected function hasLoadParam (name :String) :Boolean
     {
-        return _loadParams.hasOwnProperty(name);
+        return _params.hasOwnProperty(name);
     }
 
     protected function getLoadParam (name :String, defaultValue :* = undefined) :*
     {
-        return (hasLoadParam(name) ? _loadParams[name] : defaultValue);
+        return (hasLoadParam(name) ? _params[name] : defaultValue);
     }
 
     protected function requireLoadParam (name :String, type :Class) :*
@@ -71,46 +59,15 @@ public class Resource
         return param;
     }
 
-    protected function createLoadErrorString (errText :String) :String
+    override protected function fail (e :Error) :void
     {
-        return Joiner.pairs(ClassUtil.tinyClassName(this) + " load error",
-            "resourceName", _resourceName, "loadParams", StringUtil.simpleToString(_loadParams),
-            "err", errText);
-
+        super.fail(new Error(Joiner.pairs(ClassUtil.tinyClassName(this) + " load error",
+            "name", _name, "params", StringUtil.simpleToString(_params),
+            "err", e.message)));
     }
 
-    internal function get loadable () :Loadable
-    {
-        return _loadable;
-    }
-
-    protected var _resourceName :String;
-    protected var _loadParams :Object;
-    protected var _loadable :Loadable;
+    protected var _name :String;
+    protected var _params :Object;
 }
 
-}
-
-import flashbang.util.Loadable;
-
-class LoadableResource extends Loadable
-{
-    public function LoadableResource (loadFn :Function, unloadFn :Function)
-    {
-        _loadFn = loadFn;
-        _unloadFn = unloadFn;
-    }
-
-    override protected function doLoad () :void
-    {
-        _loadFn(onLoaded, onLoadErr);
-    }
-
-    override protected function doUnload () :void
-    {
-        _unloadFn();
-    }
-
-    protected var _loadFn :Function;
-    protected var _unloadFn :Function;
 }

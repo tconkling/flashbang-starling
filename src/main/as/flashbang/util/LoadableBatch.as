@@ -36,9 +36,7 @@ public class LoadableBatch extends Loadable
 
     public function addLoadable (loadable :Loadable) :void
     {
-        Preconditions.checkArgument(!_loading && !_loaded,
-            "Can't add new Loadables while a LoadableBatch is loading or loaded");
-
+        Preconditions.checkState(_state == STATE_NOT_LOADED, "Batch is loading or loaded");
         _allObjects.push(loadable);
     }
 
@@ -46,7 +44,7 @@ public class LoadableBatch extends Loadable
     {
         // If we don't have any objects to load, we're done!
         if (_allObjects.length == 0) {
-            onLoaded();
+            succeed();
             return;
         }
 
@@ -54,7 +52,7 @@ public class LoadableBatch extends Loadable
             loadOneObject(loadable);
             // don't continue if the load operation has been canceled/errored,
             // or if we're loading in sequence
-            if (!_loading || _loadInSequence) {
+            if (_state != STATE_LOADING || _loadInSequence) {
                 break;
             }
         }
@@ -62,13 +60,7 @@ public class LoadableBatch extends Loadable
 
     protected function loadOneObject (loadable :Loadable) :void
     {
-        loadable.load(
-            function () :void {
-                onObjectLoaded(loadable);
-            },
-            function (err :String) :void {
-                onObjectLoadErr(loadable, err);
-            });
+        loadable.load(function () :void { onObjectLoaded(loadable); }, fail);
     }
 
     override protected function doUnload () :void
@@ -86,16 +78,11 @@ public class LoadableBatch extends Loadable
 
         if (_loadedObjects.length == _allObjects.length) {
             // We finished loading
-            onLoaded();
+            succeed();
         } else if (_loadInSequence) {
             // We have more to load
             loadOneObject(_allObjects[_loadedObjects.length]);
         }
-    }
-
-    protected function onObjectLoadErr (loadable :Loadable, err :String) :void
-    {
-        onLoadErr(err);
     }
 
     protected var _loadInSequence :Boolean;
