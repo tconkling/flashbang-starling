@@ -18,21 +18,10 @@
 
 package flashbang.util {
 
-import flash.events.TimerEvent;
-import flash.utils.Timer;
-
 import aspire.util.Log;
 
 public class Loadable
 {
-    public function Loadable (numRetries :int = 0, retryDelayMs :int = 0)
-    {
-        // the number of times to retry a failed load attempt
-        _numRetries = numRetries;
-        // the number of milliseconds to wait between retries
-        _retryDelayMs = retryDelayMs;
-    }
-
     public function load (onLoaded :Function = null, onLoadErr :Function = null) :void
     {
         if (_loaded && onLoaded != null) {
@@ -48,7 +37,6 @@ public class Loadable
 
             if (!_loading) {
                 _loading = true;
-                _retriesRemaining = _numRetries;
                 doLoad();
             }
         }
@@ -64,7 +52,6 @@ public class Loadable
         _loading = false;
         _onLoadedCallbacks = [];
         _onLoadErrCallbacks = [];
-        stopRetryTimer();
 
         doUnload();
     }
@@ -90,25 +77,10 @@ public class Loadable
 
     protected function onLoadErr (err :String) :void
     {
-        if (_retriesRemaining != 0) {
-            if (_retriesRemaining > 0) {
-                _retriesRemaining--;
-            }
-            log.warning("Load error, retrying load", "err", err, "retriesRemaining",
-                _retriesRemaining);
-
-            if (_retryDelayMs <= 0) {
-                doLoad();
-            } else {
-                startRetryTimer();
-            }
-
-        } else {
-            var callbacks :Array = _onLoadErrCallbacks;
-            unload();
-            for each (var callback :Function in callbacks) {
-                callback(err);
-            }
+        var callbacks :Array = _onLoadErrCallbacks;
+        unload();
+        for each (var callback :Function in callbacks) {
+            callback(err);
         }
     }
 
@@ -137,39 +109,10 @@ public class Loadable
         throw new Error("abstract");
     }
 
-    protected function startRetryTimer () :void
-    {
-        stopRetryTimer();
-        _retryTimer = new Timer(_retryDelayMs, 1);
-        _retryTimer.addEventListener(TimerEvent.TIMER,
-            function (...ignored) :void {
-                doLoad();
-                _retryTimer = null;
-            });
-        _retryTimer.start();
-    }
-
-    protected function stopRetryTimer () :void
-    {
-        if (_retryTimer != null) {
-            _retryTimer.stop();
-            _retryTimer = null;
-        }
-    }
-
-    protected function get willRetry () :Boolean
-    {
-        return (_retriesRemaining != 0);
-    }
-
     protected var _onLoadedCallbacks :Array = [];
     protected var _onLoadErrCallbacks :Array = [];
     protected var _loading :Boolean;
     protected var _loaded :Boolean;
-    protected var _numRetries :int;
-    protected var _retryDelayMs :int;
-    protected var _retriesRemaining :int;
-    protected var _retryTimer :Timer;
 
     protected static const log :Log = Log.getLog(Loadable);
 }
