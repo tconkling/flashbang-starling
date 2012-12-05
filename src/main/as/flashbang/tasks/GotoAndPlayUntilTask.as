@@ -22,7 +22,6 @@ import flash.display.MovieClip;
 
 import flashbang.GameObject;
 import flashbang.ObjectTask;
-import flashbang.components.DisplayComponent;
 
 public class GotoAndPlayUntilTask extends MovieTask
 {

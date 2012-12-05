@@ -23,8 +23,6 @@ import flash.geom.Point;
 
 import aspire.geom.Vector2;
 
-import flashbang.*;
-
 public class Collision
 {
     /**

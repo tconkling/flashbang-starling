@@ -18,7 +18,6 @@
 
 package flashbang.tasks {
 
-import flashbang.Easing;
 import flashbang.GameObject;
 import flashbang.ObjectTask;
 import flashbang.util.BoxedNumber;

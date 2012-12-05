@@ -22,7 +22,6 @@ import starling.display.DisplayObject;
 
 import aspire.util.Preconditions;
 
-import flashbang.Easing;
 import flashbang.GameObject;
 import flashbang.ObjectTask;
 import flashbang.components.LocationComponent;

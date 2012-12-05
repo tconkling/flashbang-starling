@@ -18,8 +18,11 @@
 
 package flashbang.tasks {
 
-import flashbang.*;
-import flashbang.audio.*;
+import flashbang.Flashbang;
+import flashbang.GameObject;
+import flashbang.ObjectTask;
+import flashbang.audio.AudioChannel;
+import flashbang.audio.AudioControls;
 
 public class PlaySoundTask
     implements ObjectTask

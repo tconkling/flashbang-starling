@@ -18,14 +18,11 @@
 
 package flashbang {
 
-import aspire.util.Preconditions;
-
-import flashbang.audio.*;
-import flashbang.resource.*;
-
 import org.osflash.signals.Signal;
 
 import starling.display.Sprite;
+
+import aspire.util.Preconditions;
 
 /**
  * Viewport contains the AppMode stack. The topmost AppMode in the stack gets ticked on every

@@ -20,9 +20,8 @@ package flashbang.tasks {
 
 import flash.display.MovieClip;
 
-import flashbang.*;
-import flashbang.components.*;
-import flashbang.objects.*;
+import flashbang.GameObject;
+import flashbang.ObjectTask;
 
 public class PlayFramesTask extends MovieTask
 {
