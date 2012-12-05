@@ -3,44 +3,51 @@
 
 package flashbang.resource {
 
-import aspire.util.Log;
-
 import flashbang.Flashbang;
 import flashbang.util.Loadable;
 import flashbang.util.LoadableBatch;
 
 public class ResourceSet extends LoadableBatch
 {
-    public function ResourceSet (loadInSequence :Boolean = false)
+    public function ResourceSet (maxSimultaneous :int = 0)
     {
-        super(loadInSequence);
+        super(maxSimultaneous);
     }
 
-    public function addResource (type :String, name: String, loadParams :*) :void
+    public function add (type :String, loadParams :Object) :void
     {
-        addLoadable(Flashbang.rsrcs.createResource(type, name, loadParams));
+        addLoadable(Flashbang.rsrcs.createLoader(type, loadParams));
+    }
+
+    public function unload () :void
+    {
+        Flashbang.rsrcs.unloadSet(this);
     }
 
     override protected function succeed (result :* = undefined) :void
     {
-        Flashbang.rsrcs.addResources(this);
-        super.succeed(result);
-    }
+        // get all our resources
+        var loaded :Array = result as Array;
+        var resources :Array = [];
+        for each (var l :Loadable in loaded) {
+            if (l is ResourceLoader) {
+                var thisResult :* = l.result;
+                if (thisResult is Resource) {
+                    resources.push(thisResult);
+                } else if (thisResult is Array) {
+                    resources = resources.concat(thisResult);
+                } else {
+                    throw new Error("ResourceLoader.result must be a Resource or Array of Resources");
+                }
+            }
+        }
 
-    override protected function doUnload () :void
-    {
-        super.doUnload();
-        Flashbang.rsrcs.removeResources(this);
-    }
+        Flashbang.rsrcs.addSet(this, resources);
 
-    internal function get resources () :Array
-    {
-        return _loadedObjects.filter(function (l :Loadable, ..._) :Boolean {
-            return l is Resource;
-        });
+        // Don't pass result through to LoadableBatch. We don't want extra references
+        // to the resources
+        super.succeed();
     }
-
-    protected static const log :Log = Log.getLog(ResourceSet);
 }
 
 }

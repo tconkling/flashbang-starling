@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="1">
-  <includeClasses/>
+  <includeClasses>
+    <classEntry path="flashbang.resource.SoundLoader"/>
+    <classEntry path="flashbang.resource.XmlLoader"/>
+  </includeClasses>
   <includeResources/>
   <namespaceManifests/>
 </flexLibProperties>

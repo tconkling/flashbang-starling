@@ -21,6 +21,8 @@ public class Loadable
 
     public function load (onLoaded :Function = null, onLoadErr :Function = null) :void
     {
+        Preconditions.checkState(_state != STATE_CANCELED, "canceled");
+
         if (_state == STATE_SUCCEEDED && onLoaded != null) {
             onLoaded();
 
@@ -46,17 +48,12 @@ public class Loadable
         }
     }
 
-    public function unload () :void
+    public function cancel () :void
     {
         if (_state == STATE_LOADING) {
             onLoadCanceled();
         }
-
-        _state = STATE_NOT_LOADED;
-        _onLoadedCallbacks = [];
-        _onLoadErrCallbacks = [];
-
-        doUnload();
+        _state = STATE_CANCELED;
     }
 
     protected function succeed (result :* = undefined) :void
@@ -96,18 +93,10 @@ public class Loadable
 
     /**
      * Subclasses must override this to perform the load.
-     * If the load is successful, this function should call onLoaded(), otherwise it should
-     * call onLoadErr().
+     * If the load is successful, this function should call succeed(), otherwise it should
+     * call fail().
      */
     protected function doLoad () :void
-    {
-        throw new Error("abstract");
-    }
-
-    /**
-     * Subclasses must override this to perform the unload.
-     */
-    protected function doUnload () :void
     {
         throw new Error("abstract");
     }
@@ -124,6 +113,7 @@ public class Loadable
     protected static const STATE_LOADING :int = 1;
     protected static const STATE_SUCCEEDED :int = 2;
     protected static const STATE_FAILED :int = 3;
+    protected static const STATE_CANCELED :int = 4;
 }
 
 }

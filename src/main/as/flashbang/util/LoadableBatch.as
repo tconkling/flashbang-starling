@@ -3,6 +3,7 @@
 
 package flashbang.util {
 
+import aspire.util.Arrays;
 import aspire.util.Preconditions;
 
 public class LoadableBatch extends Loadable
@@ -10,68 +11,82 @@ public class LoadableBatch extends Loadable
     /**
      * Creates a new LoadableBatch.
      *
-     * @param loadInSequence if true, loads all Loadables one by one (useful if there are
-     * dependencies between the Loadables). Otherwise, loads all Loadables simultaneously.
-     * Defaults to false.
+     * @param maxSimultaneous the number of Loadables that can be loading simultaneously
+     * (or 0 for unlimited).
      */
-    public function LoadableBatch (loadInSequence :Boolean = false)
+    public function LoadableBatch (maxSimultaneous :int = 0)
     {
-        _loadInSequence = loadInSequence;
+        _maxSimultaneous = maxSimultaneous;
     }
 
     public function addLoadable (loadable :Loadable) :void
     {
         Preconditions.checkState(_state == STATE_NOT_LOADED, "Batch is loading or loaded");
-        _allObjects.push(loadable);
+        _pending.push(loadable);
     }
 
     override protected function doLoad () :void
     {
+        loadMore();
+    }
+
+    protected function loadMore () :void
+    {
         // If we don't have any objects to load, we're done!
-        if (_allObjects.length == 0) {
-            succeed();
+        if (_pending.length == 0 && _loading.length == 0) {
+            succeed(_loaded);
+            cleanup();
             return;
         }
 
-        for each (var loadable :Loadable in _allObjects) {
-            loadOneObject(loadable);
-            // don't continue if the load operation has been canceled/errored,
-            // or if we're loading in sequence
-            if (_state != STATE_LOADING || _loadInSequence) {
-                break;
-            }
+        while (_pending.length > 0 &&
+               _state == STATE_LOADING &&
+               (_maxSimultaneous <= 0 || _loading.length < _maxSimultaneous)) {
+            loadOneObject(_pending.shift());
         }
     }
 
     protected function loadOneObject (loadable :Loadable) :void
     {
-        loadable.load(function () :void { onObjectLoaded(loadable); }, fail);
+        _loading.push(loadable);
+        loadable.load(
+            function () :void {
+                // we may have gotten canceled
+                if (_state == STATE_LOADING) {
+                    Arrays.removeFirst(_loading, loadable);
+                    _loaded.push(loadable);
+                    loadMore();
+                }
+            },
+            function (e :Error) :void {
+                // we may have gotten canceled
+                if (_state == STATE_LOADING) {
+                    onLoadCanceled();
+                    fail(e);
+                }
+            });
     }
 
-    override protected function doUnload () :void
+    override protected function onLoadCanceled () :void
     {
-        for each (var loadable :Loadable in _allObjects) {
-            loadable.unload();
+        for each (var loadable :Loadable in _loading) {
+            loadable.cancel();
         }
 
-        _loadedObjects = [];
+        cleanup();
     }
 
-    protected function onObjectLoaded (loadable :Loadable) :void
+    protected function cleanup () :void
     {
-        _loadedObjects.push(loadable);
-
-        if (_loadedObjects.length == _allObjects.length) {
-            // We finished loading
-            succeed();
-        } else if (_loadInSequence) {
-            // We have more to load
-            loadOneObject(_allObjects[_loadedObjects.length]);
-        }
+        _pending = null;
+        _loading = null;
+        _loaded = null;
     }
 
-    protected var _loadInSequence :Boolean;
-    protected var _allObjects :Array = []; // Array<Loadable>
-    protected var _loadedObjects :Array = []; // Array<Loadable>
+    protected var _maxSimultaneous :int;
+
+    private var _pending :Array = [];
+    private var _loading :Array = [];
+    private var _loaded :Array = [];
 }
 }

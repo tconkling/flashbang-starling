@@ -98,7 +98,7 @@ public class AudioManager
     public function playSoundNamed (name :String, parentControls :AudioControls = null,
         loopCount :int = 0) :AudioChannel
     {
-        var sound :LoadedSound = SoundResource.get(name);
+        var sound :SoundResource = SoundResource.get(name);
         if (null == sound) {
             log.info("Discarding sound '" + name + "' (sound does not exist)");
             return new AudioChannel();
@@ -107,7 +107,7 @@ public class AudioManager
         return playSound(sound, parentControls, loopCount);
     }
 
-    public function playSound (sound :LoadedSound, parentControls :AudioControls = null,
+    public function playSound (sound :SoundResource, parentControls :AudioControls = null,
         loopCount :int = 0) :AudioChannel
     {
         if (null == sound.sound) {

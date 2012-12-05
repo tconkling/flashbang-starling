@@ -4,18 +4,15 @@
 package flashbang.resource {
 
 import aspire.util.ClassUtil;
-import aspire.util.Log;
 import aspire.util.Map;
 import aspire.util.Maps;
 import aspire.util.Preconditions;
-import aspire.util.Set;
-import aspire.util.Sets;
 
 public class ResourceManager
 {
     public function ResourceManager ()
     {
-        registerDefaultFactories();
+        registerDefaultLoaders();
     }
 
     public function shutdown () :void
@@ -23,15 +20,15 @@ public class ResourceManager
         unloadAll();
     }
 
-    public function registerDefaultFactories () :void
+    public function registerDefaultLoaders () :void
     {
-        registerFactory("xml", XmlResource.createFactory());
-        registerFactory("sound", SoundResource.createFactory());
+        registerResourceLoader("xml", XmlLoader);
+        registerResourceLoader("sound", SoundLoader);
     }
 
-    public function registerFactory (resourceType :String, factory :ResourceFactory) :void
+    public function registerResourceLoader (resourceType :String, loaderClass :Class) :void
     {
-        _factories.put(resourceType, factory);
+        _loaderClasses.put(resourceType, loaderClass);
     }
 
     public function getResource (resourceName :String) :*
@@ -59,24 +56,25 @@ public class ResourceManager
 
     public function unloadAll () :void
     {
-        for each (var rset :ResourceSet in _resourceSets.toArray()) {
-            rset.unload();
-        }
+        _resources.forEach(function (name :String, rsrc :Resource) :void {
+            rsrc.unloadInternal();
+        });
+        _resources = Maps.newMapOf(String);
     }
 
-    internal function createResource (type :String, name :String, loadParams :*) :Resource
+    internal function createLoader (type :String, loadParams :*) :ResourceLoader
     {
-        var factory :ResourceFactory = _factories.get(type);
-        if (factory == null) {
+        var clazz :Class = _loaderClasses.get(type);
+        if (clazz == null) {
             throw new Error("Unrecognized resource type: '" + type + "'");
         }
-        return factory.create(name, loadParams);
+        var loader :ResourceLoader = new clazz(loadParams);
+        return loader;
     }
 
-    internal function addResources (resourceSet :ResourceSet) :void
+    internal function addSet (resourceSet :ResourceSet, resources :Array) :void
     {
         var rsrc :Resource;
-        var resources :Array = resourceSet.resources;
         // validate all resources before adding them
         for each (rsrc in resources) {
             Preconditions.checkArgument(getResource(rsrc.name) == null,
@@ -84,27 +82,23 @@ public class ResourceManager
         }
 
         for each (rsrc in resources) {
+            rsrc._set = resourceSet;
             _resources.put(rsrc.name, rsrc);
         }
-        _resourceSets.add(resourceSet);
     }
 
-    internal function removeResources (resourceSet :ResourceSet) :void
+    internal function unloadSet (resourceSet :ResourceSet) :void
     {
-        var removed :Boolean = _resourceSets.remove(resourceSet);
-        Preconditions.checkState(removed, "ResourceSet was not loaded");
-
-        for each (var rsrc :Resource in resourceSet.resources) {
-            _resources.remove(rsrc.name);
+        for each (var rsrc :Resource in _resources.values()) {
+            if (rsrc._set == resourceSet) {
+                _resources.remove(rsrc.name);
+                rsrc.unloadInternal();
+            }
         }
     }
 
     protected var _resources :Map = Maps.newMapOf(String); // Map<name, resource>
-    protected var _resourceSets :Set = Sets.newSetOf(ResourceSet);
-
-    protected var _factories :Map = Maps.newMapOf(String);
-
-    protected static var log :Log = Log.getLog(ResourceManager);
+    protected var _loaderClasses :Map = Maps.newMapOf(String);
 }
 
 }
