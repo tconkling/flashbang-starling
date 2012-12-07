@@ -17,7 +17,7 @@ public class SoundResource extends Resource
 
     public static function require (name :String) :SoundResource
     {
-        return Flashbang.rsrcs.requireResource(name, SoundResource);
+        return Flashbang.rsrcs.requireResource(name);
     }
 
     public function SoundResource (name :String, sound :Sound, type :SoundType, priority :int,

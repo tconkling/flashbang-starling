@@ -3,7 +3,6 @@
 
 package flashbang.resource {
 
-import aspire.util.ClassUtil;
 import aspire.util.Map;
 import aspire.util.Maps;
 import aspire.util.Preconditions;
@@ -36,16 +35,10 @@ public class ResourceManager
         return _resources.get(resourceName);
     }
 
-    public function requireResource (resourceName :String, type :Class) :*
+    public function requireResource (resourceName :String) :*
     {
         var rsrc :Resource = getResource(resourceName);
         Preconditions.checkNotNull(rsrc, "missing required resource", "name", resourceName);
-        if (!(rsrc is type)) {
-            // perform the check before calling Preconditions, to avoid an unneccessary call to
-            // ClassUtil.getClass
-            Preconditions.checkState(false, "required resource is the wrong type",
-                "name", resourceName, "expectedType", type, "actualType", ClassUtil.getClass(rsrc));
-        }
         return rsrc;
     }
 

@@ -15,7 +15,7 @@ public class XmlResource extends Resource
 
     public static function require (name :String) :XML
     {
-        return Flashbang.rsrcs.requireResource(name, XmlResource).result;
+        return XmlResource(Flashbang.rsrcs.requireResource(name)).xml;
     }
 
     public function XmlResource (name :String, xml :XML)
