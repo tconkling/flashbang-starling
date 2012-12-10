@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.timconkling</groupId>
+  <artifactId>flashbang-starling</artifactId>
+  <packaging>swc</packaging>
+  <version>1.0-SNAPSHOT</version>
+
+  <properties>
+    <flex.version>4.6.0.23201</flex.version>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>ooo-public</id>
+      <url>http://ooo-maven.googlecode.com/hg/repository</url>
+    </repository>
+    <repository>
+      <id>tconkling</id>
+      <url>https://raw.github.com/tconkling/maven-repo/master</url>
+    </repository>
+  </repositories>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.gamua</groupId>
+      <artifactId>starling-framework</artifactId>
+      <version>272c8a8</version>
+      <type>swc</type>
+    </dependency>
+    <dependency>
+      <groupId>com.timconkling</groupId>
+      <artifactId>aspire</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <type>swc</type>
+    </dependency>
+    <dependency>
+      <groupId>org.osflash</groupId>
+      <artifactId>signals</artifactId>
+      <version>fd03bf873</version>
+      <type>swc</type>
+    </dependency>
+    <dependency>
+      <groupId>com.adobe.flex.framework</groupId>
+      <artifactId>flex-framework</artifactId>
+      <version>${flex.version}</version>
+      <type>pom</type>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+</project>
