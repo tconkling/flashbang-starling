@@ -5,6 +5,12 @@ package flashbang {
 
 public class Config
 {
+    /** The width of the Starling stage */
+    public var stageWidth :int = 320;
+
+    /** The height of the Starling stage */
+    public var stageHeight :int = 480;
+
     /** The number of audio channels the AudioManager will use. Optional. Defaults to 25. */
     public var maxAudioChannels :int = 25;
 

@@ -3,8 +3,12 @@
 
 package flashbang {
 
+import flash.display.Sprite;
+import flash.events.Event;
+
 import org.osflash.signals.Signal;
 
+import starling.core.Starling;
 import starling.display.Sprite;
 import starling.events.Event;
 
@@ -15,46 +19,17 @@ import aspire.util.Preconditions;
 
 import flashbang.audio.AudioManager;
 import flashbang.resource.ResourceManager;
-import flashbang.util.SignalAndEventRegistrations;
+import flashbang.util.ListenerRegistrations;
 
-public class FlashbangApp
+public class FlashbangApp extends flash.display.Sprite
 {
     public const didShutdown :Signal = new Signal();
 
-    public function FlashbangApp (hostSprite :Sprite, config :Config = null)
+    public function FlashbangApp ()
     {
-        if (config == null) {
-            config = new Config();
-        }
-
-        _minFrameRate = config.minFrameRate;
-        _hostSprite = hostSprite;
-
-        _audio = new AudioManager(config.maxAudioChannels);
-        addUpdatable(_audio);
-
-        // Create our default viewport
-        createViewport(Viewport.DEFAULT);
-
+        // Start starling when we're added to the stage
+        addEventListener(flash.events.Event.ADDED_TO_STAGE, addedToStage);
         Flashbang.registerApp(this);
-    }
-
-    /**
-     * Kicks off the app. Game updates will start happening after this function is called.
-     */
-    public function run () :void
-    {
-        Preconditions.checkState(!_running, "already running");
-
-        _running = true;
-
-        _regs.addEventListener(_hostSprite, Event.ENTER_FRAME, update);
-
-        _lastTime = getAppTime();
-
-        _viewports.forEach(function (name :String, viewport :Viewport) :void {
-            viewport.handleModeTransitions();
-        });
     }
 
     /**
@@ -83,10 +58,11 @@ public class FlashbangApp
      *
      * Viewports must be uniquely named.
      */
-    public function createViewport (name :String, parentSprite :Sprite = null) :Viewport
+    public function createViewport (name :String,
+        parentSprite :starling.display.Sprite = null) :Viewport
     {
         if (parentSprite == null) {
-            parentSprite = _hostSprite;
+            parentSprite = _mainSprite;
         }
 
         var viewport :Viewport = new Viewport(this, name, parentSprite);
@@ -144,18 +120,61 @@ public class FlashbangApp
         return (new Date().time * 0.001); // convert millis to seconds
     }
 
-    protected function update (e :Event) :void
+    /** Subclasses can override this to create a custom Config */
+    protected function createConfig () :Config
+    {
+        return new Config();
+    }
+
+    /** Subclasses should override this to push their initial AppMode to the mode stack */
+    protected function run () :void
+    {
+    }
+
+    protected function addedToStage (e :flash.events.Event) :void
+    {
+        _config = createConfig();
+
+        _starling = new Starling(starling.display.Sprite, this.stage);
+        _regs.addOneShotEventListener(_starling, starling.events.Event.ROOT_CREATED,
+            rootCreated);
+
+        // start starling
+        _starling.start();
+    }
+
+    protected function rootCreated (..._) :void
+    {
+        _audio = new AudioManager(_config.maxAudioChannels);
+        addUpdatable(_audio);
+
+        _mainSprite = starling.display.Sprite(_starling.root);
+
+        // Create our default viewport
+        createViewport(Viewport.DEFAULT);
+
+        _regs.addEventListener(_mainSprite, starling.events.Event.ENTER_FRAME, update);
+        _lastTime = getAppTime();
+
+        run();
+
+        _viewports.forEach(function (name :String, viewport :Viewport) :void {
+            viewport.handleModeTransitions();
+        });
+    }
+
+    protected function update (e :starling.events.Event) :void
     {
         // how much time has elapsed since last frame?
         var newTime :Number = getAppTime();
         var dt :Number = newTime - _lastTime;
 
-        if (_minFrameRate > 0) {
+        if (_config.minFrameRate > 0) {
             // Ensure that our time deltas don't get too large
-            dt = Math.min(1 / _minFrameRate, dt);
+            dt = Math.min(1.0 / _config.minFrameRate, dt);
         }
 
-        _fps = 1 / dt;
+        _fps = 1.0 / dt;
 
         // update all our "updatables"
         for each (var updatable :Updatable in _updatables) {
@@ -191,7 +210,7 @@ public class FlashbangApp
         });
         _viewports = null;
 
-        _hostSprite = null;
+        _mainSprite = null;
         _updatables = null;
 
         _regs.cancel();
@@ -205,10 +224,11 @@ public class FlashbangApp
 
     internal var _rsrcs :ResourceManager = new ResourceManager();
     internal var _audio :AudioManager;
+    internal var _starling :Starling;
 
-    protected var _minFrameRate :Number;
-    protected var _hostSprite :Sprite;
-    protected var _regs :SignalAndEventRegistrations = new SignalAndEventRegistrations();
+    protected var _mainSprite :starling.display.Sprite;
+    protected var _config :Config;
+    protected var _regs :ListenerRegistrations = new ListenerRegistrations();
 
     protected var _running :Boolean;
     protected var _shutdownPending :Boolean;
