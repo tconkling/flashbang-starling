@@ -19,7 +19,7 @@ import aspire.util.maps.ValueComputingMap;
 
 import flashbang.components.DisplayComponent;
 import flashbang.input.TouchInput;
-import flashbang.util.SignalAndEventRegistrations;
+import flashbang.util.ListenerRegistrations;
 
 public class AppMode
     implements Updatable
@@ -454,7 +454,7 @@ public class AppMode
 
     protected var _groupedObjects :Map = ValueComputingMap.newArrayMapOf(Object);
 
-    protected var _regs :SignalAndEventRegistrations = new SignalAndEventRegistrations();
+    protected var _regs :ListenerRegistrations = new ListenerRegistrations();
 
     protected var _destroyed :Boolean;
 }

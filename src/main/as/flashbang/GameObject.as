@@ -14,7 +14,7 @@ import aspire.util.StringUtil;
 import flashbang.components.DisplayComponent
 import flashbang.tasks.ParallelTask;
 import flashbang.tasks.TaskContainer;
-import flashbang.util.SignalAndEventRegistrations;
+import flashbang.util.ListenerRegistrations;
 
 public class GameObject
 {
@@ -405,7 +405,7 @@ public class GameObject
     // True if tasks were removed while an update was in progress
     protected var _collapseRemovedTasks :Boolean;
 
-    protected var _regs :SignalAndEventRegistrations = new SignalAndEventRegistrations();
+    protected var _regs :ListenerRegistrations = new ListenerRegistrations();
 
     protected var _dependentObjectRefs :Array = [];
     protected var _pendingDependentObjects :Array = [];
