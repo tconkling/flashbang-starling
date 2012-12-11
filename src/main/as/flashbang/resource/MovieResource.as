@@ -19,6 +19,8 @@ public class MovieResource extends Resource
     public function MovieResource (library :Library, libraryName :String, movieName :String)
     {
         super(libraryName + "/" + movieName);
+        _library = library;
+        _movieName = movieName;
     }
 
     public function create () :Movie
