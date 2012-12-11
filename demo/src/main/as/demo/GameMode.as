@@ -7,9 +7,7 @@ import starling.events.TouchEvent;
 import starling.events.TouchPhase;
 
 import flashbang.AppMode;
-import flashbang.resource.MovieResource;
-
-import flump.display.Movie;
+import flashbang.objects.MovieObject;
 
 public class GameMode extends AppMode
 {
@@ -17,10 +15,10 @@ public class GameMode extends AppMode
     {
         super.setup();
 
-        var movie :Movie = MovieResource.create("flump/walk");
-        movie.x = Demo.WIDTH / 2;
-        movie.y = Demo.HEIGHT - 100;
-        this.modeSprite.addChild(movie);
+        var obj :MovieObject = MovieObject.create("flump/walk");
+        obj.display.x = Demo.WIDTH / 2;
+        obj.display.y = Demo.HEIGHT - 100;
+        addObject(obj, this.modeSprite);
 
         _regs.addEventListener(this.modeSprite, TouchEvent.TOUCH, function (e :TouchEvent) :void {
             if (e.getTouch(modeSprite, TouchPhase.ENDED)) {
