@@ -121,7 +121,7 @@ public class FlashbangApp extends flash.display.Sprite
     }
 
     /** Subclasses can override this to create a custom Config */
-    protected function createConfig () :Config
+    protected function getConfig () :Config
     {
         return new Config();
     }
@@ -133,7 +133,7 @@ public class FlashbangApp extends flash.display.Sprite
 
     protected function addedToStage (e :flash.events.Event) :void
     {
-        _config = createConfig();
+        _config = getConfig();
 
         _starling = new Starling(starling.display.Sprite, this.stage);
         _regs.addOneShotEventListener(_starling, starling.events.Event.ROOT_CREATED,

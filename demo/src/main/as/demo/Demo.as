@@ -3,15 +3,27 @@
 
 package demo {
 
+import flashbang.Config;
 import flashbang.FlashbangApp;
 
 [SWF(width="320", height="480", frameRate="60", backgroundColor="#222222")]
 public class Demo extends FlashbangApp
 {
+    public static const WIDTH :int = 320;
+    public static const HEIGHT :int = 480;
+
     override protected function run () :void
     {
         // Load our assets. LoadingMode will kick off the game when it's finished.
         this.defaultViewport.pushMode(new LoadingMode());
+    }
+
+    override protected function getConfig () :Config
+    {
+        var config :Config = new Config();
+        config.stageWidth = WIDTH;
+        config.stageHeight = HEIGHT;
+        return config;
     }
 }
 
