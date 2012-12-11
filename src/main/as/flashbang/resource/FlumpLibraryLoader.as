@@ -5,8 +5,8 @@ package flashbang.resource {
 
 import flash.utils.ByteArray;
 
-import executor.Executor;
-import executor.Future;
+import flump.executor.Executor;
+import flump.executor.Future;
 
 import flump.display.Library;
 import flump.display.LibraryLoader;
