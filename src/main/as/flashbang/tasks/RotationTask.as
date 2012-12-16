@@ -10,11 +10,11 @@ import flashbang.ObjectTask;
 
 public class RotationTask extends DisplayObjectTask
 {
-    public function RotationTask (rotationDegrees :Number, time :Number = 0,
+    public function RotationTask (radians :Number, time :Number = 0,
         easingFn :Function = null, disp :DisplayObject = null)
     {
         super(time, easingFn, disp);
-        _to = rotationDegrees;
+        _to = radians;
     }
 
     override public function update (dt :Number, obj :GameObject) :Boolean
