@@ -5,12 +5,14 @@ package flashbang {
 
 import flash.display.Sprite;
 import flash.events.Event;
-
-import org.osflash.signals.Signal;
+import flash.geom.Rectangle;
+import flash.system.Capabilities;
+import flash.system.TouchscreenType;
 
 import starling.core.Starling;
 import starling.display.Sprite;
 import starling.events.Event;
+import starling.utils.RectangleUtil;
 
 import aspire.util.Arrays;
 import aspire.util.Map;
@@ -20,6 +22,8 @@ import aspire.util.Preconditions;
 import flashbang.audio.AudioManager;
 import flashbang.resource.ResourceManager;
 import flashbang.util.ListenerRegistrations;
+
+import org.osflash.signals.Signal;
 
 public class FlashbangApp extends flash.display.Sprite
 {
@@ -131,15 +135,34 @@ public class FlashbangApp extends flash.display.Sprite
     {
     }
 
+    /** Initializes Starling and creates the _starling instance */
+    protected function initStarling () :void
+    {
+        var iOS :Boolean = Capabilities.manufacturer.indexOf("iOS") != -1;
+        var isMac :Boolean = Capabilities.manufacturer.indexOf("Macintosh") != -1;
+        var hasTouchscreen :Boolean = (Capabilities.touchscreenType == TouchscreenType.FINGER);
+
+        Starling.multitouchEnabled = hasTouchscreen;
+
+        // per Starling: Macs and iOS don't require this
+        Starling.handleLostContext = !(isMac || iOS);
+
+        var viewPort :Rectangle = RectangleUtil.fit(
+            new Rectangle(0, 0, _config.stageWidth, _config.stageHeight),
+            new Rectangle(0, 0, _config.windowWidth, _config.windowHeight));
+
+        _starling = new Starling(starling.display.Sprite, this.stage, viewPort);
+        _starling.stage.stageWidth = _config.stageWidth;
+        _starling.stage.stageHeight = _config.stageHeight;
+        _starling.enableErrorChecking = Capabilities.isDebugger;
+    }
+
     protected function addedToStage (e :flash.events.Event) :void
     {
         _config = getConfig();
 
-        _starling = new Starling(starling.display.Sprite, this.stage);
-        _regs.addOneShotEventListener(_starling, starling.events.Event.ROOT_CREATED,
-            rootCreated);
-
-        // start starling
+        initStarling();
+        _regs.addOneShotEventListener(_starling, starling.events.Event.ROOT_CREATED, rootCreated);
         _starling.start();
     }
 
@@ -225,9 +248,9 @@ public class FlashbangApp extends flash.display.Sprite
     internal var _rsrcs :ResourceManager = new ResourceManager();
     internal var _audio :AudioManager;
     internal var _starling :Starling;
+    internal var _config :Config;
 
     protected var _mainSprite :starling.display.Sprite;
-    protected var _config :Config;
     protected var _regs :ListenerRegistrations = new ListenerRegistrations();
 
     protected var _running :Boolean;

@@ -25,12 +25,22 @@ public class Flashbang
         return _app._audio;
     }
 
+    public static function get stageWidth () :int
+    {
+        return _app._config.stageWidth;
+    }
+
+    public static function get stageHeight () :int
+    {
+        return _app._config.stageHeight;
+    }
+
     internal static function registerApp (app :FlashbangApp) :void
     {
         Preconditions.checkState(_app == null, "A FlashbangApp has already been registered");
         _app = app;
     }
 
-    protected static var _app :FlashbangApp;
+    internal static var _app :FlashbangApp;
 }
 }

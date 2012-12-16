@@ -5,13 +5,19 @@ package flashbang {
 
 public class Config
 {
-    /** The width of the Starling stage */
-    public var stageWidth :int = 320;
+    /** The width (in points) of the Starling stage */
+    public var stageWidth :int = 480;
 
-    /** The height of the Starling stage */
-    public var stageHeight :int = 480;
+    /** The height (in points) of the Starling stage */
+    public var stageHeight :int = 320;
 
-    /** The number of audio channels the AudioManager will use. Optional. Defaults to 25. */
+    /** The width (in pixels) of the game's window */
+    public var windowWidth :int = 480;
+
+    /** The height (in pixels) of the game's window */
+    public var windowHeight :int = 320;
+
+    /** The number of audio channels the AudioManager will use. Defaults to 25. */
     public var maxAudioChannels :int = 25;
 
     /**
