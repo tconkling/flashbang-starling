@@ -5,6 +5,7 @@ package flashbang.debug {
 
 import starling.display.DisplayObject;
 import starling.text.TextField;
+import starling.utils.HAlign;
 
 import flashbang.components.DisplayComponent;
 
@@ -20,7 +21,8 @@ public class FramerateView extends Framerate
         _slowColor = slowColor;
         _slowFps = slowFps;
 
-        _tf = new TextField(100, 100, "", "Verdana", 8);
+        _tf = new TextField(150, 15, "", "Verdana", 8);
+        _tf.hAlign = HAlign.LEFT;
     }
 
     override protected function update (dt :Number) :void
