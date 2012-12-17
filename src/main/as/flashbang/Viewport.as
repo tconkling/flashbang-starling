@@ -3,11 +3,11 @@
 
 package flashbang {
 
-import org.osflash.signals.Signal;
-
 import starling.display.Sprite;
 
 import aspire.util.Preconditions;
+
+import org.osflash.signals.Signal;
 
 /**
  * Viewport contains the AppMode stack. The topmost AppMode in the stack gets ticked on every
@@ -217,9 +217,7 @@ public class Viewport
             }
 
             mode.destroyInternal();
-
             _modeStack.splice(index, 1);
-            _topSprite.removeChild(mode.modeSprite);
         }
 
         // create a new _pendingModeTransitionQueue right now

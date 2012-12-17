@@ -160,7 +160,11 @@ public class AppMode
             // so that it will no longer be drawn to the screen
             var disp :DisplayObject = DisplayComponent(obj).display;
             if (null != disp) {
-                disp.removeFromParent();
+                if (disp.parent != null) {
+                    disp.removeFromParent(/*dispose=*/true);
+                } else {
+                    disp.dispose();
+                }
             }
         }
 
@@ -415,6 +419,9 @@ public class AppMode
 
         _touchInput.removeAllListeners();
         _touchInput = null;
+
+        _modeSprite.removeFromParent(/*dispose=*/true);
+        _modeSprite = null;
     }
 
     internal function enterInternal () :void
