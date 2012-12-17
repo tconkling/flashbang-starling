@@ -23,6 +23,7 @@ public class FramerateView extends Framerate
 
         _tf = new TextField(150, 15, "", "Verdana", 8);
         _tf.hAlign = HAlign.LEFT;
+        _tf.touchable = false;
     }
 
     override protected function update (dt :Number) :void
