@@ -68,6 +68,8 @@
     <classEntry path="flashbang.util.LoadableBatch"/>
     <classEntry path="flashbang.util.NumRange"/>
     <classEntry path="flashbang.util.PowerEaser"/>
+    <classEntry path="flashbang.debug.FramerateView"/>
+    <classEntry path="flashbang.debug.Framerate"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
