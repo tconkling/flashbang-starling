@@ -49,11 +49,7 @@ public class FlashbangApp extends flash.display.Sprite
      */
     public function shutdown () :void
     {
-        if (_running) {
-            _shutdownPending = true;
-        } else {
-            shutdownNow();
-        }
+        _shutdownPending = true;
     }
 
     /**
@@ -218,7 +214,6 @@ public class FlashbangApp extends flash.display.Sprite
 
         // should the MainLoop be stopped?
         if (_shutdownPending) {
-            _running = false;
             _regs.cancel();
             shutdownNow();
         }
@@ -240,7 +235,13 @@ public class FlashbangApp extends flash.display.Sprite
         _regs = null;
 
         _audio.shutdown();
+        _audio = null;
+
         _rsrcs.shutdown();
+        _rsrcs = null;
+
+        _starling.dispose();
+        _starling = null;
 
         didShutdown.dispatch();
     }
@@ -253,7 +254,6 @@ public class FlashbangApp extends flash.display.Sprite
     protected var _mainSprite :starling.display.Sprite;
     protected var _regs :ListenerRegistrations = new ListenerRegistrations();
 
-    protected var _running :Boolean;
     protected var _shutdownPending :Boolean;
     protected var _lastTime :Number;
     protected var _updatables :Array = [];
