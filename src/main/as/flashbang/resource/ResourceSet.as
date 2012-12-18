@@ -14,9 +14,9 @@ public class ResourceSet extends LoadableBatch
         super(maxSimultaneous);
     }
 
-    public function add (type :String, loadParams :Object) :void
+    public function add (loadParams :Object) :void
     {
-        addLoadable(Flashbang.rsrcs.createLoader(type, loadParams));
+        addLoadable(Flashbang.rsrcs.createLoader(loadParams));
     }
 
     public function unload () :void
