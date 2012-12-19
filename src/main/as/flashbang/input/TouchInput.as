@@ -19,6 +19,10 @@ public class TouchInput
         _root = root;
     }
 
+    /**
+     * Adds a listener to the TouchInput. Listeners are placed on a stack,
+     * so the most recently-added listener gets the first chance at each touch event.
+     */
     public function registerListener (l :TouchListener) :Registration
     {
         _listeners.unshift(l);
@@ -31,17 +35,25 @@ public class TouchInput
         });
     }
 
+    /** Removes all listeners from the TouchInput */
     public function removeAllListeners () :void
     {
         _listeners = [];
         uninstallTouchListeners();
     }
 
-    public function get enabled () :Boolean {
+    /** @return true if the TouchInput is enabled */
+    public function get enabled () :Boolean
+    {
         return _enabled;
     }
 
-    public function set enabled (enabled :Boolean) :void {
+    /**
+     * Enable or disable the TouchInput. When disabled, registered listeners will not receive
+     * any touch events.
+     */
+    public function set enabled (enabled :Boolean) :void
+    {
         _enabled = enabled;
         if (_enabled) {
             installTouchListeners();
