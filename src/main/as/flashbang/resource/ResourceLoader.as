@@ -26,13 +26,13 @@ public class ResourceLoader extends Loadable
         return (hasLoadParam(name) ? _params[name] : defaultValue);
     }
 
-    protected function requireLoadParam (name :String, type :Class) :*
+    protected function requireLoadParam (name :String, type :Class = null) :*
     {
         if (!hasLoadParam(name)) {
             throw new Error("Missing required loadParam [name=" + name + "]");
         }
         var param :* = getLoadParam(name);
-        if (!(param is type)) {
+        if (type != null && !(param is type)) {
             throw new Error("Bad load param [name=" + name + " type=" + type + "]");
         }
         return param;

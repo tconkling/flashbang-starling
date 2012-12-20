@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="1">
+<flexLibProperties includeAllClasses="false" useMultiPlatformConfig="false" version="1">
   <includeClasses>
     <classEntry path="flashbang.AppMode"/>
     <classEntry path="flashbang.Config"/>
@@ -70,6 +70,9 @@
     <classEntry path="flashbang.util.PowerEaser"/>
     <classEntry path="flashbang.debug.FramerateView"/>
     <classEntry path="flashbang.debug.Framerate"/>
+    <classEntry path="flashbang.resource.FontResource"/>
+    <classEntry path="flashbang.resource.FontLoader"/>
+    <classEntry path="flashbang.util.LoadState"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

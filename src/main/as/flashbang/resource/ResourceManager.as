@@ -24,6 +24,7 @@ public class ResourceManager
         registerResourceLoader("xml", XmlLoader);
         registerResourceLoader("sound", SoundLoader);
         registerResourceLoader("flump", FlumpLibraryLoader);
+        registerResourceLoader("font", FontLoader);
     }
 
     public function registerResourceLoader (resourceType :String, loaderClass :Class) :void
