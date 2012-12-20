@@ -39,8 +39,8 @@ public class LoadableBatch extends Loadable
             return;
         }
 
-        while (_pending.length > 0 &&
-               _state == STATE_LOADING &&
+        while (_state == STATE_LOADING &&
+               _pending.length > 0 &&
                (_maxSimultaneous <= 0 || _loading.length < _maxSimultaneous)) {
             loadOneObject(_pending.shift());
         }
