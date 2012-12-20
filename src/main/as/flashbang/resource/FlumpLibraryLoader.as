@@ -5,28 +5,25 @@ package flashbang.resource {
 
 import flash.utils.ByteArray;
 
-import flump.executor.Executor;
-import flump.executor.Future;
+import aspire.util.ClassUtil;
 
 import flump.display.Library;
 import flump.display.LibraryLoader;
+import flump.executor.Executor;
+import flump.executor.Future;
 
 public class FlumpLibraryLoader extends ResourceLoader
 {
-    /** The name of the Library */
+    /** The name of the Library (required) */
     public static const NAME :String = "name";
 
-    /** A String containing the URL to load the Library from.
-     * (URL, BYTES, or EMBEDDED_CLASS must be specified). */
-    public static const URL :String = "url";
-
-    /** A ByteArray containing the Library.
-     * (URL, BYTES, or EMBEDDED_CLASS or TEXT must be specified). */
-    public static const BYTES :String = "bytes";
-
-    /** The [Embed]'d class to load the Library from.
-     * (URL, BYTES, or EMBEDDED_CLASS or TEXT must be specified). */
-    public static const EMBEDDED_CLASS :String = "embeddedClass";
+    /**
+     * a String containing a URL to load the Library from OR
+     * a ByteArray containing the Library OR
+     * an [Embed]ed class containing the Library data
+     * (required)
+     */
+    public static const DATA :String = "data";
 
     public function FlumpLibraryLoader (params :Object)
     {
@@ -36,6 +33,11 @@ public class FlumpLibraryLoader extends ResourceLoader
     override protected function doLoad () :void
     {
         _name = requireLoadParam(NAME, String);
+        var data :Object = requireLoadParam(DATA, Object);
+        if (data is Class) {
+            var clazz :Class = Class(data);
+            data = ByteArray(new clazz());
+        }
 
         _exec = new Executor();
         _exec.succeeded.add(function (f :Future) :void {
@@ -45,18 +47,15 @@ public class FlumpLibraryLoader extends ResourceLoader
             fail(f.result);
         });
 
-        if (hasLoadParam(EMBEDDED_CLASS)) {
-            var clazz :Class = requireLoadParam(EMBEDDED_CLASS, Class);
-            LibraryLoader.loadBytes(ByteArray(new clazz()), _exec);
+        if (data is ByteArray) {
+            LibraryLoader.loadBytes(ByteArray(data), _exec);
 
-        } else if (hasLoadParam(BYTES)) {
-            LibraryLoader.loadBytes(requireLoadParam(BYTES, ByteArray), _exec);
-
-        } else if (hasLoadParam(URL)) {
-            LibraryLoader.loadURL(requireLoadParam(URL, String), _exec);
+        } else if (data is String) {
+            LibraryLoader.loadURL(data as String, _exec);
 
         } else {
-            throw new Error("'url', 'bytes', or 'embeddedClass' must be specified");
+            throw new Error("Unrecognized Flump Library data source: '" +
+                ClassUtil.tinyClassName(data) + "'");
         }
     }
 

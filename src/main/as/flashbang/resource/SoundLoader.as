@@ -9,6 +9,7 @@ import flash.events.IOErrorEvent;
 import flash.media.Sound;
 import flash.net.URLRequest;
 
+import aspire.util.ClassUtil;
 import aspire.util.F;
 
 import flashbang.audio.SoundType;
@@ -17,34 +18,31 @@ public class SoundLoader extends ResourceLoader
 {
     /** Load params */
 
-    /** The name of the Sound */
+    /** The name of the Sound (required) */
     public static const NAME :String = "name";
 
-    /** A String containing the URL to load the Sound from.
-     * (Mutually exclusive with EMBEDDED_CLASS).*/
-    public static const URL :String = "url";
+    /** a String containing a URL to load the Sound from OR an [Embed]ed Sound class (required) */
+    public static const DATA :String = "data";
 
-    /** The [Embed]'d class to load the Sound from. (Mutually exclusive with URL.) */
-    public static const EMBEDDED_CLASS :String = "embeddedClass";
-
-    /** The sound type. String. Valid values: "sfx", "music". Defaults to "sfx". */
+    /** The sound type. String. Valid values: "sfx", "music". (optional, @default "sfx") */
     public static const TYPE :String = "type";
 
     /**
      * The sound's priority (if the AudioManager is out of sound channels, lower-priority sounds
-     * will have their channels taken by higher-priority ones). int. Defaults to 0.
+     * will have their channels taken by higher-priority ones). int. (optional, @default 0)
      */
     public static const PRIORITY :String = "priority";
 
-    /** The sound's base volume. Number, between 0 and 1. Defaults to 1. */
+    /** The sound's base volume. Number, between 0 and 1. (optional, @default 1) */
     public static const VOLUME :String = "volume";
 
-    /** The sound's base pan. Number, between -1 and 1. Defaults to 0. */
+    /** The sound's base pan. Number, between -1 and 1. (optional, @default 0) */
     public static const PAN :String = "pan";
 
     /**
      * A Boolean specifying whether this sound should be streamed. Streaming sounds can begin
-     * playing immediately; they don't need to be completely downloaded first. Defaults to false.
+     * playing immediately; they don't need to be completely downloaded first.
+     * (optional, @default false)
      */
     public static const STREAM :String = "stream";
 
@@ -63,8 +61,9 @@ public class SoundLoader extends ResourceLoader
         var volume :Number = getLoadParam(VOLUME, 1);
         var pan :Number = getLoadParam(PAN, 0);
 
-        // load the sound
-        if (hasLoadParam(URL)) {
+        var data :Object = requireLoadParam(DATA, Object);
+        if (data is String) {
+
             _sound = new Sound();
 
             // Immediately set up the error listener to protect against blowing up
@@ -73,7 +72,7 @@ public class SoundLoader extends ResourceLoader
             });
 
             // And THEN start it loading
-            _sound.load(new URLRequest(getLoadParam(URL)));
+            _sound.load(new URLRequest(data as String));
 
             var result :SoundResource = new SoundResource(name, _sound, type, priority, volume, pan);
 
@@ -86,13 +85,14 @@ public class SoundLoader extends ResourceLoader
                 _sound.addEventListener(Event.COMPLETE, F.callback(succeed, result));
             }
 
-        } else if (hasLoadParam(EMBEDDED_CLASS)) {
-            var embeddedClass :Class = getLoadParam(EMBEDDED_CLASS);
-            _sound = Sound(new embeddedClass());
+        } else if (data is Class) {
+            var clazz :Class = Class(data);
+            _sound = Sound(new clazz());
             succeed(new SoundResource(name, _sound, type, priority, volume, pan));
 
         } else {
-            throw new Error("either 'url' or 'embeddedClass' must be specified in loadParams");
+            throw new Error("Unrecognized Sound data source: '" +
+                ClassUtil.tinyClassName(data) + "'");
         }
     }
 

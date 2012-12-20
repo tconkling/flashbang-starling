@@ -2,6 +2,7 @@
 // flashbang
 
 package flashbang.resource {
+
 import flash.errors.IOError;
 import flash.events.Event;
 import flash.events.IOErrorEvent;
@@ -11,30 +12,23 @@ import flash.net.URLLoaderDataFormat;
 import flash.net.URLRequest;
 import flash.utils.ByteArray;
 
+import aspire.util.ClassUtil;
 import aspire.util.XmlUtil;
 
 public class XmlLoader extends ResourceLoader
 {
     /** Load params */
 
-    /** The name of the Sound */
+    /** The name of the XML resource (required) */
     public static const NAME :String = "name";
 
-    /** A String containing the URL to load the XML from.
-     * (URL, BYTES, EMBEDDED_CLASS or TEXT must be specified). */
-    public static const URL :String = "url";
-
-    /** A ByteArray containing the XML.
-     * (URL, BYTES, EMBEDDED_CLASS or TEXT must be specified). */
-    public static const BYTES :String = "bytes";
-
-    /** The [Embed]'d class to load the XML from.
-     * (URL, BYTES, EMBEDDED_CLASS or TEXT must be specified). */
-    public static const EMBEDDED_CLASS :String = "embeddedClass";
-
-    /** A String containing the XML.
-     * (URL, BYTES, EMBEDDED_CLASS or TEXT must be specified). */
-    public static const TEXT :String = "text";
+    /**
+     * a String containing a URL to load the XML from OR
+     * a ByteArray containing the XML OR
+     * an [Embed]ed class containing the XML
+     * (required)
+     */
+    public static const DATA :String = "data";
 
     public function XmlLoader (params :Object)
     {
@@ -43,47 +37,43 @@ public class XmlLoader extends ResourceLoader
 
     override protected function doLoad () :void
     {
-        if (hasLoadParam(URL)) {
-            loadFromURL(getLoadParam(URL));
+        var data :Object = requireLoadParam(DATA, Object);
+        if (data is Class) {
+            var clazz :Class = Class(data);
+            data = ByteArray(new clazz());
+        }
 
-        } else if (hasLoadParam(EMBEDDED_CLASS)) {
-            var clazz :Class = getLoadParam(EMBEDDED_CLASS);
-            var ba :ByteArray = ByteArray(new clazz());
+        if (data is String) {
+            loadFromURL(data as String);
+        } else if (data is ByteArray) {
+            var ba :ByteArray = ByteArray(data);
             createXml(ba.readUTFBytes(ba.length));
-
-        } else if (hasLoadParam(BYTES)) {
-            var bytes :ByteArray = getLoadParam(BYTES);
-            createXml(bytes.readUTFBytes(bytes.length));
-
-        } else if (hasLoadParam(TEXT)) {
-            createXml(getLoadParam(TEXT));
-
         } else {
-            throw new Error("'url', 'embeddedClass', 'bytes', or 'text' must be specified in " +
-                "loadParams");
+            throw new Error("Unrecognized XML data source: '" +
+                ClassUtil.tinyClassName(data) + "'");
         }
     }
 
     protected function loadFromURL (urlString :String) :void
     {
-        var loader :URLLoader = new URLLoader();
-        loader.dataFormat = URLLoaderDataFormat.TEXT;
-        loader.addEventListener(Event.COMPLETE, function (..._) :void {
-            var data :* = loader.data;
-            loader.close();
+        _loader = new URLLoader();
+        _loader.dataFormat = URLLoaderDataFormat.TEXT;
+        _loader.addEventListener(Event.COMPLETE, function (..._) :void {
+            var data :* = _loader.data;
+            _loader.close();
             createXml(data);
         });
 
-        loader.addEventListener(IOErrorEvent.IO_ERROR, function (e :IOErrorEvent) :void {
+        _loader.addEventListener(IOErrorEvent.IO_ERROR, function (e :IOErrorEvent) :void {
             fail(new IOError(e.text, e.errorID));
         });
 
-        loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR,
+        _loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR,
             function (e :SecurityErrorEvent) :void {
                 fail(new SecurityError(e.text, e.errorID));
             });
 
-        loader.load(new URLRequest(urlString));
+        _loader.load(new URLRequest(urlString));
     }
 
     protected function createXml (data :*) :void
@@ -97,5 +87,19 @@ public class XmlLoader extends ResourceLoader
 
         succeed(new XmlResource(name, xml));
     }
+
+    override protected function onLoadCanceled () :void
+    {
+        if (_loader != null) {
+            try {
+                _loader.close();
+            } catch (e :Error) {
+                // swallow
+            }
+            _loader = null;
+        }
+    }
+
+    protected var _loader :URLLoader;
 }
 }
