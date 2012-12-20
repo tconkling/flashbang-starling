@@ -51,9 +51,9 @@ public class FontLoader extends ResourceLoader
 
         _batch.load(
             function () :void {
-                var texture :LoadedTexture = textureLoader.result;
-                var xml :XML = xmlLoader.result;
                 try {
+                    var texture :LoadedTexture = textureLoader.result;
+                    var xml :XML = XmlResource(xmlLoader.result).xml;
                     var font :BitmapFont = new BitmapFont(texture.texture, xml);
                     succeed(new FontResource(name, font));
                 } catch (e :Error) {
