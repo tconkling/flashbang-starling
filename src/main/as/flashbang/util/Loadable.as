@@ -6,81 +6,127 @@ package flashbang.util {
 import aspire.util.Log;
 import aspire.util.Preconditions;
 
+import org.osflash.signals.ISignal;
+import org.osflash.signals.Signal;
+
 public class Loadable
 {
-    public function get isLoaded () :Boolean
+    public function Loadable ()
     {
-        return _state == STATE_SUCCEEDED;
+        _state = LoadState.INIT;
+    }
+
+    /** @return a Signal() that fires if and when the load succeeds */
+    public final function get loaded () :ISignal
+    {
+        if (_loaded == null) {
+            _loaded = new Signal();
+        }
+        return _loaded;
+    }
+
+    /** @return a Signal(Error) that fires if and when the load fails */
+    public final function get failed () :ISignal
+    {
+        if (_failed == null) {
+            _failed = new Signal();
+        }
+        return _failed;
+    }
+
+    /** @return the Loadable's LoadState */
+    public final function get state () :LoadState
+    {
+        return _state;
     }
 
     /** Return the result of the load (if successful), or the load error (if the load failed) */
-    public function get result () :*
+    public final function get result () :*
     {
         return _result;
     }
 
-    public function load (onLoaded :Function = null, onLoadErr :Function = null) :void
+    /**
+     * Loads the Loadable.
+     *
+     * @param onLoaded (optional) a function to call if and when the load succeeds.
+     * It should take 0 or 1 arguments. If it takes 1 argument, it will be passed
+     * the result of the load.
+     *
+     * @param onLoadErr an optional Function to call if and when the load fails due to error.
+     * It should take 0 or 1 arguments. If it takes 1 argument, it will be passed the
+     * load Error object.
+     */
+    public final function load (onLoaded :Function = null, onLoadErr :Function = null) :void
     {
-        Preconditions.checkState(_state != STATE_CANCELED, "canceled");
+        Preconditions.checkState(_state == LoadState.INIT, "Can't load", "state", _state);
 
-        if (_state == STATE_SUCCEEDED && onLoaded != null) {
-            onLoaded();
+        _loadedCallback = onLoaded;
+        _errorCallback = onLoadErr;
+        _state = LoadState.LOADING;
 
-        } else if (_state == STATE_FAILED && onLoadErr != null) {
-            onLoadErr(_result);
-
-        } else if (_state == STATE_NOT_LOADED || _state == STATE_LOADING) {
-            if (onLoaded != null) {
-                _onLoadedCallbacks.push(onLoaded);
-            }
-            if (onLoadErr != null) {
-                _onLoadErrCallbacks.push(onLoadErr);
-            }
-
-            if (_state == STATE_NOT_LOADED) {
-                _state = STATE_LOADING;
-                try {
-                    doLoad();
-                } catch (e :Error) {
-                    fail(e);
-                }
-            }
+        try {
+            doLoad();
+        } catch (e :Error) {
+            fail(e);
         }
     }
 
-    public function cancel () :void
+    /** Cancels an in-progress load */
+    public final function cancel () :void
     {
-        if (_state == STATE_LOADING) {
-            onLoadCanceled();
-        }
-        _state = STATE_CANCELED;
+        Preconditions.checkState(_state == LoadState.LOADING, "not loading", "state", _state);
+        _state = LoadState.CANCELED;
+        onLoadCanceled();
     }
 
+    /** Subclasses must call this when they've successfully loaded */
     protected function succeed (result :* = undefined) :void
     {
-        Preconditions.checkState(_state == STATE_LOADING, "not loading");
+        if (_state == LoadState.CANCELED) {
+            return;
+        }
+
+        Preconditions.checkState(_state == LoadState.LOADING, "not loading", "state", _state);
 
         _result = result;
-        var callbacks :Array = _onLoadedCallbacks;
+        _state = LoadState.SUCCEEDED;
 
-        _onLoadedCallbacks = [];
-        _onLoadErrCallbacks = [];
-        _state = STATE_SUCCEEDED;
+        if (_loadedCallback != null) {
+            if (_loadedCallback.length == 0) {
+                _loadedCallback();
+            } else {
+                _loadedCallback(_result);
+            }
+        }
 
-        for each (var callback :Function in callbacks) {
-            callback();
+        if (_loaded != null) {
+            _loaded.dispatch();
         }
     }
 
+    /** Subclasses must call this if there's a load error */
     protected function fail (e :Error) :void
     {
-        Preconditions.checkState(_state == STATE_LOADING, "not loading");
+        if (_state == LoadState.CANCELED) {
+            return;
+        }
+
+        Preconditions.checkState(_state == LoadState.LOADING, "not loading", "state", _state);
 
         _result = e;
-        _state = STATE_FAILED;
-        var callbacks :Array = _onLoadErrCallbacks;
-        for each (var callback :Function in callbacks) {
-            callback(e);
+        _state = LoadState.FAILED;
+
+        if (_errorCallback != null) {
+            if (_errorCallback.length == 0) {
+                _errorCallback();
+            } else {
+                _errorCallback(e);
+            }
+        }
+
+        if (_failed != null) {
+            _failed.dispatch(e);
         }
     }
 
@@ -101,19 +147,17 @@ public class Loadable
         throw new Error("abstract");
     }
 
-    protected var _onLoadedCallbacks :Array = [];
-    protected var _onLoadErrCallbacks :Array = [];
+    // lazily instantiated
+    private var _loaded :Signal;
+    private var _failed :Signal;
 
-    protected var _state :int = 0;
-    protected var _result :* = undefined;
+    private var _loadedCallback :Function;
+    private var _errorCallback :Function;
+
+    private var _state :LoadState = LoadState.INIT;
+    private var _result :* = undefined;
 
     protected static const log :Log = Log.getLog(Loadable);
-
-    protected static const STATE_NOT_LOADED :int = 0;
-    protected static const STATE_LOADING :int = 1;
-    protected static const STATE_SUCCEEDED :int = 2;
-    protected static const STATE_FAILED :int = 3;
-    protected static const STATE_CANCELED :int = 4;
 }
 
 }

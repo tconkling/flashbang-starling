@@ -37,7 +37,7 @@ public class ResourceSet extends LoadableBatch
                 } else if (thisResult is Array) {
                     resources = resources.concat(thisResult);
                 } else {
-                    throw new Error("ResourceLoader.result must be a Resource or Array of Resources");
+                    fail(Error("ResourceLoader.result must be a Resource or Array of Resources"));
                 }
             }
         }

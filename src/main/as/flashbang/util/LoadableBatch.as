@@ -19,9 +19,13 @@ public class LoadableBatch extends Loadable
         _maxSimultaneous = maxSimultaneous;
     }
 
+    /** Adds a Loadable to the batch */
     public function addLoadable (loadable :Loadable) :void
     {
-        Preconditions.checkState(_state == STATE_NOT_LOADED, "Batch is loading or loaded");
+        Preconditions.checkState(this.state == LoadState.INIT,
+            "Batch is loading or loaded", "state", this.state);
+        Preconditions.checkArgument(loadable.state == LoadState.INIT,
+            "Loadable has already been loaded", "state", loadable.state);
         _pending.push(loadable);
     }
 
@@ -39,7 +43,7 @@ public class LoadableBatch extends Loadable
             return;
         }
 
-        while (_state == STATE_LOADING &&
+        while (this.state == LoadState.LOADING &&
                _pending.length > 0 &&
                (_maxSimultaneous <= 0 || _loading.length < _maxSimultaneous)) {
             loadOneObject(_pending.shift());
@@ -48,11 +52,12 @@ public class LoadableBatch extends Loadable
 
     protected function loadOneObject (loadable :Loadable) :void
     {
+        var self :LoadableBatch = this;
         _loading.push(loadable);
         loadable.load(
             function () :void {
                 // we may have gotten canceled
-                if (_state == STATE_LOADING) {
+                if (self.state == LoadState.LOADING) {
                     Arrays.removeFirst(_loading, loadable);
                     _loaded.push(loadable);
                     loadMore();
@@ -60,7 +65,8 @@ public class LoadableBatch extends Loadable
             },
             function (e :Error) :void {
                 // we may have gotten canceled
-                if (_state == STATE_LOADING) {
+                if (self.state == LoadState.LOADING) {
+                    Arrays.removeFirst(_loading, loadable);
                     onLoadCanceled();
                     fail(e);
                 }
