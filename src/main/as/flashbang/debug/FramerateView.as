@@ -31,7 +31,7 @@ public class FramerateView extends Framerate
     {
         super(1000);
 
-        _tf = new TextField(150, 15, "", "Verdana", 8);
+        _tf = new TextField(150, 15, "", "_sans", 8);
         _tf.hAlign = HAlign.LEFT;
         _tf.touchable = false;
     }
