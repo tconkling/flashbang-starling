@@ -16,7 +16,7 @@ public class FramerateView extends Framerate
      * If true, the average, minimum, and maximum framerate over the last second are also
      * displayed in addition to the current framerate.
      */
-    public var extendedData :Boolean = true;
+    public var extendedData :Boolean = false;
 
     /** The text color to use when the framerate is above the "slow" threshold */
     public var normalColor :uint = 0x00ff00;
