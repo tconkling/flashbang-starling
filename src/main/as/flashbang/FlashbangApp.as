@@ -120,8 +120,18 @@ public class FlashbangApp extends flash.display.Sprite
         return (new Date().time * 0.001); // convert millis to seconds
     }
 
+    protected final function get starling () :Starling
+    {
+        return _starling;
+    }
+
+    protected final function get config () :Config
+    {
+        return _config;
+    }
+
     /** Subclasses can override this to create a custom Config */
-    protected function getConfig () :Config
+    protected function createConfig () :Config
     {
         return new Config();
     }
@@ -131,8 +141,22 @@ public class FlashbangApp extends flash.display.Sprite
     {
     }
 
-    /** Initializes Starling and creates the _starling instance */
-    protected function initStarling () :void
+    /** Returns a Starling instance */
+    protected function initStarling () :Starling
+    {
+        var viewPort :Rectangle = RectangleUtil.fit(
+            new Rectangle(0, 0, _config.stageWidth, _config.stageHeight),
+            new Rectangle(0, 0, _config.windowWidth, _config.windowHeight));
+
+        var starling :Starling = new Starling(starling.display.Sprite, this.stage, viewPort);
+        starling.stage.stageWidth = _config.stageWidth;
+        starling.stage.stageHeight = _config.stageHeight;
+        starling.enableErrorChecking = Capabilities.isDebugger;
+
+        return starling;
+    }
+
+    protected function addedToStage (e :flash.events.Event) :void
     {
         var iOS :Boolean = Capabilities.manufacturer.indexOf("iOS") != -1;
         var isMac :Boolean = Capabilities.manufacturer.indexOf("Macintosh") != -1;
@@ -143,21 +167,9 @@ public class FlashbangApp extends flash.display.Sprite
         // per Starling: Macs and iOS don't require this
         Starling.handleLostContext = !(isMac || iOS);
 
-        var viewPort :Rectangle = RectangleUtil.fit(
-            new Rectangle(0, 0, _config.stageWidth, _config.stageHeight),
-            new Rectangle(0, 0, _config.windowWidth, _config.windowHeight));
+        _config = createConfig();
 
-        _starling = new Starling(starling.display.Sprite, this.stage, viewPort);
-        _starling.stage.stageWidth = _config.stageWidth;
-        _starling.stage.stageHeight = _config.stageHeight;
-        _starling.enableErrorChecking = Capabilities.isDebugger;
-    }
-
-    protected function addedToStage (e :flash.events.Event) :void
-    {
-        _config = getConfig();
-
-        initStarling();
+        _starling = initStarling();
         _regs.addOneShotEventListener(_starling, starling.events.Event.ROOT_CREATED, rootCreated);
         _starling.start();
     }
