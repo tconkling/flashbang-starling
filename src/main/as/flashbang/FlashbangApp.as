@@ -12,7 +12,12 @@ import flash.system.TouchscreenType;
 import starling.core.Starling;
 import starling.display.Sprite;
 import starling.events.Event;
+import starling.events.Touch;
 import starling.utils.RectangleUtil;
+
+import aspire.util.F;
+import aspire.util.Registration;
+import aspire.util.Registrations;
 
 import flashbang.audio.AudioManager;
 import flashbang.resource.ResourceManager;
@@ -92,9 +97,10 @@ public class FlashbangApp extends flash.display.Sprite
         return getViewport(Viewport.DEFAULT);
     }
 
-    public function addUpdatable (obj :Updatable) :void
+    public function addUpdatable (obj :Updatable) :Registration
     {
         _updatables.push(obj);
+        return Registrations.createWithFunction(F.callback(removeUpdatable, obj));
     }
 
     public function removeUpdatable (obj :Updatable) :void
@@ -150,7 +156,18 @@ public class FlashbangApp extends flash.display.Sprite
     {
     }
 
-    /** Returns a Starling instance */
+    /** Called when the app receives touches. By default it forwards them to each viewport */
+    protected function handleTouches (touches :Vector.<Touch>) :void
+    {
+        for (var ii :int = _viewports.length - 1; ii >= 0; --ii) {
+            _viewports[ii].handleTouchesInternal(touches);
+        }
+    }
+
+    /**
+     * Creates and returns a Starling instance.
+     * Subclasses can override to do custom initialization.
+     */
     protected function initStarling () :Starling
     {
         var viewPort :Rectangle = RectangleUtil.fit(
@@ -179,6 +196,8 @@ public class FlashbangApp extends flash.display.Sprite
         _config = createConfig();
 
         _starling = initStarling();
+        // install our custom touch handler
+        _starling.touchHandler = new AppTouchHandler(handleTouches);
         _regs.addOneShotEventListener(_starling, starling.events.Event.ROOT_CREATED, rootCreated);
         _starling.start();
     }
@@ -216,12 +235,12 @@ public class FlashbangApp extends flash.display.Sprite
 
         _fps = 1.0 / dt;
 
-        // update all our "updatables"
+        // update all our updatables
         for each (var updatable :Updatable in _updatables) {
             updatable.update(dt);
         }
 
-        // update our viewports
+        // update viewports
         for (var ii :int = _viewports.length - 1; ii >= 0; --ii) {
             var viewport :Viewport = _viewports[ii];
             if (!viewport.isDestroyed) {
@@ -282,4 +301,17 @@ public class FlashbangApp extends flash.display.Sprite
     protected var _fps :Number = 0;
 }
 
+}
+
+import starling.events.Touch;
+import starling.events.TouchHandler;
+
+class AppTouchHandler
+    implements TouchHandler
+{
+    public function AppTouchHandler (f :Function) { _f = f; }
+    public function handleTouches (touches :Vector.<Touch>) :void { _f(touches); }
+    public function dispose () :void {}
+
+    protected var _f :Function;
 }

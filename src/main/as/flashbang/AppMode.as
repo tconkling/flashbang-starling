@@ -8,6 +8,7 @@ import flash.events.KeyboardEvent;
 import starling.display.DisplayObject;
 import starling.display.DisplayObjectContainer;
 import starling.display.Sprite;
+import starling.events.Touch;
 
 import aspire.util.Arrays;
 import aspire.util.Map;
@@ -49,7 +50,8 @@ public class AppMode
         return objs;
     }
 
-    public function AppMode () {
+    public function AppMode ()
+    {
         _modeSprite.touchable = false;
     }
 
@@ -381,10 +383,21 @@ public class AppMode
     {
     }
 
+    /** Called when the mode is active and receives touch input. */
+    protected function handleTouches (touches :Vector.<Touch>) :void
+    {
+        _touchInput.handleTouches(touches);
+    }
+
+    internal function handleTouchesInternal (touches :Vector.<Touch>) :void
+    {
+        handleTouches(touches);
+    }
+
     internal function setupInternal (viewport :Viewport) :void
     {
         _viewport = viewport;
-        _touchInput = new TouchInput(_modeSprite.stage);
+        _touchInput = new TouchInput(_modeSprite);
         setup();
     }
 
@@ -417,7 +430,7 @@ public class AppMode
 
         _viewport = null;
 
-        _touchInput.removeAllListeners();
+        _touchInput.shutdown();
         _touchInput = null;
 
         _modeSprite.removeFromParent(/*dispose=*/true);

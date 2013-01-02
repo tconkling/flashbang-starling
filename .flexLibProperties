@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<flexLibProperties includeAllClasses="false" useMultiPlatformConfig="false" version="1">
+<flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="1">
   <includeClasses>
     <classEntry path="flashbang.AppMode"/>
     <classEntry path="flashbang.Config"/>
@@ -19,16 +19,21 @@
     <classEntry path="flashbang.audio.SoundType"/>
     <classEntry path="flashbang.components.DisplayComponent"/>
     <classEntry path="flashbang.components.LocationComponent"/>
+    <classEntry path="flashbang.debug.Framerate"/>
+    <classEntry path="flashbang.debug.FramerateView"/>
     <classEntry path="flashbang.debug.Profiler"/>
+    <classEntry path="flashbang.input.PointerAdapter"/>
+    <classEntry path="flashbang.input.PointerListener"/>
     <classEntry path="flashbang.input.TouchInput"/>
     <classEntry path="flashbang.input.TouchListener"/>
-    <classEntry path="flashbang.input.TouchReactor"/>
     <classEntry path="flashbang.objects.Dragger"/>
     <classEntry path="flashbang.objects.MovieObject"/>
     <classEntry path="flashbang.objects.SceneObject"/>
     <classEntry path="flashbang.objects.SimpleTimer"/>
     <classEntry path="flashbang.objects.SpriteObject"/>
     <classEntry path="flashbang.resource.FlumpLibraryLoader"/>
+    <classEntry path="flashbang.resource.FontLoader"/>
+    <classEntry path="flashbang.resource.FontResource"/>
     <classEntry path="flashbang.resource.ImageResource"/>
     <classEntry path="flashbang.resource.MovieResource"/>
     <classEntry path="flashbang.resource.Resource"/>
@@ -64,15 +69,11 @@
     <classEntry path="flashbang.util.Collision"/>
     <classEntry path="flashbang.util.IntRange"/>
     <classEntry path="flashbang.util.ListenerRegistrations"/>
+    <classEntry path="flashbang.util.LoadState"/>
     <classEntry path="flashbang.util.Loadable"/>
     <classEntry path="flashbang.util.LoadableBatch"/>
     <classEntry path="flashbang.util.NumRange"/>
     <classEntry path="flashbang.util.PowerEaser"/>
-    <classEntry path="flashbang.debug.FramerateView"/>
-    <classEntry path="flashbang.debug.Framerate"/>
-    <classEntry path="flashbang.resource.FontResource"/>
-    <classEntry path="flashbang.resource.FontLoader"/>
-    <classEntry path="flashbang.util.LoadState"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

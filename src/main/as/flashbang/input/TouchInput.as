@@ -3,20 +3,25 @@
 
 package flashbang.input {
 
-import starling.display.DisplayObject;
+import starling.display.DisplayObjectContainer;
 import starling.events.Touch;
-import starling.events.TouchEvent;
-import starling.events.TouchPhase;
+import starling.events.TouchDispatcher;
 
-import aspire.util.Arrays;
 import aspire.util.Registration;
 import aspire.util.Registrations;
 
 public class TouchInput
 {
-    public function TouchInput (root :DisplayObject)
+    public function TouchInput (root :DisplayObjectContainer)
     {
-        _root = root;
+        _dispatcher = new TouchDispatcher(root);
+    }
+
+    public function shutdown () :void
+    {
+        _dispatcher.dispose();
+        _dispatcher = null;
+        _listeners = null;
     }
 
     /**
@@ -26,11 +31,12 @@ public class TouchInput
     public function registerListener (l :TouchListener) :Registration
     {
         _listeners.unshift(l);
-        installTouchListeners();
         return Registrations.createWithFunction(function () :void {
-            Arrays.removeFirst(_listeners, l);
-            if (_listeners.length == 0) {
-                uninstallTouchListeners();
+            for (var ii :int = _listeners.length - 1; ii >= 0; --ii) {
+                if (_listeners[ii] == l) {
+                    _listeners.splice(ii, 1);
+                    break;
+                }
             }
         });
     }
@@ -38,73 +44,28 @@ public class TouchInput
     /** Removes all listeners from the TouchInput */
     public function removeAllListeners () :void
     {
-        _listeners = [];
-        uninstallTouchListeners();
+        _listeners.length = 0;
     }
 
-    /** @return true if the TouchInput is enabled */
-    public function get enabled () :Boolean
-    {
-        return _enabled;
-    }
-
-    /**
-     * Enable or disable the TouchInput. When disabled, registered listeners will not receive
-     * any touch events.
-     */
-    public function set enabled (enabled :Boolean) :void
-    {
-        _enabled = enabled;
-        if (_enabled) {
-            installTouchListeners();
-        } else {
-            uninstallTouchListeners();
-        }
-    }
-
-    protected function installTouchListeners () :void
-    {
-        if (_enabled && !_touchListenersInstalled) {
-            _root.addEventListener(TouchEvent.TOUCH, handleTouchEvent);
-            _touchListenersInstalled = true;
-        }
-    }
-
-    protected function uninstallTouchListeners () :void
-    {
-        if (_touchListenersInstalled) {
-            _root.removeEventListener(TouchEvent.TOUCH, handleTouchEvent);
-            _touchListenersInstalled = false;
-        }
-    }
-
-    protected function handleTouchEvent (e :TouchEvent) :void
+    public function handleTouches (touches :Vector.<Touch>) :void
     {
         var handled :Boolean = false;
-        for each (var t :Touch in e.getTouches(_root)) {
-            for each (var ml :TouchListener in _listeners.concat()) {// Iterate over a copy
-                switch (t.phase) {
-                case TouchPhase.BEGAN:
-                    handled = ml.onTouchBegin(t);
-                    break;
-                case TouchPhase.ENDED:
-                    handled = ml.onTouchEnd(t);
-                    break;
-                case TouchPhase.MOVED:
-                    handled = ml.onTouchMove(t);
-                    break;
-                }
+
+        if (_listeners.length > 0) {
+            for each (var l :TouchListener in _listeners.concat()) {// Iterate over a copy
+                handled = l.onTouchesUpdated(touches);
                 if (handled) {
-                    e.stopImmediatePropagation();
                     break;
                 }
             }
         }
+
+        if (!handled) {
+            _dispatcher.handleTouches(touches);
+        }
     }
 
-    protected var _root :DisplayObject;
-    protected var _listeners :Array = [];
-    protected var _touchListenersInstalled :Boolean;
-    protected var _enabled :Boolean = true;
+    protected var _dispatcher :TouchDispatcher;
+    protected var _listeners :Vector.<TouchListener> = new <TouchListener>[];
 }
 }

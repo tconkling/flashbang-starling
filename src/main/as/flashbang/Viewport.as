@@ -151,10 +151,21 @@ public class Viewport
         handleModeTransitions();
 
         // update the top mode
-        var theTopMode :AppMode = this.topMode;
-        if (null != theTopMode) {
-            theTopMode.update(dt);
+        if (_modeStack.length > 0) {
+            _modeStack[_modeStack.length - 1].update(dt);
         }
+    }
+
+    protected function handleTouches (touches :Vector.<Touch>) :void
+    {
+        if (_modeStack.length > 0) {
+            _modeStack[_modeStack.length - 1].handleTouchesInternal(touches);
+        }
+    }
+
+    internal function handleTouchesInternal (touches :Vector.<Touch>) :void
+    {
+        handleTouches(touches);
     }
 
     internal function handleModeTransitions () :void
@@ -274,7 +285,7 @@ public class Viewport
         }
     }
 
-    protected function clearModeStackNow () :void
+    internal function clearModeStackNow () :void
     {
         _pendingModeTransitionQueue.length = 0;
         if (_modeStack.length > 0) {
