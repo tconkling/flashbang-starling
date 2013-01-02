@@ -18,11 +18,13 @@ public class Demo extends FlashbangApp
         this.defaultViewport.pushMode(new LoadingMode());
     }
 
-    override protected function getConfig () :Config
+    override protected function createConfig () :Config
     {
         var config :Config = new Config();
         config.stageWidth = WIDTH;
         config.stageHeight = HEIGHT;
+        config.windowWidth = WIDTH;
+        config.windowHeight = HEIGHT;
         return config;
     }
 }
@@ -41,7 +43,7 @@ class LoadingMode extends AppMode
     public function LoadingMode ()
     {
         var resources :ResourceSet = new ResourceSet();
-        resources.add("flump", { name: "flump", embeddedClass: FLUMP });
+        resources.add({ type: "flump", name: "flump", data: FLUMP });
         resources.load(
             function () :void {
                 // resources loaded. kick off the game.
