@@ -12,6 +12,12 @@ import starling.events.TouchPhase;
 public class PointerAdapter
     implements PointerListener
 {
+    /** Builds a PointerAdapter that will call the given functions for pointer updates */
+    public static function withTouchId (touchId :int) :PointerListenerBuilder
+    {
+        return new PointerListenerBuilder(touchId);
+    }
+
     /**
      * Constructs a new PointerAdapter
      *
