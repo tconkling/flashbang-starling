@@ -3,18 +3,18 @@
 
 package flashbang {
 
-import org.osflash.signals.Signal;
-
 import starling.display.DisplayObject;
 import starling.display.DisplayObjectContainer;
 
 import aspire.util.Preconditions;
 import aspire.util.StringUtil;
 
-import flashbang.components.DisplayComponent
+import flashbang.components.DisplayComponent;
 import flashbang.tasks.ParallelTask;
 import flashbang.tasks.TaskContainer;
 import flashbang.util.ListenerRegistrations;
+
+import org.osflash.signals.Signal;
 
 public class GameObject
 {
@@ -229,6 +229,9 @@ public class GameObject
         if (_mode != null) {
             manageDependentObject(obj);
         } else {
+            if (_pendingDependentObjects == null) {
+                _pendingDependentObjects = new <GameObject>[];
+            }
             _pendingDependentObjects.push(obj);
         }
     }
@@ -292,6 +295,9 @@ public class GameObject
             ref = _mode.addObject(obj);
         }
 
+        if (_dependentObjectRefs == null) {
+            _dependentObjectRefs = new <GameObjectRef>[];
+        }
         _dependentObjectRefs.push(ref);
     }
 
@@ -301,11 +307,11 @@ public class GameObject
             if (!create) {
                 return null;
             }
-            _lazyNamedTasks = [];
+            _lazyNamedTasks = new <NamedParallelTask>[];
         }
         var tc :NamedParallelTask;
         for (var idx :int = _lazyNamedTasks.length - 1; idx >= 0; --idx) {
-            if ((tc = NamedParallelTask(_lazyNamedTasks[idx])).name === name) {
+            if ((tc = _lazyNamedTasks[idx]).name === name) {
                 return tc;
             }
         }
@@ -318,18 +324,22 @@ public class GameObject
 
     internal function addedToModeInternal () :void
     {
-        for each (var obj :GameObject in _pendingDependentObjects) {
-            manageDependentObject(obj);
+        if (_pendingDependentObjects != null) {
+            for each (var obj :GameObject in _pendingDependentObjects) {
+                manageDependentObject(obj);
+            }
+            _pendingDependentObjects = null;
         }
-        _pendingDependentObjects = null;
         addedToMode();
     }
 
     internal function removedFromModeInternal () :void
     {
-        for each (var ref :GameObjectRef in _dependentObjectRefs) {
-            if (ref.isLive) {
-                ref.object.destroySelf();
+        if (_dependentObjectRefs != null) {
+            for each (var ref :GameObjectRef in _dependentObjectRefs) {
+                if (ref.isLive) {
+                    ref.object.destroySelf();
+                }
             }
         }
         removedFromMode();
@@ -400,15 +410,15 @@ public class GameObject
     // This is really a linked map : String -> ParallelTask. We use an array though and take the
     // hit in lookup time to gain in iteration time. Also, it is null until needed. Subclassers
     // beware.
-    protected var _lazyNamedTasks :Array = null;//<NamedParallelTask>
+    protected var _lazyNamedTasks :Vector.<NamedParallelTask> = null;//<NamedParallelTask>
     protected var _updatingTasks :Boolean;
     // True if tasks were removed while an update was in progress
     protected var _collapseRemovedTasks :Boolean;
 
     protected var _regs :ListenerRegistrations = new ListenerRegistrations();
 
-    protected var _dependentObjectRefs :Array = [];
-    protected var _pendingDependentObjects :Array = [];
+    protected var _dependentObjectRefs :Vector.<GameObjectRef>;
+    protected var _pendingDependentObjects :Vector.<GameObject>;
 
     // managed by AppMode
     internal var _ref :GameObjectRef;

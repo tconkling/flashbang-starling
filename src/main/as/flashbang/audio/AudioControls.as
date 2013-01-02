@@ -283,7 +283,7 @@ public class AudioControls
     }
 
     protected var _parentControls :AudioControls;
-    protected var _children :Array = [];
+    protected var _children :Vector.<AudioControls> = new <AudioControls>[];
 
     protected var _refCount :int;
 

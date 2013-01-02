@@ -23,7 +23,7 @@ public class AudioManager
         _maxChannels = maxChannels;
 
         _masterControls = new AudioControls();
-        _soundTypeControls = new Array(SoundType.values().length);
+        _soundTypeControls = new Vector.<AudioControls>(SoundType.values().length);
         for (var ii :int = 0; ii < _soundTypeControls.length; ++ii) {
             var subControls :AudioControls = new AudioControls(_masterControls);
             subControls.retain(); // these subcontrols will never be cleaned up
@@ -209,7 +209,7 @@ public class AudioManager
         for each (var channel :AudioChannel in _activeChannels) {
             stop(channel);
         }
-        _activeChannels = [];
+        _activeChannels.length = 0;
     }
 
     public function stop (channel :AudioChannel) :void
@@ -284,9 +284,9 @@ public class AudioManager
     }
 
     protected var _maxChannels :int;
-    protected var _activeChannels :Array = [];
+    protected var _activeChannels :Vector.<AudioChannel> = new <AudioChannel>[];
     protected var _masterControls :AudioControls;
-    protected var _soundTypeControls :Array; // of AudioControls
+    protected var _soundTypeControls :Vector.<AudioControls>;
 
     protected static const log :Log = Log.getLog(AudioManager);
 

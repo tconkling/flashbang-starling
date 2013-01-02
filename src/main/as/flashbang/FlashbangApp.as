@@ -14,7 +14,6 @@ import starling.display.Sprite;
 import starling.events.Event;
 import starling.utils.RectangleUtil;
 
-import aspire.util.Arrays;
 import aspire.util.Map;
 import aspire.util.Maps;
 import aspire.util.Preconditions;
@@ -95,7 +94,12 @@ public class FlashbangApp extends flash.display.Sprite
 
     public function removeUpdatable (obj :Updatable) :void
     {
-        Arrays.removeFirst(_updatables, obj);
+        for (var ii :int = _updatables.length - 1; ii >= 0; --ii) {
+            if (_updatables[ii] == obj) {
+                _updatables.splice(ii, 1);
+                break;
+            }
+        }
     }
 
     /**
@@ -268,7 +272,7 @@ public class FlashbangApp extends flash.display.Sprite
 
     protected var _shutdownPending :Boolean;
     protected var _lastTime :Number;
-    protected var _updatables :Array = [];
+    protected var _updatables :Vector.<Updatable> = new <Updatable>[];
     protected var _viewports :Map = Maps.newMapOf(String); // <String, Viewport>
     protected var _fps :Number = 0;
 }

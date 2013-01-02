@@ -47,8 +47,8 @@ public class TaskContainer
     public function removeAllTasks () :void
     {
         _invalidated = true;
-        _tasks = [];
-        _completedTasks = [];
+        _tasks.length = 0;
+        _completedTasks.length = 0;
         _activeTaskCount = 0;
     }
 
@@ -94,10 +94,10 @@ public class TaskContainer
 
         // if this is a repeating task and all its tasks have been completed, start over again
         if (_type == TYPE_REPEATING && 0 == _activeTaskCount && _completedTasks.length > 0) {
-            var completedTasks :Array = _completedTasks;
+            var completedTasks :Vector.<ObjectTask> = _completedTasks;
 
-            _tasks = [];
-            _completedTasks = [];
+            _tasks = new <ObjectTask>[];
+            _completedTasks = new <ObjectTask>[];
 
             for each (var completedTask :ObjectTask in completedTasks) {
                 addTask(completedTask.clone());
@@ -111,27 +111,30 @@ public class TaskContainer
     /** Returns a clone of the TaskContainer. */
     public function clone () :ObjectTask
     {
-        var clonedSubtasks :Array = cloneSubtasks();
+        var clonedSubtasks :Vector.<ObjectTask> = cloneSubtasks();
+        var emptyTasks :Vector.<ObjectTask> = new Vector.<ObjectTask>(cloneSubtasks.length);
+        for (var ii :int = 0; ii < cloneSubtasks.length; ++ii) {
+            emptyTasks.push(null);
+        }
 
         var theClone :TaskContainer = new TaskContainer(_type);
         theClone._tasks = clonedSubtasks;
-        theClone._completedTasks = Arrays.create(clonedSubtasks.length, null);
+        theClone._completedTasks = emptyTasks;
         theClone._activeTaskCount = clonedSubtasks.length;
 
         return theClone;
     }
 
-    protected function cloneSubtasks () :Array
+    protected function cloneSubtasks () :Vector.<ObjectTask>
     {
         Preconditions.checkState(_tasks.length == _completedTasks.length);
 
-        var out :Array = new Array(_tasks.length);
+        var out :Vector.<ObjectTask> = new Vector.<ObjectTask>(_tasks.length);
 
         // clone each child task and put it in the cloned container
         var n :int = _tasks.length;
         for (var ii :int = 0; ii < n; ++ii) {
-            var task :ObjectTask =
-                (null != _tasks[ii] ? _tasks[ii] as ObjectTask : _completedTasks[ii] as ObjectTask);
+            var task :ObjectTask = (null != _tasks[ii] ? _tasks[ii] : _completedTasks[ii]);
             Preconditions.checkNotNull(task);
             out[ii] = task.clone();
         }
@@ -140,8 +143,8 @@ public class TaskContainer
     }
 
     protected var _type :int;
-    protected var _tasks :Array = new Array();
-    protected var _completedTasks :Array = new Array();
+    protected var _tasks :Vector.<ObjectTask> = new <ObjectTask>[];
+    protected var _completedTasks :Vector.<ObjectTask> = new <ObjectTask>[];
     protected var _activeTaskCount :int;
     protected var _invalidated :Boolean;
 

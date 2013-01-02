@@ -4,6 +4,7 @@
 package flashbang {
 
 import starling.display.Sprite;
+import starling.events.Touch;
 
 import aspire.util.Preconditions;
 
@@ -45,13 +46,9 @@ public class Viewport
      * Returns the top mode on the mode stack, or null
      * if the stack is empty.
      */
-    public function get topMode () :AppMode
+    public final function get topMode () :AppMode
     {
-        if (_modeStack.length == 0) {
-            return null;
-        } else {
-            return ((_modeStack[_modeStack.length - 1]) as AppMode);
-        }
+        return (_modeStack.length > 0 ? _modeStack[_modeStack.length - 1] : null);
     }
 
     /**
@@ -223,8 +220,8 @@ public class Viewport
         // create a new _pendingModeTransitionQueue right now
         // so that we can properly handle mode transition requests
         // that occur during the processing of the current queue
-        var transitionQueue :Array = _pendingModeTransitionQueue;
-        _pendingModeTransitionQueue = [];
+        var transitionQueue :Vector.<PendingTransition> = _pendingModeTransitionQueue;
+        _pendingModeTransitionQueue = new <PendingTransition>[];
 
         for each (var transition :PendingTransition in transitionQueue) {
             var mode :AppMode = transition.mode;
@@ -279,7 +276,7 @@ public class Viewport
 
     protected function clearModeStackNow () :void
     {
-        _pendingModeTransitionQueue = [];
+        _pendingModeTransitionQueue.length = 0;
         if (_modeStack.length > 0) {
             popAllModes();
             handleModeTransitions();
@@ -305,8 +302,8 @@ public class Viewport
     protected var _app :FlashbangApp;
     protected var _name :String;
     protected var _topSprite :Sprite = new Sprite();
-    protected var _modeStack :Array = [];
-    protected var _pendingModeTransitionQueue :Array = [];
+    protected var _modeStack :Vector.<AppMode> = new <AppMode>[];
+    protected var _pendingModeTransitionQueue :Vector.<PendingTransition> = new <PendingTransition>[];
     protected var _destroyed :Boolean;
 }
 }

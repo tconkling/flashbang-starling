@@ -5,8 +5,6 @@ package flashbang {
 
 import flash.events.KeyboardEvent;
 
-import org.osflash.signals.Signal;
-
 import starling.display.DisplayObject;
 import starling.display.DisplayObjectContainer;
 import starling.display.Sprite;
@@ -20,6 +18,8 @@ import aspire.util.maps.ValueComputingMap;
 import flashbang.components.DisplayComponent;
 import flashbang.input.TouchInput;
 import flashbang.util.ListenerRegistrations;
+
+import org.osflash.signals.Signal;
 
 public class AppMode
     implements Updatable
@@ -182,7 +182,7 @@ public class AppMode
         obj.cleanupInternal();
 
         if (null == _objectsPendingRemoval) {
-            _objectsPendingRemoval = new Array();
+            _objectsPendingRemoval = new <GameObject>[];
         }
 
         // the ref will be unlinked from the objects list
@@ -427,34 +427,25 @@ public class AppMode
     internal function enterInternal () :void
     {
         _modeSprite.touchable = true;
-
-        _touchInput.enabled = _touchInputWasEnabled;
-
         enter();
     }
 
     internal function exitInternal () :void
     {
         _modeSprite.touchable = false;
-
         exit();
-
-        _touchInputWasEnabled = _touchInput.enabled;
-        _touchInput.enabled = false;
     }
 
     protected var _modeSprite :Sprite = new Sprite();
     protected var _viewport :Viewport;
     protected var _touchInput :TouchInput;
-    protected var _touchInputWasEnabled :Boolean = true;
 
     protected var _runningTime :Number = 0;
 
     protected var _listHead :GameObjectRef;
     protected var _objectCount :uint;
 
-    /** An array of GameObjects */
-    protected var _objectsPendingRemoval :Array;
+    protected var _objectsPendingRemoval :Vector.<GameObject>;
 
     /** stores a mapping from String to Object */
     protected var _namedObjects :Map = Maps.newMapOf(String);
