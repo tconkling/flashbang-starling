@@ -14,10 +14,6 @@ import starling.display.Sprite;
 import starling.events.Event;
 import starling.utils.RectangleUtil;
 
-import aspire.util.Map;
-import aspire.util.Maps;
-import aspire.util.Preconditions;
-
 import flashbang.audio.AudioManager;
 import flashbang.resource.ResourceManager;
 import flashbang.util.ListenerRegistrations;
@@ -64,10 +60,14 @@ public class FlashbangApp extends flash.display.Sprite
             parentSprite = _mainSprite;
         }
 
+        for each (var existing :Viewport in _viewports) {
+            if (existing.name == name) {
+                throw new Error("A viewport named '" + name + "' already exists");
+            }
+        }
+
         var viewport :Viewport = new Viewport(this, name, parentSprite);
-        var existing :Object = _viewports.put(name, viewport);
-        Preconditions.checkState(existing == null, "A viewport with that name already exists",
-            "name", name);
+        _viewports.push(viewport);
         return viewport;
     }
 
@@ -76,7 +76,12 @@ public class FlashbangApp extends flash.display.Sprite
      */
     public function getViewport (name :String) :Viewport
     {
-        return _viewports.get(name);
+        for each (var viewport :Viewport in _viewports) {
+            if (viewport.name == name) {
+                return viewport;
+            }
+        }
+        return null;
     }
 
     /**
@@ -193,9 +198,9 @@ public class FlashbangApp extends flash.display.Sprite
 
         run();
 
-        _viewports.forEach(function (name :String, viewport :Viewport) :void {
-            viewport.handleModeTransitions();
-        });
+        for (var ii :int = _viewports.length - 1; ii >= 0; --ii) {
+            _viewports[ii].handleModeTransitions();
+        }
     }
 
     protected function update (e :starling.events.Event) :void
@@ -217,13 +222,13 @@ public class FlashbangApp extends flash.display.Sprite
         }
 
         // update our viewports
-        // we iterate the values Array so that we can safely removed destroyed Viewports
-        for each (var viewport :Viewport in _viewports.values()) {
+        for (var ii :int = _viewports.length - 1; ii >= 0; --ii) {
+            var viewport :Viewport = _viewports[ii];
             if (!viewport.isDestroyed) {
                 viewport.update(dt);
             }
             if (viewport.isDestroyed) {
-                _viewports.remove(viewport.name);
+                _viewports.splice(ii, 1);
                 viewport.shutdown();
             }
         }
@@ -239,9 +244,9 @@ public class FlashbangApp extends flash.display.Sprite
 
     protected function shutdownNow () :void
     {
-        _viewports.forEach(function (name :String, viewport :Viewport) :void {
+        for each (var viewport :Viewport in _viewports) {
             viewport.shutdown();
-        });
+        }
         _viewports = null;
 
         _mainSprite = null;
@@ -273,7 +278,7 @@ public class FlashbangApp extends flash.display.Sprite
     protected var _shutdownPending :Boolean;
     protected var _lastTime :Number;
     protected var _updatables :Vector.<Updatable> = new <Updatable>[];
-    protected var _viewports :Map = Maps.newMapOf(String); // <String, Viewport>
+    protected var _viewports :Vector.<Viewport> = new <Viewport>[];
     protected var _fps :Number = 0;
 }
 
