@@ -111,6 +111,6 @@ public class Button extends SpriteObject
     protected static const UP :int = 0;
     protected static const DOWN :int = 1;
     protected static const OVER :int = 2;
-    protected static const DISABLED :int = 2;
+    protected static const DISABLED :int = 3;
 }
 }
