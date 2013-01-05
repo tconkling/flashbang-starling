@@ -355,7 +355,8 @@ public class GameObject
 
     internal function updateInternal (dt :Number) :void
     {
-        if (_updatingTasks = _lazyAnonymousTasks != null || _lazyNamedTasks != null) {
+        if (_lazyAnonymousTasks != null || _lazyNamedTasks != null) {
+            _updatingTasks = true;
             if (_lazyAnonymousTasks != null) {
                 _lazyAnonymousTasks.update(dt, this);
             }
