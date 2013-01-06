@@ -12,6 +12,7 @@ import flash.system.TouchscreenType;
 import starling.core.Starling;
 import starling.display.Sprite;
 import starling.events.Event;
+import starling.events.KeyboardEvent;
 import starling.events.Touch;
 import starling.utils.RectangleUtil;
 
@@ -43,13 +44,34 @@ public class FlashbangApp extends flash.display.Sprite
      * shut down at the end of the current update.
      *
      * It's an error to continue to use a FlashbangApp that has been shut down.
-     *
-     * Most applications will want to install an Event.REMOVED_FROM_STAGE
-     * handler on the main sprite, and call shutdown from there.
      */
     public function shutdown () :void
     {
         _shutdownPending = true;
+    }
+
+    /** Called when the app receives touches. By default it forwards them to each viewport */
+    public function handleTouches (touches :Vector.<Touch>) :void
+    {
+        for (var ii :int = _viewports.length - 1; ii >= 0; --ii) {
+            _viewports[ii].handleTouches(touches);
+        }
+    }
+
+    /** Called when the app receives a keyDown event. By default it forwards it to each viewport */
+    public function onKeyDown (e :KeyboardEvent) :void
+    {
+        for (var ii :int = _viewports.length - 1; ii >= 0; --ii) {
+            _viewports[ii].onKeyDown(e);
+        }
+    }
+
+    /** Called when the app receives a keyUp event. By default it forwards it to each viewport */
+    public function onKeyUp (e :KeyboardEvent) :void
+    {
+        for (var ii :int = _viewports.length - 1; ii >= 0; --ii) {
+            _viewports[ii].onKeyUp(e);
+        }
     }
 
     /**
@@ -156,14 +178,6 @@ public class FlashbangApp extends flash.display.Sprite
     {
     }
 
-    /** Called when the app receives touches. By default it forwards them to each viewport */
-    protected function handleTouches (touches :Vector.<Touch>) :void
-    {
-        for (var ii :int = _viewports.length - 1; ii >= 0; --ii) {
-            _viewports[ii].handleTouchesInternal(touches);
-        }
-    }
-
     /**
      * Creates and returns a Starling instance.
      * Subclasses can override to do custom initialization.
@@ -212,7 +226,9 @@ public class FlashbangApp extends flash.display.Sprite
         // Create our default viewport
         createViewport(Viewport.DEFAULT);
 
-        _regs.addEventListener(_mainSprite, starling.events.Event.ENTER_FRAME, update);
+        _regs.addEventListener(_mainSprite.stage, KeyboardEvent.KEY_DOWN, onKeyDown);
+        _regs.addEventListener(_mainSprite.stage, KeyboardEvent.KEY_UP, onKeyUp);
+        _regs.addEventListener(_mainSprite.stage, starling.events.Event.ENTER_FRAME, update);
         _lastTime = getAppTime();
 
         run();

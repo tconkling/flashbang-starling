@@ -3,11 +3,10 @@
 
 package flashbang {
 
-import flash.events.KeyboardEvent;
-
 import starling.display.DisplayObject;
 import starling.display.DisplayObjectContainer;
 import starling.display.Sprite;
+import starling.events.KeyboardEvent;
 import starling.events.Touch;
 
 import aspire.util.Arrays;
@@ -274,6 +273,12 @@ public class AppMode
         return _runningTime;
     }
 
+    /** Called when the mode is active and receives touch input. */
+    public function handleTouches (touches :Vector.<Touch>) :void
+    {
+        _touchInput.handleTouches(touches);
+    }
+
     /** Called when a key is pressed while this mode is active */
     public function onKeyDown (keyEvent :KeyboardEvent) :void
     {
@@ -381,17 +386,6 @@ public class AppMode
     /** Called when the mode becomes inactive on the mode stack */
     protected function exit () :void
     {
-    }
-
-    /** Called when the mode is active and receives touch input. */
-    protected function handleTouches (touches :Vector.<Touch>) :void
-    {
-        _touchInput.handleTouches(touches);
-    }
-
-    internal function handleTouchesInternal (touches :Vector.<Touch>) :void
-    {
-        handleTouches(touches);
     }
 
     internal function setupInternal (viewport :Viewport) :void

@@ -4,6 +4,7 @@
 package flashbang {
 
 import starling.display.Sprite;
+import starling.events.KeyboardEvent;
 import starling.events.Touch;
 
 import aspire.util.Preconditions;
@@ -156,16 +157,37 @@ public class Viewport
         }
     }
 
-    protected function handleTouches (touches :Vector.<Touch>) :void
+    /**
+     * Called when the viewport receives touches.
+     * By default it forwards the touches to its active mode.
+     */
+    public function handleTouches (touches :Vector.<Touch>) :void
     {
         if (_modeStack.length > 0) {
-            _modeStack[_modeStack.length - 1].handleTouchesInternal(touches);
+            _modeStack[_modeStack.length - 1].handleTouches(touches);
         }
     }
 
-    internal function handleTouchesInternal (touches :Vector.<Touch>) :void
+    /**
+     * Called when the viewport receives a keyDown event.
+     * By default it forwards the event to its active mode
+     */
+    public function onKeyDown (e :KeyboardEvent) :void
     {
-        handleTouches(touches);
+        if (_modeStack.length > 0) {
+            _modeStack[_modeStack.length - 1].onKeyDown(e);
+        }
+    }
+
+    /**
+     * Called when the viewport receives a keyUp event.
+     * By default it forwards the event to its active mode
+     */
+    public function onKeyUp (e :KeyboardEvent) :void
+    {
+        if (_modeStack.length > 0) {
+            _modeStack[_modeStack.length - 1].onKeyUp(e);
+        }
     }
 
     internal function handleModeTransitions () :void
