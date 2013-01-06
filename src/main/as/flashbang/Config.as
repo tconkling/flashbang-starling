@@ -20,12 +20,8 @@ public class Config
     /** The number of audio channels the AudioManager will use. Defaults to 25. */
     public var maxAudioChannels :int = 25;
 
-    /**
-     * If the framerate drops below this value, the MainLoop will artificially reduce the
-     * time delta passed to update() functions, causing the game to slow down but animate
-     * more smoothly. Defaults to 15.
-     */
-    public var minFrameRate :Number = 15;
+    /** The MainLoop will not pass time deltas larger than this value to update() functions. */
+    public var maxUpdateDelta :Number = 1.0 / 15.0;
 }
 
 }

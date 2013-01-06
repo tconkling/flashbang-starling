@@ -136,15 +136,6 @@ public class FlashbangApp extends flash.display.Sprite
     }
 
     /**
-     * Returns the approximate frames-per-second that the application
-     * is running at.
-     */
-    public function get fps () :Number
-    {
-        return _fps;
-    }
-
-    /**
      * Returns the current "time" value, in seconds. This should only be used for the purposes
      * of calculating time deltas, not absolute time, as the implementation may change.
      *
@@ -244,12 +235,10 @@ public class FlashbangApp extends flash.display.Sprite
         var newTime :Number = getAppTime();
         var dt :Number = newTime - _lastTime;
 
-        if (_config.minFrameRate > 0) {
+        if (_config.maxUpdateDelta > 0) {
             // Ensure that our time deltas don't get too large
-            dt = Math.min(1.0 / _config.minFrameRate, dt);
+            dt = Math.min(_config.maxUpdateDelta, dt);
         }
-
-        _fps = 1.0 / dt;
 
         // update all our updatables
         for each (var updatable :Updatable in _updatables) {
@@ -314,7 +303,6 @@ public class FlashbangApp extends flash.display.Sprite
     protected var _lastTime :Number;
     protected var _updatables :Vector.<Updatable> = new <Updatable>[];
     protected var _viewports :Vector.<Viewport> = new <Viewport>[];
-    protected var _fps :Number = 0;
 }
 
 }
