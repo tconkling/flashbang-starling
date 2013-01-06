@@ -20,6 +20,8 @@ public class ImageResource extends Resource
     public function ImageResource (library :Library, libraryName :String, imageName :String)
     {
         super(libraryName + "/" + imageName);
+        _library = library;
+        _imageName = imageName;
     }
 
     public function create () :DisplayObject
