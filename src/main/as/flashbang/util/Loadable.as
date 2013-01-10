@@ -16,20 +16,20 @@ public class Loadable
         _state = LoadState.INIT;
     }
 
-    /** @return a Signal() that fires if and when the load succeeds */
+    /** @return a Signal(result:*) that fires if and when the load succeeds */
     public final function get loaded () :ISignal
     {
         if (_loaded == null) {
-            _loaded = new Signal();
+            _loaded = new Signal(Object);
         }
         return _loaded;
     }
 
-    /** @return a Signal(Error) that fires if and when the load fails */
+    /** @return a Signal(err:Error) that fires if and when the load fails */
     public final function get failed () :ISignal
     {
         if (_failed == null) {
-            _failed = new Signal();
+            _failed = new Signal(Error);
         }
         return _failed;
     }
@@ -101,7 +101,7 @@ public class Loadable
         }
 
         if (_loaded != null) {
-            _loaded.dispatch();
+            _loaded.dispatch(_result);
         }
     }
 
