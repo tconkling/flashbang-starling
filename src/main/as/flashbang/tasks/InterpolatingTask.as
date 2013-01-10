@@ -3,7 +3,7 @@
 
 package flashbang.tasks {
 
-import flashbang.Easing;
+import flashbang.util.Easing;
 import flashbang.GameObject;
 import flashbang.ObjectTask;
 

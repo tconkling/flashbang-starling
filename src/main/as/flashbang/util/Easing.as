@@ -1,9 +1,7 @@
 //
 // Flashbang
 
-package flashbang {
-
-import flashbang.util.PowerEaser;
+package flashbang.util {
 
 public class Easing
 {
