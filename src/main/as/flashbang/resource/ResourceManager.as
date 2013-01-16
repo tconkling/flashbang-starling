@@ -69,7 +69,7 @@ public class ResourceManager
         return loader;
     }
 
-    internal function addSet (resourceSet :ResourceSet, resources :Array) :void
+    internal function addSet (resourceSet :ResourceSet, resources :Vector.<Resource>) :void
     {
         var rsrc :Resource;
         // validate all resources before adding them

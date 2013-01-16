@@ -27,17 +27,18 @@ public class ResourceSet extends LoadableBatch
     override protected function succeed (result :* = undefined) :void
     {
         // get all our resources
-        var loaded :Array = result as Array;
-        var resources :Array = [];
+        var loaded :Vector.<Loadable> = result;
+        var resources :Vector.<Resource> = new <Resource>[];
         for each (var l :Loadable in loaded) {
             if (l is ResourceLoader) {
                 var thisResult :* = l.result;
                 if (thisResult is Resource) {
-                    resources.push(thisResult);
-                } else if (thisResult is Array) {
-                    resources = resources.concat(thisResult);
+                    resources.push(Resource(thisResult));
+                } else if (thisResult is Vector.<Resource>) {
+                    resources = resources.concat(Vector.<Resource>(thisResult));
                 } else {
-                    fail(Error("ResourceLoader.result must be a Resource or Array of Resources"));
+                    fail(Error("ResourceLoader.result must be a Resource or Vector of Resources"));
+                    return;
                 }
             }
         }

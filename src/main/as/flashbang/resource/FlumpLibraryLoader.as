@@ -61,7 +61,7 @@ public class FlumpLibraryLoader extends ResourceLoader
 
     protected function libraryLoaded (library :Library) :void
     {
-        var resources :Array = [];
+        var resources :Vector.<Resource> = new <Resource>[];
 
         // create a (private) resource for the library itself
         resources.push(new LibraryResource(_name, library));

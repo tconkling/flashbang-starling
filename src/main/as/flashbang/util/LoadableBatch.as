@@ -3,7 +3,6 @@
 
 package flashbang.util {
 
-import aspire.util.Arrays;
 import aspire.util.Preconditions;
 
 public class LoadableBatch extends Loadable
@@ -58,7 +57,7 @@ public class LoadableBatch extends Loadable
             function () :void {
                 // we may have gotten canceled
                 if (self.state == LoadState.LOADING) {
-                    Arrays.removeFirst(_loading, loadable);
+                    removeFirst(_loading, loadable);
                     _loaded.push(loadable);
                     loadMore();
                 }
@@ -66,7 +65,7 @@ public class LoadableBatch extends Loadable
             function (e :Error) :void {
                 // we may have gotten canceled
                 if (self.state == LoadState.LOADING) {
-                    Arrays.removeFirst(_loading, loadable);
+                    removeFirst(_loading, loadable);
                     onLoadCanceled();
                     fail(e);
                 }
@@ -89,10 +88,20 @@ public class LoadableBatch extends Loadable
         _loaded = null;
     }
 
+    protected static function removeFirst (v :Vector.<Loadable>, l :Loadable) :void {
+        var len :int = v.length;
+        for (var ii :int = 0; ii < len; ++ii) {
+            if (v[ii] == l) {
+                v.splice(ii, 1);
+                break;
+            }
+        }
+    }
+
     protected var _maxSimultaneous :int;
 
-    private var _pending :Array = [];
-    private var _loading :Array = [];
-    private var _loaded :Array = [];
+    private var _pending :Vector.<Loadable> = new <Loadable>[];
+    private var _loading :Vector.<Loadable> = new <Loadable>[];
+    private var _loaded :Vector.<Loadable> = new <Loadable>[];
 }
 }
