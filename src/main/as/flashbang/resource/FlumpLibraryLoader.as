@@ -63,6 +63,9 @@ public class FlumpLibraryLoader extends ResourceLoader
     {
         var resources :Array = [];
 
+        // create a (private) resource for the library itself
+        resources.push(new LibraryResource(_name, library));
+
         // create individual resources for each symbol in the library
         for each (var movieName :String in library.movieSymbols) {
             resources.push(new MovieResource(library, _name, movieName));
@@ -83,4 +86,21 @@ public class FlumpLibraryLoader extends ResourceLoader
     protected var _name :String;
     protected var _exec :Executor;
 }
+}
+
+import flump.display.Library;
+
+import flashbang.resource.Resource;
+
+class LibraryResource extends Resource {
+    public function LibraryResource (name :String, lib :Library) {
+        super(name);
+        _lib = lib;
+    }
+
+    override protected function unload () :void {
+        _lib.dispose();
+    }
+
+    protected var _lib :Library;
 }
