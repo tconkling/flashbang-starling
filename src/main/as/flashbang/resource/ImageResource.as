@@ -3,18 +3,28 @@
 
 package flashbang.resource {
 
-import starling.display.DisplayObject;
-
-import flashbang.Flashbang;
+import starling.display.Image;
 
 import flump.display.Library;
 
+import flashbang.Flashbang;
+
 public class ImageResource extends Resource
 {
-    public static function create (name :String) :DisplayObject
+    /**
+     * Creates an Image from the ImageResource with the given name.
+     * Throws an error if the resource doesn't exist.
+     */
+    public static function createImage (name :String) :Image
     {
         var rsrc :ImageResource = Flashbang.rsrcs.requireResource(name);
         return rsrc.create();
+    }
+
+    /** Returns the ImageResource with the given name, or null if it doesn't exist */
+    public static function get (name :String) :ImageResource
+    {
+        return Flashbang.rsrcs.getResource(name);
     }
 
     public function ImageResource (library :Library, libraryName :String, imageName :String)
@@ -24,7 +34,7 @@ public class ImageResource extends Resource
         _imageName = imageName;
     }
 
-    public function create () :DisplayObject
+    public function create () :Image
     {
         return _library.createImage(_imageName);
     }

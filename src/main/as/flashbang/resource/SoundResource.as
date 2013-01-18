@@ -10,11 +10,13 @@ import flashbang.audio.SoundType;
 
 public class SoundResource extends Resource
 {
+    /** Returns the SoundResource with the given name, or null if it doesn't exist */
     public static function get (name :String) :SoundResource
     {
         return Flashbang.rsrcs.getResource(name);
     }
 
+    /** Returns the SoundResource with the given name. Throws an error if it doesn't exist */
     public static function require (name :String) :SoundResource
     {
         return Flashbang.rsrcs.requireResource(name);

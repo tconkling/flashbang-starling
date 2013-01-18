@@ -14,9 +14,9 @@ import flump.display.Movie;
 public class MovieObject extends GameObject
     implements DisplayComponent
 {
-    public static function create (name :String) :MovieObject
+    public static function create (movieName :String) :MovieObject
     {
-        return new MovieObject(MovieResource.create(name));
+        return new MovieObject(MovieResource.createMovie(movieName));
     }
 
     public function MovieObject (movie :Movie)

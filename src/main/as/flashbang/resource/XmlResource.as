@@ -7,13 +7,15 @@ import flashbang.Flashbang;
 
 public class XmlResource extends Resource
 {
-    public static function get (name :String) :XML
+    /** Returns the XML with the given resource name, or null if it doesn't exist */
+    public static function getXml (name :String) :XML
     {
         var rsrc :XmlResource = Flashbang.rsrcs.getResource(name);
         return (rsrc != null ? rsrc.xml : null);
     }
 
-    public static function require (name :String) :XML
+    /** Returns the XML with the given resource name; throws an error if it doesn't exist */
+    public static function requireXml (name :String) :XML
     {
         return XmlResource(Flashbang.rsrcs.requireResource(name)).xml;
     }

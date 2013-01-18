@@ -3,17 +3,27 @@
 
 package flashbang.resource {
 
-import flashbang.Flashbang;
-
 import flump.display.Library;
 import flump.display.Movie;
 
+import flashbang.Flashbang;
+
 public class MovieResource extends Resource
 {
-    public static function create (name :String) :Movie
+    /**
+     * Creates a Movie from the MovieResource with the given name.
+     * Throws an error if the resource doesn't exist.
+     */
+    public static function createMovie (name :String) :Movie
     {
         var rsrc :MovieResource = Flashbang.rsrcs.requireResource(name);
         return rsrc.create();
+    }
+
+    /** Returns the MovieResource with the given name, or null if it doesn't exist */
+    public static function get (name :String) :MovieResource 
+    {
+        return Flashbang.rsrcs.getResource(name);
     }
 
     public function MovieResource (library :Library, libraryName :String, movieName :String)
