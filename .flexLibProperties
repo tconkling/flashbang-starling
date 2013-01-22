@@ -2,6 +2,8 @@
 <flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
   <includeClasses>
     <classEntry path="flashbang.util.URLLoadable"/>
+    <classEntry path="flashbang.input.Touchable"/>
+    <classEntry path="flashbang.util.EventSignal"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

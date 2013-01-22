@@ -47,17 +47,14 @@ public class Button extends SpriteObject
         showState(_state);
 
         var self :Button = this;
-        _regs.addEventListener(_sprite, TouchEvent.TOUCH, function (e :TouchEvent) :void {
+        _regs.addSignalListener(this.touchBegan, function (touch :Touch) :void {
             if (self.enabled && _captureReg == null) {
-                var touch :Touch = e.getTouch(self.display, TouchPhase.BEGAN);
-                if (touch != null) {
-                    var l :PointerListener = PointerAdapter.withTouchId(touch.id)
-                        .onPointerMove(self.onPointerMove)
-                        .onPointerEnd(self.onPointerEnd)
-                        .create();
-                    _captureReg = _regs.add(self.mode.touchInput.registerListener(l));
-                    setState(DOWN);
-                }
+                var l :PointerListener = PointerAdapter.withTouchId(touch.id)
+                    .onPointerMove(self.onPointerMove)
+                    .onPointerEnd(self.onPointerEnd)
+                    .create();
+                _captureReg = _regs.add(self.mode.touchInput.registerListener(l));
+                setState(DOWN);
             }
         });
     }
