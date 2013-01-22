@@ -38,6 +38,11 @@ public class ImageResource extends Resource
     {
         return _library.createImage(_imageName);
     }
+    
+    override protected function unload () :void
+    {
+        _library = null;
+    }
 
     protected var _library :Library;
     protected var _imageName :String;

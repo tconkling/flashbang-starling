@@ -36,6 +36,7 @@ public class SoundResource extends Resource
     override protected function unload () :void
     {
         _sound.close();
+        _sound = null;
     }
 
     public function get sound () :Sound { return _sound; }

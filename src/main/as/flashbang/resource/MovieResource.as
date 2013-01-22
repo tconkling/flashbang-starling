@@ -37,6 +37,11 @@ public class MovieResource extends Resource
     {
         return _library.createMovie(_movieName);
     }
+    
+    override protected function unload () :void
+    {
+        _library = null;
+    }
 
     protected var _library :Library;
     protected var _movieName :String;

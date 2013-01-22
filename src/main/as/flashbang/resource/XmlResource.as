@@ -30,6 +30,11 @@ public class XmlResource extends Resource
     {
         return _xml;
     }
+    
+    override protected function unload () :void 
+    {
+        _xml = null;    
+    }
 
     protected var _xml :XML;
 }

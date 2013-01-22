@@ -14,6 +14,12 @@ public class Resource
     {
         return _name;
     }
+    
+    /** Return true if the Resource is still loaded. It's an error to use unloaded resources. */
+    public final function get isLoaded () :Boolean
+    {
+        return !_unloaded;
+    }
 
     /** Subclasses can override this to implement unloading logic */
     protected function unload () :void
@@ -22,10 +28,14 @@ public class Resource
 
     internal function unloadInternal () :void
     {
-        unload();
+        if (!_unloaded) {
+            _unloaded = true;
+            unload();
+        }
     }
 
     protected var _name :String;
+    protected var _unloaded :Boolean;
 
     /** The set that this Resource belongs to */
     internal var _set :ResourceSet;
