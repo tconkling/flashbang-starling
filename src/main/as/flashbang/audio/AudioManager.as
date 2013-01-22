@@ -9,6 +9,7 @@ import flash.utils.getTimer;
 
 import aspire.util.F;
 import aspire.util.Log;
+import aspire.util.Preconditions;
 
 import flashbang.Updatable;
 import flashbang.resource.SoundResource;
@@ -98,22 +99,13 @@ public class AudioManager
     public function playSoundNamed (name :String, parentControls :AudioControls = null,
         loopCount :int = 0) :AudioChannel
     {
-        var sound :SoundResource = SoundResource.get(name);
-        if (null == sound) {
-            log.info("Discarding sound '" + name + "' (sound does not exist)");
-            return new AudioChannel();
-        }
-
-        return playSound(sound, parentControls, loopCount);
+        return playSound(SoundResource.require(name), parentControls, loopCount);
     }
 
     public function playSound (sound :SoundResource, parentControls :AudioControls = null,
         loopCount :int = 0) :AudioChannel
     {
-        if (null == sound.sound) {
-            log.info("Discarding sound '" + sound.name + "' (sound is null)");
-            return new AudioChannel();
-        }
+        Preconditions.checkArgument(sound != null);
 
         // get the appropriate parent controls
         if (null == parentControls) {
