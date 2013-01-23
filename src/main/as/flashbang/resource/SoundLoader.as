@@ -25,7 +25,7 @@ public class SoundLoader extends ResourceLoader
     public static const DATA :String = "data";
 
     /** The sound type. String. Valid values: "sfx", "music". (optional, @default "sfx") */
-    public static const TYPE :String = "type";
+    public static const TYPE :String = "soundType";
 
     /**
      * The sound's priority (if the AudioManager is out of sound channels, lower-priority sounds
