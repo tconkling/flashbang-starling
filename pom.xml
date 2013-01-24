@@ -13,10 +13,6 @@
 
   <repositories>
     <repository>
-      <id>ooo-public</id>
-      <url>http://ooo-maven.googlecode.com/hg/repository</url>
-    </repository>
-    <repository>
       <id>tconkling</id>
       <url>https://raw.github.com/tconkling/maven-repo/master</url>
     </repository>
@@ -26,7 +22,13 @@
     <dependency>
       <groupId>com.gamua</groupId>
       <artifactId>starling-framework</artifactId>
-      <version>272c8a8</version>
+      <version>1.4-SNAPSHOT</version>
+      <type>swc</type>
+    </dependency>
+    <dependency>
+      <groupId>com.threerings.flump</groupId>
+      <artifactId>flump-runtime</artifactId>
+      <version>1.1-SNAPSHOT</version>
       <type>swc</type>
     </dependency>
     <dependency>
@@ -34,19 +36,6 @@
       <artifactId>aspire</artifactId>
       <version>1.0-SNAPSHOT</version>
       <type>swc</type>
-    </dependency>
-    <dependency>
-      <groupId>org.osflash</groupId>
-      <artifactId>signals</artifactId>
-      <version>0.9</version>
-      <type>swc</type>
-    </dependency>
-    <dependency>
-      <groupId>com.adobe.flex.framework</groupId>
-      <artifactId>flex-framework</artifactId>
-      <version>${flex.version}</version>
-      <type>pom</type>
-      <optional>true</optional>
     </dependency>
   </dependencies>
 </project>
