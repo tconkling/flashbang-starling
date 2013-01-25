@@ -7,7 +7,7 @@ import starling.display.DisplayObject;
 
 import aspire.util.Preconditions;
 
-import flashbang.GameObject;
+import flashbang.core.GameObject;
 import flashbang.components.DisplayComponent;
 
 public class DisplayObjectTask extends InterpolatingTask

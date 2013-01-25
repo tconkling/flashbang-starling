@@ -3,9 +3,9 @@
 
 package flashbang.tasks {
 
-import flashbang.Flashbang;
-import flashbang.GameObject;
-import flashbang.ObjectTask;
+import flashbang.core.Flashbang;
+import flashbang.core.GameObject;
+import flashbang.core.ObjectTask;
 import flashbang.audio.AudioChannel;
 import flashbang.audio.AudioControls;
 

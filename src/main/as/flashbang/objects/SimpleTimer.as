@@ -3,7 +3,7 @@
 
 package flashbang.objects {
 
-import flashbang.GameObject;
+import flashbang.core.GameObject;
 import flashbang.tasks.*;
 import flashbang.util.BoxedNumber;
 

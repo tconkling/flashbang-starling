@@ -3,7 +3,7 @@
 
 package flashbang.resource {
 
-import flashbang.Flashbang;
+import flashbang.core.Flashbang;
 import flashbang.util.Loadable;
 import flashbang.util.LoadableBatch;
 

@@ -1,7 +1,7 @@
 //
 // Flashbang
 
-package flashbang {
+package flashbang.core {
 
 import flash.display.Sprite;
 import flash.events.Event;

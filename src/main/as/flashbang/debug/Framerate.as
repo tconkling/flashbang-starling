@@ -9,7 +9,7 @@ import flash.utils.setInterval;
 
 import aspire.util.Arrays;
 
-import flashbang.GameObject;
+import flashbang.core.GameObject;
 
 public class Framerate extends GameObject
 {

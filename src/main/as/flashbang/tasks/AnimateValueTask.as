@@ -3,8 +3,8 @@
 
 package flashbang.tasks {
 
-import flashbang.GameObject;
-import flashbang.ObjectTask;
+import flashbang.core.GameObject;
+import flashbang.core.ObjectTask;
 import flashbang.util.BoxedNumber;
 
 public class AnimateValueTask extends InterpolatingTask

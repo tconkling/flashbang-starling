@@ -5,8 +5,8 @@ package flashbang.tasks {
 
 import starling.display.DisplayObject;
 
-import flashbang.GameObject;
-import flashbang.ObjectTask;
+import flashbang.core.GameObject;
+import flashbang.core.ObjectTask;
 
 public class ScaleTask extends DisplayObjectTask
 {

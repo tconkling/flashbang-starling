@@ -10,7 +10,7 @@ import starling.events.Touch;
 import aspire.util.Preconditions;
 import aspire.util.Registration;
 
-import flashbang.GameObject;
+import flashbang.core.GameObject;
 
 public class Dragger extends GameObject
 {

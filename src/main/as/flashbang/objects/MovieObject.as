@@ -5,7 +5,7 @@ package flashbang.objects {
 
 import starling.display.DisplayObject;
 
-import flashbang.GameObject;
+import flashbang.core.GameObject;
 import flashbang.components.DisplayComponent;
 import flashbang.resource.MovieResource;
 

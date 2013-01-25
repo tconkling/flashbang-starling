@@ -7,7 +7,7 @@ import starling.display.Image;
 
 import flump.display.Library;
 
-import flashbang.Flashbang;
+import flashbang.core.Flashbang;
 
 public class ImageResource extends Resource
 {

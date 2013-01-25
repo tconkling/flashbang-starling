@@ -4,8 +4,8 @@
 package flashbang.tasks {
 
 import flashbang.util.Easing;
-import flashbang.GameObject;
-import flashbang.ObjectTask;
+import flashbang.core.GameObject;
+import flashbang.core.ObjectTask;
 
 public class InterpolatingTask
     implements ObjectTask

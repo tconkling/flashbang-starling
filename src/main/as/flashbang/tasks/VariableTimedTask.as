@@ -5,8 +5,8 @@ package flashbang.tasks {
 
 import aspire.util.Randoms;
 
-import flashbang.GameObject;
-import flashbang.ObjectTask;
+import flashbang.core.GameObject;
+import flashbang.core.ObjectTask;
 
 public class VariableTimedTask
     implements ObjectTask

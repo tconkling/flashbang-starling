@@ -3,7 +3,7 @@
 
 package flashbang.tasks {
 
-import flashbang.ObjectTask;
+import flashbang.core.ObjectTask;
 
 public function After (duration :Number, task :ObjectTask) :ObjectTask
 {

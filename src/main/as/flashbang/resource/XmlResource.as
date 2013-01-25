@@ -3,7 +3,7 @@
 
 package flashbang.resource {
 
-import flashbang.Flashbang;
+import flashbang.core.Flashbang;
 
 public class XmlResource extends Resource
 {

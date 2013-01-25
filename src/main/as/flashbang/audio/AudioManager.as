@@ -11,7 +11,7 @@ import aspire.util.F;
 import aspire.util.Log;
 import aspire.util.Preconditions;
 
-import flashbang.Updatable;
+import flashbang.core.Updatable;
 import flashbang.resource.SoundResource;
 
 public class AudioManager

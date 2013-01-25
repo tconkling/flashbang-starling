@@ -6,8 +6,8 @@ package flashbang.tasks {
 import aspire.util.Arrays;
 import aspire.util.Preconditions;
 
-import flashbang.GameObject;
-import flashbang.ObjectTask;
+import flashbang.core.GameObject;
+import flashbang.core.ObjectTask;
 
 public class TaskContainer
     implements ObjectTask

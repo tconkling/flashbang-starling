@@ -1,7 +1,7 @@
 //
 // Flashbang
 
-package flashbang {
+package flashbang.core {
 
 public interface Updatable
 {

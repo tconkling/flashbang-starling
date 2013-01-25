@@ -3,8 +3,8 @@
 
 package flashbang.tasks {
 
-import flashbang.GameObject;
-import flashbang.ObjectTask;
+import flashbang.core.GameObject;
+import flashbang.core.ObjectTask;
 
 /**
  * A Task that calls a function. The function should take no arguments.

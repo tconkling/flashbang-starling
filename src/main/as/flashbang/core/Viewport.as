@@ -1,7 +1,7 @@
 //
 // Flashbang
 
-package flashbang {
+package flashbang.core {
 
 import starling.display.Sprite;
 import starling.events.KeyboardEvent;
@@ -341,8 +341,8 @@ public class Viewport
 }
 }
 
-import flashbang.AppMode;
-import flashbang.ModeTransition;
+import flashbang.core.AppMode;
+import flashbang.core.ModeTransition;
 
 class PendingTransition
 {

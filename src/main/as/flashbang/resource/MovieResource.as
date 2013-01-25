@@ -6,7 +6,7 @@ package flashbang.resource {
 import flump.display.Library;
 import flump.display.Movie;
 
-import flashbang.Flashbang;
+import flashbang.core.Flashbang;
 
 public class MovieResource extends Resource
 {

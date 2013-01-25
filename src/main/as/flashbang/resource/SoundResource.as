@@ -5,7 +5,7 @@ package flashbang.resource {
 
 import flash.media.Sound;
 
-import flashbang.Flashbang;
+import flashbang.core.Flashbang;
 import flashbang.audio.SoundType;
 
 public class SoundResource extends Resource

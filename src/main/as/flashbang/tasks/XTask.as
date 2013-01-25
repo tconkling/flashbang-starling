@@ -7,8 +7,8 @@ import starling.display.DisplayObject;
 
 import aspire.util.Preconditions;
 
-import flashbang.GameObject;
-import flashbang.ObjectTask;
+import flashbang.core.GameObject;
+import flashbang.core.ObjectTask;
 import flashbang.components.LocationComponent;
 
 public class XTask extends DisplayObjectTask

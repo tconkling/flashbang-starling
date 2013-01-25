@@ -1,7 +1,7 @@
 //
 // Flashbang
 
-package flashbang {
+package flashbang.core {
 
 import starling.display.DisplayObject;
 import starling.display.DisplayObjectContainer;
