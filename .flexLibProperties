@@ -5,6 +5,11 @@
     <classEntry path="flashbang.input.Touchable"/>
     <classEntry path="flashbang.util.EventSignal"/>
     <classEntry path="flashbang.input.TouchSignals"/>
+    <classEntry path="flashbang.util.Meter"/>
+    <classEntry path="flashbang.util.MeterBase"/>
+    <classEntry path="flashbang.util.MeterFill"/>
+    <classEntry path="flashbang.util.DisplayUtil"/>
+    <classEntry path="flashbang.util.RectMeter"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
