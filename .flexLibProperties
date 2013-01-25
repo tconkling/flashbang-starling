@@ -4,6 +4,7 @@
     <classEntry path="flashbang.util.URLLoadable"/>
     <classEntry path="flashbang.input.Touchable"/>
     <classEntry path="flashbang.util.EventSignal"/>
+    <classEntry path="flashbang.input.TouchUtil"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

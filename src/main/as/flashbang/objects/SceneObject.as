@@ -4,13 +4,11 @@
 package flashbang.objects {
 
 import starling.display.DisplayObject;
-import starling.events.TouchEvent;
-import starling.events.TouchPhase;
 
 import flashbang.GameObject;
 import flashbang.components.DisplayComponent;
+import flashbang.input.TouchUtil;
 import flashbang.input.Touchable;
-import flashbang.util.EventSignal;
 
 import org.osflash.signals.ISignal;
 
@@ -45,54 +43,35 @@ public class SceneObject extends GameObject
 
     public function get touchEvent () :ISignal
     {
-        if (_touchEvent == null) {
-            _touchEvent = new EventSignal(_displayObject, TouchEvent.TOUCH);
-        }
-        return _touchEvent;
+        return getTouchable().touchEvent;
     }
 
     public function get touchBegan () :ISignal
     {
-        return getFilteredTouchSignal(TouchPhase.BEGAN);
+        return getTouchable().touchBegan;
     }
 
     public function get touchMoved () :ISignal
     {
-        return getFilteredTouchSignal(TouchPhase.MOVED);
+        return getTouchable().touchMoved;
     }
 
     public function get touchEnded () :ISignal
     {
-        return getFilteredTouchSignal(TouchPhase.ENDED);
+        return getTouchable().touchEnded;
     }
-
-    protected function getFilteredTouchSignal (phase :String) :ISignal
-    {
-        if (_filteredTouchSignals == null) {
-            _filteredTouchSignals = new Vector.<FilteredTouchSignal>(NUM_PHASES, true);
+    
+    protected function getTouchable () :Touchable {
+        if (_touchable == null) {
+            _touchable = TouchUtil.createTouchable(_displayObject);
         }
-        var idx :int;
-        switch (phase) {
-        case TouchPhase.BEGAN: idx = BEGAN; break;
-        case TouchPhase.MOVED: idx = MOVED; break;
-        case TouchPhase.ENDED: idx = ENDED; break;
-        default:
-            throw new Error("Unrecognized TouchPhase '" + phase + "'");
-        }
-
-        var sig :FilteredTouchSignal = _filteredTouchSignals[idx];
-        if (sig == null) {
-            sig = new FilteredTouchSignal(_displayObject, EventSignal(this.touchEvent), phase);
-            _filteredTouchSignals[idx] = sig;
-        }
-        return sig;
+        return _touchable;
     }
 
     protected var _displayObject :DisplayObject;
     protected var _name :String;
     protected var _group :String;
-    protected var _touchEvent :EventSignal; // lazily instantiated
-    protected var _filteredTouchSignals :Vector.<FilteredTouchSignal>; // lazily instantiated
+    protected var _touchable :Touchable; // lazily instantiated
 
     protected static const BEGAN :int = 0;
     protected static const MOVED :int = 1;
