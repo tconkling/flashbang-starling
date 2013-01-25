@@ -133,7 +133,7 @@ public class RectMeter extends MeterBase
             break;
         }
         
-        _sprite.removeChildren(0, -1, true);
+        _sprite.removeChildren();
         
         // draw foreground
         var x :Number = 0;
