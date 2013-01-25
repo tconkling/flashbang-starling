@@ -14,6 +14,9 @@ public class RectMeter extends MeterBase
         _height = height;
         _outlineSize = 0;
         _fill = MeterFill.LEFT_TO_RIGHT;
+        
+        // update display immediately so that our width/height get set
+        updateDisplay();
     }
     
     public function get fill () :MeterFill {

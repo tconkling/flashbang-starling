@@ -65,9 +65,9 @@ public class MeterBase extends SpriteObject
     protected function updateDisplay () :void {
     }
     
-    protected var _maxValue :Number;
-    protected var _minValue :Number;
-    protected var _value :Number;
+    protected var _maxValue :Number = 0;
+    protected var _minValue :Number = 0;
+    protected var _value :Number = 0;
     
     protected var _needsDisplayUpdate :Boolean = true;
 }
