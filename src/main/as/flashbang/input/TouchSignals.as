@@ -5,10 +5,10 @@ package flashbang.input {
 
 import starling.display.DisplayObject;
 
-public class TouchUtil
+public class TouchSignals
 {
     /** Creates a Touchable interface for the given DisplayObject */
-    public static function createTouchable (disp :DisplayObject) :Touchable
+    public static function forDisp (disp :DisplayObject) :Touchable
     {
         return new TouchableDisplayObject(disp);
     }
