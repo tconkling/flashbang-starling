@@ -36,7 +36,6 @@ public class DisplayUtil
         sprite.addChild(bottom);
         sprite.addChild(left);
         sprite.addChild(right);
-        sprite.flatten();
         
         return sprite;
     }
