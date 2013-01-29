@@ -10,6 +10,7 @@
     <classEntry path="flashbang.util.MeterFill"/>
     <classEntry path="flashbang.util.DisplayUtil"/>
     <classEntry path="flashbang.util.RectMeter"/>
+    <classEntry path="flashbang.tasks.PlayMovieTask"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
