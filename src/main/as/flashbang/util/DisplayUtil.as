@@ -3,6 +3,11 @@
 
 package flashbang.util {
 
+import aspire.geom.Vector2;
+
+import flash.geom.Point;
+
+import starling.display.DisplayObject;
 import starling.display.Quad;
 import starling.display.Sprite;
 
@@ -39,5 +44,23 @@ public class DisplayUtil
         
         return sprite;
     }
+    
+    
+    
+    /** Transforms a point from one DisplayObject's coordinate space to another's. */
+    public static function transformPoint (p :Point, from :DisplayObject, to :DisplayObject,
+        out :Point = null) :Point
+    {
+        return to.globalToLocal(from.localToGlobal(p, P), out);
+    }
+    
+    /** Transforms a Vector2 from one DisplayObject's coordinate space to another's. */
+    public static function transformVector (v :Vector2, from :DisplayObject, to :DisplayObject,
+        out :Vector2 = null) :Vector2
+    {
+        return Vector2.fromPoint(transformPoint(v.toPoint(P), from, to, P), out);
+    }
+    
+    protected static const P :Point = new Point();
 }
 }
