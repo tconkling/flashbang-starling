@@ -49,8 +49,6 @@ public class DisplayUtil
         return sprite;
     }
     
-    
-    
     /** Transforms a point from one DisplayObject's coordinate space to another's. */
     public static function transformPoint (p :Point, from :DisplayObject, to :DisplayObject,
         out :Point = null) :Point
