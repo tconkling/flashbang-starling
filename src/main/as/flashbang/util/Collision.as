@@ -130,8 +130,7 @@ public class Collision
      * Returns an Array<Vector2> containing grid coordinates for all grid spaces that the given
      * line passes through. Useful for line-of-sight calculations on a 2D grid.
      */
-    public static function getLineGridIntersections (v1 :Vector2, v2 :Vector2) :Array
-    {
+    public static function getLineGridIntersections (v1 :Vector2, v2 :Vector2) :Array {
         var points :Array = [];
         forEachLineGridIntersection(v1, v2, function (gridX :int, gridY :int) :Boolean {
             points.push(new Vector2(gridX, gridY));

@@ -5,30 +5,25 @@ package flashbang.core {
 
 public class GameObjectRef
 {
-    public static function Null () :GameObjectRef
-    {
+    public static function Null () :GameObjectRef {
         return NULL;
     }
 
-    public function destroyObject () :void
-    {
+    public function destroyObject () :void {
         if (null != _obj) {
             _obj.destroySelf();
         }
     }
 
-    public function get object () :GameObject
-    {
+    public function get object () :GameObject {
         return _obj;
     }
 
-    public function get isLive () :Boolean
-    {
+    public function get isLive () :Boolean {
         return (null != _obj);
     }
 
-    public function get isNull () :Boolean
-    {
+    public function get isNull () :Boolean {
         return (null == _obj);
     }
 

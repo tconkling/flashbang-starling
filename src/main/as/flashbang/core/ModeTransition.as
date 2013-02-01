@@ -17,8 +17,7 @@ public final class ModeTransition extends Enum
     /**
      * Get the values of the ModeTransition enum
      */
-    public static function values () :Array
-    {
+    public static function values () :Array {
         return Enum.values(ModeTransition);
     }
 
@@ -26,24 +25,20 @@ public final class ModeTransition extends Enum
      * Get the value of the ModeTransition enum that corresponds to the specified string.
      * If the value requested does not exist, an ArgumentError will be thrown.
      */
-    public static function valueOf (name :String) :ModeTransition
-    {
+    public static function valueOf (name :String) :ModeTransition {
         return Enum.valueOf(ModeTransition, name) as ModeTransition;
     }
 
-    public function get requiresMode () :Boolean
-    {
+    public function get requiresMode () :Boolean {
         return _requiresMode;
     }
 
-    public function get requiresIndex () :Boolean
-    {
+    public function get requiresIndex () :Boolean {
         return _requiresIndex;
     }
 
     /** @private */
-    public function ModeTransition (name :String, requiresMode :Boolean, requiresIndex :Boolean)
-    {
+    public function ModeTransition (name :String, requiresMode :Boolean, requiresIndex :Boolean) {
         super(name);
         _requiresMode = requiresMode;
         _requiresIndex = requiresIndex;

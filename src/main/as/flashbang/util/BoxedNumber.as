@@ -10,13 +10,11 @@ public class BoxedNumber
 {
     public var value :Number;
 
-    public function BoxedNumber (value :Number = 0)
-    {
+    public function BoxedNumber (value :Number = 0) {
         this.value = value;
     }
 
-    public function toString () :String
-    {
+    public function toString () :String {
         return "" + value;
     }
 }

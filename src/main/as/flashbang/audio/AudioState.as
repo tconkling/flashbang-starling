@@ -11,13 +11,11 @@ public class AudioState
     public var muted :Boolean;
     public var stopped :Boolean;
 
-    public function get actualVolume () :Number
-    {
+    public function get actualVolume () :Number {
         return (muted ? 0 : volume);
     }
 
-    public static function defaultState () :AudioState
-    {
+    public static function defaultState () :AudioState {
         return new AudioState();
     }
 

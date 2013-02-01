@@ -13,14 +13,12 @@ public class LoadableBatch extends Loadable
      * @param maxSimultaneous the number of Loadables that can be loading simultaneously
      * (or 0 for unlimited).
      */
-    public function LoadableBatch (maxSimultaneous :int = 0)
-    {
+    public function LoadableBatch (maxSimultaneous :int = 0) {
         _maxSimultaneous = maxSimultaneous;
     }
 
     /** Adds a Loadable to the batch */
-    public function addLoadable (loadable :Loadable) :void
-    {
+    public function addLoadable (loadable :Loadable) :void {
         Preconditions.checkState(this.state == LoadState.INIT,
             "Batch is loading or loaded", "state", this.state);
         Preconditions.checkArgument(loadable.state == LoadState.INIT,
@@ -28,13 +26,11 @@ public class LoadableBatch extends Loadable
         _pending.push(loadable);
     }
 
-    override protected function doLoad () :void
-    {
+    override protected function doLoad () :void {
         loadMore();
     }
 
-    protected function loadMore () :void
-    {
+    protected function loadMore () :void {
         // If we don't have any objects to load, we're done!
         if (_pending.length == 0 && _loading.length == 0) {
             succeed(_loaded);
@@ -49,8 +45,7 @@ public class LoadableBatch extends Loadable
         }
     }
 
-    protected function loadOneObject (loadable :Loadable) :void
-    {
+    protected function loadOneObject (loadable :Loadable) :void {
         var self :LoadableBatch = this;
         _loading.push(loadable);
         loadable.load(
@@ -72,8 +67,7 @@ public class LoadableBatch extends Loadable
             });
     }
 
-    override protected function onLoadCanceled () :void
-    {
+    override protected function onLoadCanceled () :void {
         for each (var loadable :Loadable in _loading) {
             loadable.cancel();
         }
@@ -81,8 +75,7 @@ public class LoadableBatch extends Loadable
         cleanup();
     }
 
-    protected function cleanup () :void
-    {
+    protected function cleanup () :void {
         _pending = null;
         _loading = null;
         _loaded = null;

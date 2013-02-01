@@ -12,14 +12,12 @@ public class Demo extends flashbang.core.FlashbangApp
     public static const WIDTH :int = 480;
     public static const HEIGHT :int = 320;
 
-    override protected function run () :void
-    {
+    override protected function run () :void {
         // Load our assets. LoadingMode will kick off the game when it's finished.
         this.defaultViewport.pushMode(new LoadingMode());
     }
 
-    override protected function createConfig () :Config
-    {
+    override protected function createConfig () :Config {
         var config :Config = new Config();
         config.stageWidth = WIDTH;
         config.stageHeight = HEIGHT;
@@ -40,8 +38,7 @@ import flashbang.resource.ResourceSet;
 
 class LoadingMode extends AppMode
 {
-    public function LoadingMode ()
-    {
+    public function LoadingMode () {
         var resources :ResourceSet = new ResourceSet();
         resources.add({ type: "flump", name: "flump", data: FLUMP });
         resources.load(

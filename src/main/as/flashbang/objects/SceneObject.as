@@ -23,35 +23,31 @@ public class SceneObject extends GameObject
         _name = name;
         _group = group;
     }
-    
+
     /** Convenience function that returns a Touchable interface for the DisplayObject */
-    public function get touchSignals () :Touchable
-    {
+    public function get touchSignals () :Touchable {
         if (_touchable == null) {
             _touchable = TouchSignals.forDisp(_displayObject);
         }
         return _touchable;
     }
 
-    override public function get objectNames () :Array
-    {
+    override public function get objectNames () :Array {
         return _name == null ? [] : [ _name ];
     }
 
-    override public function get objectGroups () :Array
-    {
+    override public function get objectGroups () :Array {
         return _group == null ? [] : [ _group ];
     }
 
-    public final function get display () :DisplayObject
-    {
+    public final function get display () :DisplayObject {
         return _displayObject;
     }
 
     protected var _displayObject :DisplayObject;
     protected var _name :String;
     protected var _group :String;
-    
+
     protected var _touchable :Touchable; // lazily instantiated
 }
 

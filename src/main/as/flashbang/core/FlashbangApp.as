@@ -30,8 +30,7 @@ public class FlashbangApp extends flash.display.Sprite
 {
     public const didShutdown :Signal = new Signal();
 
-    public function FlashbangApp ()
-    {
+    public function FlashbangApp () {
         // Start starling when we're added to the stage
         addEventListener(flash.events.Event.ADDED_TO_STAGE, addedToStage);
         Flashbang.registerApp(this);
@@ -45,30 +44,26 @@ public class FlashbangApp extends flash.display.Sprite
      *
      * It's an error to continue to use a FlashbangApp that has been shut down.
      */
-    public function shutdown () :void
-    {
+    public function shutdown () :void {
         _shutdownPending = true;
     }
 
     /** Called when the app receives touches. By default it forwards them to each viewport */
-    public function handleTouches (touches :Vector.<Touch>) :void
-    {
+    public function handleTouches (touches :Vector.<Touch>) :void {
         for (var ii :int = _viewports.length - 1; ii >= 0; --ii) {
             _viewports[ii].handleTouches(touches);
         }
     }
 
     /** Called when the app receives a keyDown event. By default it forwards it to each viewport */
-    public function onKeyDown (e :KeyboardEvent) :void
-    {
+    public function onKeyDown (e :KeyboardEvent) :void {
         for (var ii :int = _viewports.length - 1; ii >= 0; --ii) {
             _viewports[ii].onKeyDown(e);
         }
     }
 
     /** Called when the app receives a keyUp event. By default it forwards it to each viewport */
-    public function onKeyUp (e :KeyboardEvent) :void
-    {
+    public function onKeyUp (e :KeyboardEvent) :void {
         for (var ii :int = _viewports.length - 1; ii >= 0; --ii) {
             _viewports[ii].onKeyUp(e);
         }
@@ -101,8 +96,7 @@ public class FlashbangApp extends flash.display.Sprite
     /**
      * Returns the Viewport with the given name, if it exists.
      */
-    public function getViewport (name :String) :Viewport
-    {
+    public function getViewport (name :String) :Viewport {
         for each (var viewport :Viewport in _viewports) {
             if (viewport.name == name) {
                 return viewport;
@@ -114,19 +108,16 @@ public class FlashbangApp extends flash.display.Sprite
     /**
      * Returns the default Viewport that was created when Flashbang was initialized
      */
-    public function get defaultViewport () :Viewport
-    {
+    public function get defaultViewport () :Viewport {
         return getViewport(Viewport.DEFAULT);
     }
 
-    public function addUpdatable (obj :Updatable) :Registration
-    {
+    public function addUpdatable (obj :Updatable) :Registration {
         _updatables.push(obj);
         return Registrations.createWithFunction(F.callback(removeUpdatable, obj));
     }
 
-    public function removeUpdatable (obj :Updatable) :void
-    {
+    public function removeUpdatable (obj :Updatable) :void {
         for (var ii :int = _updatables.length - 1; ii >= 0; --ii) {
             if (_updatables[ii] == obj) {
                 _updatables.splice(ii, 1);
@@ -143,38 +134,32 @@ public class FlashbangApp extends flash.display.Sprite
      * Cheat Engine speed hacks:
      * http://www.gaminggutter.com/forum/f16/how-use-cheat-engine-speedhack-games-2785.html
      */
-    public function getAppTime () :Number
-    {
+    public function getAppTime () :Number {
         return (new Date().time * 0.001); // convert millis to seconds
     }
 
-    protected final function get starling () :Starling
-    {
+    protected final function get starling () :Starling {
         return _starling;
     }
 
-    protected final function get config () :Config
-    {
+    protected final function get config () :Config {
         return _config;
     }
 
     /** Subclasses can override this to create a custom Config */
-    protected function createConfig () :Config
-    {
+    protected function createConfig () :Config {
         return new Config();
     }
 
     /** Subclasses should override this to push their initial AppMode to the mode stack */
-    protected function run () :void
-    {
+    protected function run () :void {
     }
 
     /**
      * Creates and returns a Starling instance.
      * Subclasses can override to do custom initialization.
      */
-    protected function initStarling () :Starling
-    {
+    protected function initStarling () :Starling {
         var viewPort :Rectangle = RectangleUtil.fit(
             new Rectangle(0, 0, _config.stageWidth, _config.stageHeight),
             new Rectangle(0, 0, _config.windowWidth, _config.windowHeight));
@@ -187,8 +172,7 @@ public class FlashbangApp extends flash.display.Sprite
         return starling;
     }
 
-    protected function addedToStage (e :flash.events.Event) :void
-    {
+    protected function addedToStage (e :flash.events.Event) :void {
         var iOS :Boolean = Capabilities.manufacturer.indexOf("iOS") != -1;
         var isMac :Boolean = Capabilities.manufacturer.indexOf("Macintosh") != -1;
         var hasTouchscreen :Boolean = (Capabilities.touchscreenType == TouchscreenType.FINGER);
@@ -207,8 +191,7 @@ public class FlashbangApp extends flash.display.Sprite
         _starling.start();
     }
 
-    protected function rootCreated (..._) :void
-    {
+    protected function rootCreated (..._) :void {
         _audio = new AudioManager(_config.maxAudioChannels);
         addUpdatable(_audio);
 
@@ -229,8 +212,7 @@ public class FlashbangApp extends flash.display.Sprite
         }
     }
 
-    protected function update (e :starling.events.Event) :void
-    {
+    protected function update (e :starling.events.Event) :void {
         // how much time has elapsed since last frame?
         var newTime :Number = getAppTime();
         var dt :Number = newTime - _lastTime;
@@ -266,8 +248,7 @@ public class FlashbangApp extends flash.display.Sprite
         _lastTime = newTime;
     }
 
-    protected function shutdownNow () :void
-    {
+    protected function shutdownNow () :void {
         for each (var viewport :Viewport in _viewports) {
             viewport.shutdown();
         }

@@ -25,13 +25,11 @@ public class FlumpLibraryLoader extends ResourceLoader
      */
     public static const DATA :String = "data";
 
-    public function FlumpLibraryLoader (params :Object)
-    {
+    public function FlumpLibraryLoader (params :Object) {
         super(params);
     }
 
-    override protected function doLoad () :void
-    {
+    override protected function doLoad () :void {
         _name = requireLoadParam(NAME, String);
         var data :Object = requireLoadParam(DATA, Object);
         if (data is Class) {
@@ -59,8 +57,7 @@ public class FlumpLibraryLoader extends ResourceLoader
         }
     }
 
-    protected function libraryLoaded (library :Library) :void
-    {
+    protected function libraryLoaded (library :Library) :void {
         var resources :Vector.<Resource> = new <Resource>[];
 
         // create a (private) resource for the library itself
@@ -77,8 +74,7 @@ public class FlumpLibraryLoader extends ResourceLoader
         succeed(resources);
     }
 
-    override protected function onLoadCanceled () :void
-    {
+    override protected function onLoadCanceled () :void {
         _exec.shutdownNow();
         _exec = null;
     }

@@ -14,23 +14,19 @@ import flump.display.Movie;
 public class MovieObject extends GameObject
     implements DisplayComponent
 {
-    public static function create (movieName :String) :MovieObject
-    {
+    public static function create (movieName :String) :MovieObject {
         return new MovieObject(MovieResource.createMovie(movieName));
     }
 
-    public function MovieObject (movie :Movie)
-    {
+    public function MovieObject (movie :Movie) {
         _movie = movie;
     }
 
-    public function get display () :DisplayObject
-    {
+    public function get display () :DisplayObject {
         return _movie;
     }
 
-    override protected function update (dt :Number) :void
-    {
+    override protected function update (dt :Number) :void {
         _movie.advanceTime(dt);
     }
 

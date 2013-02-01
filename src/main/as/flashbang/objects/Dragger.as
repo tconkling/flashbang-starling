@@ -14,13 +14,11 @@ import flashbang.core.GameObject;
 
 public class Dragger extends GameObject
 {
-    public function get dragging () :Boolean
-    {
+    public function get dragging () :Boolean {
         return _dragReg != null;
     }
 
-    public function startDrag (touch :Touch) :void
-    {
+    public function startDrag (touch :Touch) :void {
         Preconditions.checkState(!this.dragging, "already dragging");
         _listener = new DragListener(touch, this.onDragged,
             function (current :Point, start :Point) :void {
@@ -34,19 +32,16 @@ public class Dragger extends GameObject
         onDragStart(_listener.start);
     }
 
-    public function cancelDrag () :void
-    {
+    public function cancelDrag () :void {
         stopDrag(false);
     }
 
-    override protected function removedFromMode () :void
-    {
+    override protected function removedFromMode () :void {
         cancelDrag();
         super.removedFromMode();
     }
 
-    protected function stopDrag (dragCompleted :Boolean) :void
-    {
+    protected function stopDrag (dragCompleted :Boolean) :void {
         if (_dragReg != null) {
             _dragReg.cancel();
             _dragReg = null;
@@ -77,33 +72,28 @@ import flashbang.input.PointerAdapter;
 
 class DragListener extends PointerAdapter
 {
-    public function DragListener (touch :Touch, onTouchMove :Function, onTouchEnd :Function)
-    {
+    public function DragListener (touch :Touch, onTouchMove :Function, onTouchEnd :Function) {
         super(touch.id);
         _start = new Point(touch.globalX, touch.globalY);
         _onTouchMove = onTouchMove;
         _onTouchEnd = onTouchEnd;
     }
 
-    public function get start () :Point
-    {
+    public function get start () :Point {
         return _start;
     }
 
-    public function get current () :Point
-    {
+    public function get current () :Point {
         return _current;
     }
 
-    override public function onPointerMove (touch :Touch) :Boolean
-    {
+    override public function onPointerMove (touch :Touch) :Boolean {
         _current = new Point(touch.globalX, touch.globalY);
         _onTouchMove(_current, _start);
         return true;
     }
 
-    override public function onPointerEnd (touch :Touch) :Boolean
-    {
+    override public function onPointerEnd (touch :Touch) :Boolean {
         _current = new Point(touch.globalX, touch.globalY);
         _onTouchEnd(_current, _start);
         return true;

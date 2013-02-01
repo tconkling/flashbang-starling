@@ -11,14 +11,12 @@ import flashbang.audio.SoundType;
 public class SoundResource extends Resource
 {
     /** Returns the SoundResource with the given name, or null if it doesn't exist */
-    public static function get (name :String) :SoundResource
-    {
+    public static function get (name :String) :SoundResource {
         return Flashbang.rsrcs.getResource(name);
     }
 
     /** Returns the SoundResource with the given name. Throws an error if it doesn't exist */
-    public static function require (name :String) :SoundResource
-    {
+    public static function require (name :String) :SoundResource {
         return Flashbang.rsrcs.requireResource(name);
     }
 
@@ -33,8 +31,7 @@ public class SoundResource extends Resource
         _pan = pan;
     }
 
-    override protected function unload () :void
-    {
+    override protected function unload () :void {
         _sound.close();
         _sound = null;
     }

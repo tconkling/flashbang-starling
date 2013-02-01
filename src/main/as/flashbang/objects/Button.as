@@ -24,26 +24,22 @@ public class Button extends SpriteObject
     /** Fired when the button is clicked */
     public const clicked :Signal = new Signal();
 
-    public function get enabled () :Boolean
-    {
+    public function get enabled () :Boolean {
         return (_state != DISABLED);
     }
 
-    public function set enabled (val :Boolean) :void
-    {
+    public function set enabled (val :Boolean) :void {
         if (val != this.enabled) {
             setState(val ? UP : DISABLED);
         }
     }
 
     /** Subclasses must override this to display the appropriate state */
-    protected function showState (state :int) :void
-    {
+    protected function showState (state :int) :void {
         throw new Error("abstract");
     }
 
-    override protected function addedToMode () :void
-    {
+    override protected function addedToMode () :void {
         showState(_state);
 
         var self :Button = this;
@@ -59,8 +55,7 @@ public class Button extends SpriteObject
         });
     }
 
-    protected function setState (val :int) :void
-    {
+    protected function setState (val :int) :void {
         if (_state != val) {
             _state = val;
             if (_state == DISABLED) {
@@ -70,22 +65,19 @@ public class Button extends SpriteObject
         }
     }
 
-    protected function cancelCapture () :void
-    {
+    protected function cancelCapture () :void {
         if (_captureReg != null) {
             _captureReg.cancel();
             _captureReg = null;
         }
     }
 
-    protected function onPointerMove (touch :Touch) :void
-    {
+    protected function onPointerMove (touch :Touch) :void {
         _pointerOver = hitTest(touch);
         setState(_pointerOver ? DOWN : UP);
     }
 
-    protected function onPointerEnd (touch :Touch) :void
-    {
+    protected function onPointerEnd (touch :Touch) :void {
         setState(UP);
         cancelCapture();
         // emit the signal after doing everything else, because a signal handler could change
@@ -95,8 +87,7 @@ public class Button extends SpriteObject
         }
     }
 
-    protected function hitTest (touch :Touch) :Boolean
-    {
+    protected function hitTest (touch :Touch) :Boolean {
         var p :Point = _sprite.globalToLocal(new Point(touch.globalX, touch.globalY));
         return (_sprite.hitTest(p, true) != null);
     }

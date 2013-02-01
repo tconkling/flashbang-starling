@@ -13,8 +13,7 @@ public class PointerAdapter
     implements PointerListener
 {
     /** Builds a PointerAdapter that will call the given functions for pointer updates */
-    public static function withTouchId (touchId :int) :PointerListenerBuilder
-    {
+    public static function withTouchId (touchId :int) :PointerListenerBuilder {
         return new PointerListenerBuilder(touchId);
     }
 
@@ -27,14 +26,12 @@ public class PointerAdapter
      * @param consumeAllTouches if true, all touch events are reported as "handled"
      * by the adapter, rather than just those related to the specified touchId.
      */
-    public function PointerAdapter (touchId :int = 0, consumeAllTouches :Boolean = true)
-    {
+    public function PointerAdapter (touchId :int = 0, consumeAllTouches :Boolean = true) {
         _touchId = touchId;
         _consumeAllTouches = consumeAllTouches;
     }
 
-    public function onTouchesUpdated (touches :Vector.<Touch>) :Boolean
-    {
+    public function onTouchesUpdated (touches :Vector.<Touch>) :Boolean {
         var handled :Boolean;
         for each (var touch :Touch in touches) {
             if (touch.updated && touch.id == _touchId) {

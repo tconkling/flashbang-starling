@@ -20,32 +20,28 @@ public class GameObject
 {
     public const destroyed :Signal = new Signal();
 
-    public function toString () :String
-    {
+    public function toString () :String {
         return StringUtil.simpleToString(this, [ "isLiveObject", "objectNames", "objectGroups" ]);
     }
 
     /**
      * Returns the unique GameObjectRef that stores a reference to this GameObject.
      */
-    public final function get ref () :GameObjectRef
-    {
+    public final function get ref () :GameObjectRef {
         return _ref;
     }
 
     /**
      * Returns the AppMode that this object is contained in.
      */
-    public final function get mode () :AppMode
-    {
+    public final function get mode () :AppMode {
         return _mode;
     }
 
     /**
      * Returns the Viewport that this object is a part of
      */
-    public final function get viewport () :Viewport
-    {
+    public final function get viewport () :Viewport {
         return _mode.viewport;
     }
 
@@ -53,8 +49,7 @@ public class GameObject
      * Returns true if the object is in an AppMode and is "live"
      * (not pending removal from the database)
      */
-    public final function get isLiveObject () :Boolean
-    {
+    public final function get isLiveObject () :Boolean {
         return (null != _ref && !_ref.isNull);
     }
 
@@ -69,8 +64,7 @@ public class GameObject
      * }
      * </code>
      */
-    public function get objectNames () :Array
-    {
+    public function get objectNames () :Array {
         return [];
     }
 
@@ -83,8 +77,7 @@ public class GameObject
      * }
      * </code>
      */
-    public function get objectGroups () :Array
-    {
+    public function get objectGroups () :Array {
         return [];
     }
 
@@ -93,14 +86,12 @@ public class GameObject
      * If a subclass needs to cleanup after itself after being destroyed, it should do
      * so either in removedFromDb or cleanup.
      */
-    public final function destroySelf () :void
-    {
+    public final function destroySelf () :void {
         _mode.destroyObject(_ref);
     }
 
     /** Adds an unnamed task to this GameObject. */
-    public function addTask (task :ObjectTask) :void
-    {
+    public function addTask (task :ObjectTask) :void {
         if (null == task) {
             throw new ArgumentError("task must be non-null");
         }
@@ -112,14 +103,12 @@ public class GameObject
     }
 
     /** Adds a named task to this GameObject. */
-    public function addNamedTask (name :String, task :ObjectTask) :void
-    {
+    public function addNamedTask (name :String, task :ObjectTask) :void {
         modifyNamedTask(name, task, false);
     }
 
     /** Adds a named task to this GameObject, replacing existing tasks of the name if they exist. */
-    public function replaceNamedTask (name :String, task :ObjectTask) :void
-    {
+    public function replaceNamedTask (name :String, task :ObjectTask) :void {
         modifyNamedTask(name, task, true);
     }
 
@@ -142,8 +131,7 @@ public class GameObject
     }
 
     /** Removes all tasks from the GameObject. */
-    public function removeAllTasks () :void
-    {
+    public function removeAllTasks () :void {
         if (_updatingTasks && _lazyNamedTasks != null) {
             // if we're updating tasks, invalidate all named task containers so that
             // they stop iterating their children
@@ -161,8 +149,7 @@ public class GameObject
     }
 
     /** Removes all tasks with the given name from the GameObject. */
-    public function removeNamedTasks (name :String) :void
-    {
+    public function removeNamedTasks (name :String) :void {
         if (null == name || name.length == 0) {
             throw new ArgumentError("name must be at least 1 character long");
         }
@@ -187,8 +174,7 @@ public class GameObject
     }
 
     /** Returns true if the GameObject has any tasks. */
-    public function hasTasks () :Boolean
-    {
+    public function hasTasks () :Boolean {
         if (_lazyAnonymousTasks != null && _lazyAnonymousTasks.hasTasks()) {
             return true;
 
@@ -202,8 +188,7 @@ public class GameObject
     }
 
     /** Returns true if the GameObject has any tasks with the given name. */
-    public function hasTasksNamed (name :String) :Boolean
-    {
+    public function hasTasksNamed (name :String) :Boolean {
         var namedTask :TaskContainer = findNamedTask(name);
         return namedTask != null && namedTask.hasTasks();
     }
@@ -241,16 +226,14 @@ public class GameObject
      *
      * @param dt the number of seconds that have elapsed since the last update.
      */
-    protected function update (dt :Number) :void
-    {
+    protected function update (dt :Number) :void {
     }
 
     /**
      * Called immediately after the GameObject has been added to an AppMode.
      * (Subclasses can override this to do something useful.)
      */
-    protected function addedToMode () :void
-    {
+    protected function addedToMode () :void {
     }
 
     /**
@@ -261,8 +244,7 @@ public class GameObject
      *
      * (Subclasses can override this to do something useful.)
      */
-    protected function removedFromMode () :void
-    {
+    protected function removedFromMode () :void {
     }
 
     /**
@@ -277,12 +259,10 @@ public class GameObject
      *
      * (Subclasses can override this to do something useful.)
      */
-    protected function cleanup () :void
-    {
+    protected function cleanup () :void {
     }
 
-    protected function manageDependentObject (obj :GameObject) :void
-    {
+    protected function manageDependentObject (obj :GameObject) :void {
         var ref :GameObjectRef;
 
         // the dependent object may already be in the DB
@@ -301,8 +281,7 @@ public class GameObject
         _dependentObjectRefs.push(ref);
     }
 
-    protected function findNamedTask (name :String, create :Boolean = false) :ParallelTask
-    {
+    protected function findNamedTask (name :String, create :Boolean = false) :ParallelTask {
         if (_lazyNamedTasks == null) {
             if (!create) {
                 return null;
@@ -322,8 +301,7 @@ public class GameObject
         return null;
     }
 
-    internal function addedToModeInternal () :void
-    {
+    internal function addedToModeInternal () :void {
         if (_pendingDependentObjects != null) {
             for each (var obj :GameObject in _pendingDependentObjects) {
                 manageDependentObject(obj);
@@ -333,8 +311,7 @@ public class GameObject
         addedToMode();
     }
 
-    internal function removedFromModeInternal () :void
-    {
+    internal function removedFromModeInternal () :void {
         if (_dependentObjectRefs != null) {
             for each (var ref :GameObjectRef in _dependentObjectRefs) {
                 if (ref.isLive) {
@@ -346,15 +323,13 @@ public class GameObject
         this.destroyed.dispatch();
     }
 
-    internal function cleanupInternal () :void
-    {
+    internal function cleanupInternal () :void {
         cleanup();
         _regs.cancel();
         _regs = null;
     }
 
-    internal function updateInternal (dt :Number) :void
-    {
+    internal function updateInternal (dt :Number) :void {
         if (_lazyAnonymousTasks != null || _lazyNamedTasks != null) {
             _updatingTasks = true;
             if (_lazyAnonymousTasks != null) {
@@ -434,8 +409,7 @@ class NamedParallelTask extends ParallelTask
 {
     public var name :String;
 
-    public function NamedParallelTask (name :String)
-    {
+    public function NamedParallelTask (name :String) {
         this.name = name;
     }
 }

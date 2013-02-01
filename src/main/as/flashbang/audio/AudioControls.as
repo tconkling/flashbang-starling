@@ -5,40 +5,30 @@ package flashbang.audio {
 
 public class AudioControls
 {
-    public function AudioControls (parentControls :AudioControls = null)
-    {
+    public function AudioControls (parentControls :AudioControls = null) {
         if (null != parentControls) {
             _parentControls = parentControls;
             _parentControls.attachChild(this);
         }
     }
 
-    internal function attachChild (child :AudioControls) :void
-    {
-        _children.push(child);
-    }
-
-    public function retain () :void
-    {
+    public function retain () :void {
         ++_refCount;
     }
 
-    public function release () :void
-    {
+    public function release () :void {
         if (--_refCount < 0) {
             throw new Error("Cannot release() below a refCount of 0");
         }
     }
 
-    public function volume (val :Number) :AudioControls
-    {
+    public function volume (val :Number) :AudioControls {
         _localState.volume = Math.max(val, 0);
         _localState.volume = Math.min(_localState.volume, 1);
         return this;
     }
 
-    public function volumeTo (targetVal :Number, time :Number) :AudioControls
-    {
+    public function volumeTo (targetVal :Number, time :Number) :AudioControls {
         if (time <= 0) {
             volume(targetVal);
             _targetVolumeTotalTime = 0;
@@ -54,30 +44,25 @@ public class AudioControls
         return this;
     }
 
-    public function fadeOut (time :Number) :AudioControls
-    {
+    public function fadeOut (time :Number) :AudioControls  {
         return volumeTo(0, time);
     }
 
-    public function fadeIn (time :Number) :AudioControls
-    {
+    public function fadeIn (time :Number) :AudioControls {
         return volumeTo(1, time);
     }
 
-    public function fadeOutAndStop (time :Number) :AudioControls
-    {
+    public function fadeOutAndStop (time :Number) :AudioControls {
         return fadeOut(time).stopAfter(time);
     }
 
-    public function pan (val :Number) :AudioControls
-    {
+    public function pan (val :Number) :AudioControls {
         _localState.pan = Math.max(val, -1);
         _localState.pan = Math.min(_localState.pan, 1);
         return this;
     }
 
-    public function panTo (targetVal :Number, time :Number) :AudioControls
-    {
+    public function panTo (targetVal :Number, time :Number) :AudioControls {
         if (time <= 0) {
             pan(targetVal);
             _targetPanTotalTime = 0;
@@ -93,16 +78,14 @@ public class AudioControls
         return this;
     }
 
-    public function pause (val :Boolean) :AudioControls
-    {
+    public function pause (val :Boolean) :AudioControls {
         _localState.paused = val;
         _pauseCountdown = 0;
         _unpauseCountdown = 0;
         return this;
     }
 
-    public function pauseAfter (time :Number) :AudioControls
-    {
+    public function pauseAfter (time :Number) :AudioControls {
         if (time <= 0) {
             pause(true);
         } else {
@@ -112,8 +95,7 @@ public class AudioControls
         return this;
     }
 
-    public function unpauseAfter (time :Number) :AudioControls
-    {
+    public function unpauseAfter (time :Number) :AudioControls {
         if (time <= 0) {
             pause(false);
         } else {
@@ -123,16 +105,14 @@ public class AudioControls
         return this;
     }
 
-    public function mute (val :Boolean) :AudioControls
-    {
+    public function mute (val :Boolean) :AudioControls {
         _localState.muted = val;
         _muteCountdown = 0;
         _unmuteCountdown = 0;
         return this;
     }
 
-    public function muteAfter (time :Number) :AudioControls
-    {
+    public function muteAfter (time :Number) :AudioControls {
         if (time <= 0) {
             mute(true);
         } else {
@@ -142,8 +122,7 @@ public class AudioControls
         return this;
     }
 
-    public function unmuteAfter (time :Number) :AudioControls
-    {
+    public function unmuteAfter (time :Number) :AudioControls {
         if (time <= 0) {
             mute(false);
         } else {
@@ -153,16 +132,14 @@ public class AudioControls
         return this;
     }
 
-    public function stop (val :Boolean) :AudioControls
-    {
+    public function stop (val :Boolean) :AudioControls {
         _localState.stopped = val;
         _stopCountdown = 0;
         _playCountdown = 0;
         return this;
     }
 
-    public function stopAfter (time :Number) :AudioControls
-    {
+    public function stopAfter (time :Number) :AudioControls {
         if (time <= 0) {
             stop(true);
         } else {
@@ -172,8 +149,7 @@ public class AudioControls
         return this;
     }
 
-    public function playAfter (time :Number) :AudioControls
-    {
+    public function playAfter (time :Number) :AudioControls {
         if (time <= 0) {
             stop(false);
         } else {
@@ -183,8 +159,7 @@ public class AudioControls
         return this;
     }
 
-    public function update (dt :Number, parentState :AudioState) :void
-    {
+    public function update (dt :Number, parentState :AudioState) :void {
         if (_targetVolumeTotalTime > 0) {
             _targetVolumeElapsedTime =
                 Math.min(_targetVolumeElapsedTime + dt, _targetVolumeTotalTime);
@@ -261,8 +236,7 @@ public class AudioControls
         }
     }
 
-    public function updateStateNow () :AudioState
-    {
+    public function updateStateNow () :AudioState {
         if (null != _parentControls) {
             _globalState =
                 AudioState.combine(_localState, _parentControls.updateStateNow(), _globalState);
@@ -272,14 +246,16 @@ public class AudioControls
         }
     }
 
-    public function get state () :AudioState
-    {
+    public function get state () :AudioState  {
         return (null != _parentControls ? _globalState : _localState);
     }
 
-    public function get needsCleanup () :Boolean
-    {
+    public function get needsCleanup () :Boolean {
         return (_refCount <= 0 && _children.length == 0);
+    }
+
+    internal function attachChild (child :AudioControls) :void {
+        _children.push(child);
     }
 
     protected var _parentControls :AudioControls;

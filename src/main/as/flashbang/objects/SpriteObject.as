@@ -10,14 +10,12 @@ import starling.display.Sprite;
  */
 public class SpriteObject extends SceneObject
 {
-    public function SpriteObject (name :String = null, group :String = null)
-    {
+    public function SpriteObject (name :String = null, group :String = null) {
         super(new Sprite(), name, group);
         _sprite = Sprite(_displayObject);
     }
 
-    public function get sprite () :Sprite
-    {
+    public function get sprite () :Sprite {
         return _sprite;
     }
 

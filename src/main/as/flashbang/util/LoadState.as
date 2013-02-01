@@ -17,8 +17,7 @@ public final class LoadState extends Enum
     /**
      * Get the values of the LoadState enum
      */
-    public static function values () :Array
-    {
+    public static function values () :Array {
         return Enum.values(LoadState);
     }
 
@@ -26,14 +25,12 @@ public final class LoadState extends Enum
      * Get the value of the LoadState enum that corresponds to the specified string.
      * If the value requested does not exist, an ArgumentError will be thrown.
      */
-    public static function valueOf (name :String) :LoadState
-    {
+    public static function valueOf (name :String) :LoadState {
         return Enum.valueOf(LoadState, name) as LoadState;
     }
 
     /** @private */
-    public function LoadState (name :String)
-    {
+    public function LoadState (name :String) {
         super(name);
     }
 }

@@ -21,8 +21,7 @@ public class ListenerRegistrations extends RegistrationList
      * Adds a listener to the specified signal.
      * @return a Registration object that will disconnect the listener from the signal.
      */
-    public function addSignalListener (signal :ISignal, l :Function) :Registration
-    {
+    public function addSignalListener (signal :ISignal, l :Function) :Registration {
         signal.add(l);
         return add(Registrations.createWithFunction(function () :void {
             signal.remove(l);
@@ -33,8 +32,7 @@ public class ListenerRegistrations extends RegistrationList
      * Adds a listener to the specified signal. It will be removed after being dispatched once.
      * @return a Registration object that will disconnect the listener from the signal.
      */
-    public function addOneShotSignalListener (signal :ISignal, l :Function) :Registration
-    {
+    public function addOneShotSignalListener (signal :ISignal, l :Function) :Registration {
         signal.addOnce(l);
         return add(Registrations.createWithFunction(function () :void {
             signal.remove(l);
@@ -46,8 +44,7 @@ public class ListenerRegistrations extends RegistrationList
      * Note: this works with both Starling and Flash EventDispatchers.
      * @return a Registration object that will disconnect the listener from the EventDispatcher.
      */
-    public function addEventListener (dispatcher :Object, type :String, l :Function) :Registration
-    {
+    public function addEventListener (dispatcher :Object, type :String, l :Function) :Registration {
         if (dispatcher is IEventDispatcher) {
             return addFlashEventListener(IEventDispatcher(dispatcher), type, l);
         } else {

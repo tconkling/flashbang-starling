@@ -19,8 +19,7 @@ public class AudioManager
 {
     public static const LOOP_FOREVER :int = -1;
 
-    public function AudioManager (maxChannels :int = 25)
-    {
+    public function AudioManager (maxChannels :int = 25) {
         _maxChannels = maxChannels;
 
         _masterControls = new AudioControls();
@@ -32,33 +31,27 @@ public class AudioManager
         }
     }
 
-    public function get masterControls () :AudioControls
-    {
+    public function get masterControls () :AudioControls {
         return _masterControls;
     }
 
-    public function get musicControls () :AudioControls
-    {
+    public function get musicControls () :AudioControls {
         return getControlsForSoundType(SoundType.MUSIC);
     }
 
-    public function get sfxControls () :AudioControls
-    {
+    public function get sfxControls () :AudioControls {
         return getControlsForSoundType(SoundType.SFX);
     }
 
-    public function getControlsForSoundType (type :SoundType) :AudioControls
-    {
+    public function getControlsForSoundType (type :SoundType) :AudioControls {
         return _soundTypeControls[type.ordinal()];
     }
 
-    public function shutdown () :void
-    {
+    public function shutdown () :void {
         stopAllSounds();
     }
 
-    public function update (dt :Number) :void
-    {
+    public function update (dt :Number) :void {
         _masterControls.update(dt, DEFAULT_AUDIO_STATE);
 
         // update all playing sound channels
@@ -97,14 +90,12 @@ public class AudioManager
     }
 
     public function playSoundNamed (name :String, parentControls :AudioControls = null,
-        loopCount :int = 0) :AudioChannel
-    {
+        loopCount :int = 0) :AudioChannel {
         return playSound(SoundResource.require(name), parentControls, loopCount);
     }
 
     public function playSound (sound :SoundResource, parentControls :AudioControls = null,
-        loopCount :int = 0) :AudioChannel
-    {
+        loopCount :int = 0) :AudioChannel {
         Preconditions.checkArgument(sound != null);
 
         // get the appropriate parent controls
@@ -195,8 +186,7 @@ public class AudioManager
         return channel;
     }
 
-    public function stopAllSounds () :void
-    {
+    public function stopAllSounds () :void {
         // shutdown all sounds
         for each (var channel :AudioChannel in _activeChannels) {
             stop(channel);
@@ -204,8 +194,7 @@ public class AudioManager
         _activeChannels.length = 0;
     }
 
-    public function stop (channel :AudioChannel) :void
-    {
+    public function stop (channel :AudioChannel) :void {
         if (channel.isPlaying) {
             if (null != channel.channel) {
                 channel.channel.removeEventListener(Event.SOUND_COMPLETE, channel.completeHandler);
@@ -220,8 +209,7 @@ public class AudioManager
         }
     }
 
-    public function pause (channel :AudioChannel) :void
-    {
+    public function pause (channel :AudioChannel) :void {
         if (channel.isPlaying && !channel.isPaused) {
             // save the channel's current play position
             channel.playPosition = channel.channel.position;
@@ -233,15 +221,13 @@ public class AudioManager
         }
     }
 
-    public function resume (channel :AudioChannel) :void
-    {
+    public function resume (channel :AudioChannel) :void {
         if (channel.isPlaying && channel.isPaused) {
             playChannel(channel, channel.controls.state, channel.playPosition);
         }
     }
 
-    protected function handleComplete (channel :AudioChannel) :void
-    {
+    protected function handleComplete (channel :AudioChannel) :void {
         // does the sound need to loop?
         if (channel.loopCount == 0) {
             stop(channel);
@@ -270,8 +256,7 @@ public class AudioManager
         }
     }
 
-    protected static function activeChannelFilter (channel :AudioChannel, ..._) :Boolean
-    {
+    protected static function activeChannelFilter (channel :AudioChannel, ..._) :Boolean {
         return channel.isPlaying;
     }
 

@@ -8,8 +8,7 @@ import starling.text.TextFieldAutoSize;
 
 public class SimpleTextButton extends Button
 {
-    public function SimpleTextButton (text :String, fontSize :Number = 12)
-    {
+    public function SimpleTextButton (text :String, fontSize :Number = 12) {
         _tf = new TextField(1, 1, text, "_sans", fontSize);
         _tf.autoSize = TextFieldAutoSize.SINGLE_LINE;
         _tf.x = PADDING;
@@ -21,8 +20,7 @@ public class SimpleTextButton extends Button
         _sprite.addChild(_tf);
     }
 
-    override protected function showState (state :int) :void
-    {
+    override protected function showState (state :int) :void {
         _bg.color = BG_COLORS[state];
         _tf.color = TEXT_COLORS[state];
     }

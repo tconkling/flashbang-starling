@@ -14,46 +14,38 @@ import org.osflash.signals.Signal;
 public class EventSignal
     implements ISignal
 {
-    public function EventSignal (dispatcher :EventDispatcher, eventType :String)
-    {
+    public function EventSignal (dispatcher :EventDispatcher, eventType :String) {
         _dispatcher = dispatcher;
         _eventType = eventType;
     }
 
-    public function add (listener :Function) :ISlot
-    {
+    public function add (listener :Function) :ISlot {
         connect();
         return _signal.add(listener);
     }
 
-    public function addOnce (listener :Function) :ISlot
-    {
+    public function addOnce (listener :Function) :ISlot {
         connect();
         return _signal.addOnce(listener);
     }
 
-    public function get valueClasses () :Array
-    {
+    public function get valueClasses () :Array {
         return _signal.valueClasses;
     }
 
-    public function set valueClasses (value :Array) :void
-    {
+    public function set valueClasses (value :Array) :void {
         _signal.valueClasses = value;
     }
 
-    public function get numListeners () :uint
-    {
+    public function get numListeners () :uint {
         return _signal.numListeners;
     }
 
-    public function dispatch (...valueObjects) :void
-    {
+    public function dispatch (...valueObjects) :void {
         _signal.dispatch.apply(_signal, valueObjects);
     }
 
-    public function remove (listener :Function) :ISlot
-    {
+    public function remove (listener :Function) :ISlot {
         var toReturn :ISlot = _signal.remove(listener);
         if (_signal.numListeners == 0) {
             disconnect();
@@ -61,30 +53,26 @@ public class EventSignal
         return toReturn;
     }
 
-    public function removeAll () :void
-    {
+    public function removeAll () :void {
         _signal.removeAll();
         disconnect();
     }
 
-    protected function connect () :void
-    {
+    protected function connect () :void {
         if (!_connected) {
             _connected = true;
             _dispatcher.addEventListener(_eventType, listener);
         }
     }
 
-    protected function disconnect () :void
-    {
+    protected function disconnect () :void {
         if (_connected) {
             _connected = false;
             _dispatcher.removeEventListener(_eventType, listener);
         }
     }
 
-    protected function listener (e :Event) :void
-    {
+    protected function listener (e :Event) :void {
         _signal.dispatch(e);
     }
 

@@ -9,8 +9,7 @@ import aspire.util.Preconditions;
 
 public class FontResource extends Resource
 {
-    public function FontResource (name :String, font :BitmapFont)
-    {
+    public function FontResource (name :String, font :BitmapFont) {
         super(name);
 
         // ResourceManager should prevent this from ever happening
@@ -20,8 +19,7 @@ public class FontResource extends Resource
         TextField.registerBitmapFont(font, name);
     }
 
-    override protected function unload () :void
-    {
+    override protected function unload () :void {
         TextField.unregisterBitmapFont(_name, /*dispose=*/true);
     }
 }

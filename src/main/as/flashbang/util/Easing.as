@@ -14,8 +14,7 @@ public class Easing
     public static const easeOut :Function = cubic.easeOut;
     public static const easeInOut :Function = cubic.easeInOut;
 
-    public static function linear (from :Number, to :Number, dt :Number, t :Number) :Number
-    {
+    public static function linear (from :Number, to :Number, dt :Number, t :Number) :Number {
         if (t == 0) {
             return to;
         }

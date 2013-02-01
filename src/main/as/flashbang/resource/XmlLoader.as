@@ -30,13 +30,11 @@ public class XmlLoader extends ResourceLoader
      */
     public static const DATA :String = "data";
 
-    public function XmlLoader (params :Object)
-    {
+    public function XmlLoader (params :Object) {
         super(params);
     }
 
-    override protected function doLoad () :void
-    {
+    override protected function doLoad () :void {
         var data :Object = requireLoadParam(DATA, Object);
         if (data is Class) {
             var clazz :Class = Class(data);
@@ -54,8 +52,7 @@ public class XmlLoader extends ResourceLoader
         }
     }
 
-    protected function loadFromURL (urlString :String) :void
-    {
+    protected function loadFromURL (urlString :String) :void {
         _loader = new URLLoader();
         _loader.dataFormat = URLLoaderDataFormat.TEXT;
         _loader.addEventListener(Event.COMPLETE, function (..._) :void {
@@ -76,8 +73,7 @@ public class XmlLoader extends ResourceLoader
         _loader.load(new URLRequest(urlString));
     }
 
-    protected function createXml (data :*) :void
-    {
+    protected function createXml (data :*) :void {
         // override the default XML settings, so we get the full text content
         var settings :Object = XML.defaultSettings();
         settings["ignoreWhitespace"] = false;
@@ -88,8 +84,7 @@ public class XmlLoader extends ResourceLoader
         succeed(new XmlResource(name, xml));
     }
 
-    override protected function onLoadCanceled () :void
-    {
+    override protected function onLoadCanceled () :void {
         if (_loader != null) {
             try {
                 _loader.close();

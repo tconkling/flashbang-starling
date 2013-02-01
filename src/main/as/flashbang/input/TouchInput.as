@@ -12,13 +12,11 @@ import aspire.util.Registrations;
 
 public class TouchInput
 {
-    public function TouchInput (root :DisplayObjectContainer)
-    {
+    public function TouchInput (root :DisplayObjectContainer) {
         _dispatcher = new TouchDispatcher(root);
     }
 
-    public function shutdown () :void
-    {
+    public function shutdown () :void {
         _dispatcher.dispose();
         _dispatcher = null;
         _listeners = null;
@@ -28,8 +26,7 @@ public class TouchInput
      * Adds a listener to the TouchInput. Listeners are placed on a stack,
      * so the most recently-added listener gets the first chance at each touch event.
      */
-    public function registerListener (l :TouchListener) :Registration
-    {
+    public function registerListener (l :TouchListener) :Registration {
         _listeners.unshift(l);
         return Registrations.createWithFunction(function () :void {
             for (var ii :int = _listeners.length - 1; ii >= 0; --ii) {
@@ -42,13 +39,11 @@ public class TouchInput
     }
 
     /** Removes all listeners from the TouchInput */
-    public function removeAllListeners () :void
-    {
+    public function removeAllListeners () :void {
         _listeners.length = 0;
     }
 
-    public function handleTouches (touches :Vector.<Touch>) :void
-    {
+    public function handleTouches (touches :Vector.<Touch>) :void {
         var handled :Boolean = false;
 
         if (_listeners.length > 0) {

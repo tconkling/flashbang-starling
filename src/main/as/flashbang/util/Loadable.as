@@ -11,14 +11,12 @@ import org.osflash.signals.Signal;
 
 public class Loadable
 {
-    public function Loadable ()
-    {
+    public function Loadable () {
         _state = LoadState.INIT;
     }
 
     /** @return a Signal(result:*) that fires if and when the load succeeds */
-    public final function get loaded () :ISignal
-    {
+    public final function get loaded () :ISignal {
         if (_loaded == null) {
             _loaded = new Signal(Object);
         }
@@ -26,8 +24,7 @@ public class Loadable
     }
 
     /** @return a Signal(err:Error) that fires if and when the load fails */
-    public final function get failed () :ISignal
-    {
+    public final function get failed () :ISignal {
         if (_failed == null) {
             _failed = new Signal(Error);
         }
@@ -35,14 +32,12 @@ public class Loadable
     }
 
     /** @return the Loadable's LoadState */
-    public final function get state () :LoadState
-    {
+    public final function get state () :LoadState {
         return _state;
     }
 
     /** Return the result of the load (if successful), or the load error (if the load failed) */
-    public final function get result () :*
-    {
+    public final function get result () :* {
         return _result;
     }
 
@@ -57,8 +52,7 @@ public class Loadable
      * It should take 0 or 1 arguments. If it takes 1 argument, it will be passed the
      * load Error object.
      */
-    public final function load (onLoaded :Function = null, onLoadErr :Function = null) :void
-    {
+    public final function load (onLoaded :Function = null, onLoadErr :Function = null) :void {
         Preconditions.checkState(_state == LoadState.INIT, "Can't load", "state", _state);
 
         _loadedCallback = onLoaded;
@@ -73,16 +67,14 @@ public class Loadable
     }
 
     /** Cancels an in-progress load */
-    public final function cancel () :void
-    {
+    public final function cancel () :void {
         Preconditions.checkState(_state == LoadState.LOADING, "not loading", "state", _state);
         _state = LoadState.CANCELED;
         onLoadCanceled();
     }
 
     /** Subclasses must call this when they've successfully loaded */
-    protected function succeed (result :* = undefined) :void
-    {
+    protected function succeed (result :* = undefined) :void {
         if (_state == LoadState.CANCELED) {
             return;
         }
@@ -106,8 +98,7 @@ public class Loadable
     }
 
     /** Subclasses must call this if there's a load error */
-    protected function fail (e :Error) :void
-    {
+    protected function fail (e :Error) :void {
         if (_state == LoadState.CANCELED) {
             return;
         }
@@ -133,8 +124,7 @@ public class Loadable
     /**
      * Subclasses may override this to respond to the canceling of an in-progress load.
      */
-    protected function onLoadCanceled () :void
-    {
+    protected function onLoadCanceled () :void {
     }
 
     /**
@@ -142,8 +132,7 @@ public class Loadable
      * If the load is successful, this function should call succeed(), otherwise it should
      * call fail().
      */
-    protected function doLoad () :void
-    {
+    protected function doLoad () :void {
         throw new Error("abstract");
     }
 

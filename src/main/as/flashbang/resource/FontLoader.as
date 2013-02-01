@@ -31,13 +31,11 @@ public class FontLoader extends ResourceLoader
     /** The scale of the font texture (optional, @default 1) */
     public static const SCALE :String = "scale";
 
-    public function FontLoader (params :Object)
-    {
+    public function FontLoader (params :Object) {
         super(params);
     }
 
-    override protected function doLoad () :void
-    {
+    override protected function doLoad () :void {
         var name :String = requireLoadParam(NAME, String);
 
         var xmlLoader :XmlLoader =
@@ -63,8 +61,7 @@ public class FontLoader extends ResourceLoader
             fail);
     }
 
-    override protected function onLoadCanceled () :void
-    {
+    override protected function onLoadCanceled () :void {
         if (_batch != null) {
             _batch.cancel();
             _batch = null;
@@ -94,8 +91,7 @@ import flashbang.util.Loadable;
 
 class LoadedTexture
 {
-    public function LoadedTexture (loader :Loader, scale :Number)
-    {
+    public function LoadedTexture (loader :Loader, scale :Number) {
         _loader = loader;
 
         var bmd :BitmapData = Bitmap(loader.content).bitmapData;
@@ -107,20 +103,17 @@ class LoadedTexture
         }
     }
 
-    public function get texture () :Texture
-    {
+    public function get texture () :Texture {
         return _tex;
     }
 
-    public function unload () :void
-    {
+    public function unload () :void {
         _tex.dispose();
         _tex = null;
         closeLoader();
     }
 
-    protected function closeLoader () :void
-    {
+    protected function closeLoader () :void {
         // Loader may already be closed.
         if (_loader != null) {
             try {
@@ -138,14 +131,12 @@ class LoadedTexture
 
 class TextureLoader extends Loadable
 {
-    public function TextureLoader (data :Object, scale :Number)
-    {
+    public function TextureLoader (data :Object, scale :Number) {
         _data = data;
         _scale = scale;
     }
 
-    override protected function doLoad () :void
-    {
+    override protected function doLoad () :void {
         if (_data is Class) {
             var clazz :Class = Class(_data);
             _data = ByteArray(new clazz());
@@ -176,8 +167,7 @@ class TextureLoader extends Loadable
         }
     }
 
-    override protected function onLoadCanceled () :void
-    {
+    override protected function onLoadCanceled () :void {
         // Loader may already be closed.
         if (_loader != null) {
             try {

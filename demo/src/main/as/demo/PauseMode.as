@@ -11,8 +11,7 @@ import starling.display.Quad;
 
 public class PauseMode extends flashbang.core.AppMode
 {
-    override protected function setup () :void
-    {
+    override protected function setup () :void {
         super.setup();
 
         var quad :Quad = new Quad(Demo.WIDTH, Demo.HEIGHT, 0);

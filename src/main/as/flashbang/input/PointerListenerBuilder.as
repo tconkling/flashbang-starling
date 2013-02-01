@@ -42,32 +42,28 @@ class CallbackPointerAdapter extends PointerAdapter
         _onPointerHover = onPointerHover;
     }
 
-    override public function onPointerStart (touch :Touch) :Boolean
-    {
+    override public function onPointerStart (touch :Touch) :Boolean {
         if (_onPointerStart != null) {
             _onPointerStart(touch);
         }
         return true;
     }
 
-    override public function onPointerMove (touch :Touch) :Boolean
-    {
+    override public function onPointerMove (touch :Touch) :Boolean {
         if (_onPointerMove != null) {
             _onPointerMove(touch);
         }
         return true;
     }
 
-    override public function onPointerEnd (touch :Touch) :Boolean
-    {
+    override public function onPointerEnd (touch :Touch) :Boolean {
         if (_onPointerEnd != null) {
             _onPointerEnd(touch);
         }
         return true;
     }
 
-    override public function onPointerHover (touch :Touch) :Boolean
-    {
+    override public function onPointerHover (touch :Touch) :Boolean {
         if (_onPointerHover != null) {
             _onPointerHover(touch);
         }

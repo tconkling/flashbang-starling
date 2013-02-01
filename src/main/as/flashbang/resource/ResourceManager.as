@@ -9,56 +9,47 @@ import aspire.util.Preconditions;
 
 public class ResourceManager
 {
-    public function ResourceManager ()
-    {
+    public function ResourceManager () {
         registerDefaultLoaders();
     }
 
-    public function shutdown () :void
-    {
+    public function shutdown () :void {
         unloadAll();
     }
 
-    public function registerDefaultLoaders () :void
-    {
+    public function registerDefaultLoaders () :void {
         registerResourceLoader("xml", XmlLoader);
         registerResourceLoader("sound", SoundLoader);
         registerResourceLoader("flump", FlumpLibraryLoader);
         registerResourceLoader("font", FontLoader);
     }
 
-    public function registerResourceLoader (resourceType :String, loaderClass :Class) :void
-    {
+    public function registerResourceLoader (resourceType :String, loaderClass :Class) :void {
         _loaderClasses.put(resourceType, loaderClass);
     }
 
-    public function getResource (resourceName :String) :*
-    {
+    public function getResource (resourceName :String) :* {
         return _resources.get(resourceName);
     }
 
-    public function requireResource (resourceName :String) :*
-    {
+    public function requireResource (resourceName :String) :* {
         var rsrc :Resource = getResource(resourceName);
         Preconditions.checkNotNull(rsrc, "missing required resource", "name", resourceName);
         return rsrc;
     }
 
-    public function isResourceLoaded (name :String) :Boolean
-    {
+    public function isResourceLoaded (name :String) :Boolean {
         return (null != getResource(name));
     }
 
-    public function unloadAll () :void
-    {
+    public function unloadAll () :void {
         _resources.forEach(function (name :String, rsrc :Resource) :void {
             rsrc.unloadInternal();
         });
         _resources = Maps.newMapOf(String);
     }
 
-    internal function createLoader (loadParams :Object) :ResourceLoader
-    {
+    internal function createLoader (loadParams :Object) :ResourceLoader {
         var type :String = loadParams["type"];
         Preconditions.checkArgument(type != null, "'type' must be specified");
 
@@ -69,8 +60,7 @@ public class ResourceManager
         return loader;
     }
 
-    internal function addSet (resourceSet :ResourceSet, resources :Vector.<Resource>) :void
-    {
+    internal function addSet (resourceSet :ResourceSet, resources :Vector.<Resource>) :void {
         var rsrc :Resource;
         // validate all resources before adding them
         for each (rsrc in resources) {
@@ -84,8 +74,7 @@ public class ResourceManager
         }
     }
 
-    internal function unloadSet (resourceSet :ResourceSet) :void
-    {
+    internal function unloadSet (resourceSet :ResourceSet) :void {
         for each (var rsrc :Resource in _resources.values()) {
             if (rsrc._set == resourceSet) {
                 _resources.remove(rsrc.name);

@@ -5,9 +5,9 @@ package flashbang.audio {
 
 import flash.media.SoundChannel;
 
-import org.osflash.signals.Signal;
-
 import flashbang.resource.SoundResource;
+
+import org.osflash.signals.Signal;
 
 public class AudioChannel
 {
@@ -18,31 +18,26 @@ public class AudioChannel
      */
     public const completed :Signal = new Signal();
 
-    public function get isPlaying () :Boolean
-    {
+    public function get isPlaying () :Boolean  {
         return (null != sound);
     }
 
-    public function get priority () :int
-    {
+    public function get priority () :int {
         return (null != sound ? sound.priority : int.MIN_VALUE);
     }
 
-    public function get isPaused () :Boolean
-    {
+    public function get isPaused () :Boolean {
         return (null != sound && null == channel);
     }
 
-    public function get audioControls () :AudioControls
-    {
+    public function get audioControls () :AudioControls {
         return (null != controls ? controls : DUMMY_CONTROLS);
     }
 
     /**
      * Returns the length of the sound in milliseconds, or 0 if the sound doesn't exist.
      */
-    public function get length () :Number
-    {
+    public function get length () :Number {
         return null == sound ? 0 : sound.sound.length;
     }
 

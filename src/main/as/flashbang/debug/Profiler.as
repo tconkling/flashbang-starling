@@ -14,29 +14,25 @@ public class Profiler
 {
     public static var ENABLED :Boolean = Capabilities.isDebugger;
 
-    public static function resetAllTimers () :void
-    {
+    public static function resetAllTimers () :void {
         if (ENABLED) {
             _timers = Maps.newMapOf(String);
         }
     }
 
-    public static function resetTimer (timerName :String) :void
-    {
+    public static function resetTimer (timerName :String) :void {
         if (ENABLED) {
             _timers.remove(timerName);
         }
     }
 
-    public static function pushTimer (timerName :String) :void
-    {
+    public static function pushTimer (timerName :String) :void {
         if (ENABLED) {
             _runningTimerNames.push(startTimer(timerName));
         }
     }
 
-    public static function popTimer () :void
-    {
+    public static function popTimer () :void {
         if (ENABLED) {
             if (_runningTimerNames.length == 0) {
                 log.warning("popTimer() called without a corresponding pushTimer()");
@@ -46,8 +42,7 @@ public class Profiler
         }
     }
 
-    public static function startTimer (timerName :String) :String
-    {
+    public static function startTimer (timerName :String) :String {
         if (ENABLED) {
             var timer :PerfTimer = getTimer(timerName);
             timer.timesRun++;
@@ -59,8 +54,7 @@ public class Profiler
         return timerName;
     }
 
-    public static function stopTimer (timerName :String) :void
-    {
+    public static function stopTimer (timerName :String) :void {
         if (ENABLED) {
             var timer :PerfTimer = getTimer(timerName);
             if (timer.curRunCount > 0) {
@@ -71,15 +65,13 @@ public class Profiler
         }
     }
 
-    public static function displayStats () :void
-    {
+    public static function displayStats () :void {
         if (ENABLED) {
             log.debug(getStatsString());
         }
     }
 
-    public static function getStatsString () :String
-    {
+    public static function getStatsString () :String {
         var stats :String = "";
         if (ENABLED) {
             stats += "Performance stats: \n";
@@ -91,8 +83,7 @@ public class Profiler
         return stats;
     }
 
-    public static function getPerformanceSummary (timerName :String) :String
-    {
+    public static function getPerformanceSummary (timerName :String) :String {
         var summary :String = "";
         if (ENABLED) {
             var timer :PerfTimer = getTimer(timerName);
@@ -106,8 +97,7 @@ public class Profiler
         return summary;
     }
 
-    protected static function getTimer (timerName :String) :PerfTimer
-    {
+    protected static function getTimer (timerName :String) :PerfTimer {
         var timer :PerfTimer = _timers.get(timerName);
         if (null == timer) {
             timer = new PerfTimer();

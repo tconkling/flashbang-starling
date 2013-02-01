@@ -8,8 +8,7 @@ import starling.display.DisplayObject;
 public class TouchSignals
 {
     /** Creates a Touchable interface for the given DisplayObject */
-    public static function forDisp (disp :DisplayObject) :Touchable
-    {
+    public static function forDisp (disp :DisplayObject) :Touchable {
         return new TouchableDisplayObject(disp);
     }
 }
@@ -29,36 +28,30 @@ import org.osflash.signals.Signal;
 class TouchableDisplayObject
     implements Touchable
 {
-    public function TouchableDisplayObject (disp :DisplayObject)
-    {
+    public function TouchableDisplayObject (disp :DisplayObject) {
         _displayObject = disp;
     }
-    
-    public function get touchEvent () :ISignal
-    {
+
+    public function get touchEvent () :ISignal {
         if (_touchEvent == null) {
             _touchEvent = new EventSignal(_displayObject, TouchEvent.TOUCH);
         }
         return _touchEvent;
     }
-    
-    public function get touchBegan () :ISignal
-    {
+
+    public function get touchBegan () :ISignal {
         return getFilteredTouchSignal(TouchPhase.BEGAN);
     }
-    
-    public function get touchMoved () :ISignal
-    {
+
+    public function get touchMoved () :ISignal {
         return getFilteredTouchSignal(TouchPhase.MOVED);
     }
-    
-    public function get touchEnded () :ISignal
-    {
+
+    public function get touchEnded () :ISignal {
         return getFilteredTouchSignal(TouchPhase.ENDED);
     }
-    
-    protected function getFilteredTouchSignal (phase :String) :ISignal
-    {
+
+    protected function getFilteredTouchSignal (phase :String) :ISignal {
         if (_filteredTouchSignals == null) {
             _filteredTouchSignals = new Vector.<FilteredTouchSignal>(NUM_PHASES, true);
         }
@@ -70,7 +63,7 @@ class TouchableDisplayObject
         default:
             throw new Error("Unrecognized TouchPhase '" + phase + "'");
         }
-        
+
         var sig :FilteredTouchSignal = _filteredTouchSignals[idx];
         if (sig == null) {
             sig = new FilteredTouchSignal(_displayObject, EventSignal(this.touchEvent), phase);
@@ -78,13 +71,13 @@ class TouchableDisplayObject
         }
         return sig;
     }
-    
+
     protected static const BEGAN :int = 0;
     protected static const MOVED :int = 1;
     protected static const ENDED :int = 2;
-    
+
     protected static const NUM_PHASES :int = ENDED + 1;
-    
+
     protected var _displayObject :DisplayObject;
     protected var _touchEvent :EventSignal; // lazily instantiated
     protected var _filteredTouchSignals :Vector.<FilteredTouchSignal>; // lazily instantiated
@@ -93,7 +86,7 @@ class TouchableDisplayObject
 class FilteredTouchSignal extends Signal {
     public function FilteredTouchSignal (disp :DisplayObject, touchEventSignal :EventSignal,
         phase :String) {
-        
+
         super(Touch);
         touchEventSignal.add(function (e :TouchEvent) :void {
             var touch :Touch = e.getTouch(disp, phase);

@@ -5,29 +5,25 @@ package flashbang.util {
 
 public class PowerEaser
 {
-    public function PowerEaser (pow :int)
-    {
+    public function PowerEaser (pow :int) {
         _pow = pow;
     }
 
-    public function easeIn (from :Number, to :Number, dt :Number, t :Number) :Number
-    {
+    public function easeIn (from :Number, to :Number, dt :Number, t :Number) :Number {
         if (t == 0) {
             return to;
         }
         return from + ((to - from) * Math.pow(dt / t, _pow));
     }
 
-    public function easeOut (from :Number, to :Number, dt :Number, t :Number) :Number
-    {
+    public function easeOut (from :Number, to :Number, dt :Number, t :Number) :Number {
         if (t == 0) {
             return to;
         }
         return from + ((to - from) * (1 - Math.pow(1 - dt / t, _pow)));
     }
 
-    public function easeInOut (from :Number, to :Number, dt :Number, t :Number) :Number
-    {
+    public function easeInOut (from :Number, to :Number, dt :Number, t :Number) :Number {
         if (t == 0) {
             return to;
         }

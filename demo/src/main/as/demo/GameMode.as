@@ -15,8 +15,7 @@ import flashbang.tasks.SerialTask;
 
 public class GameMode extends AppMode
 {
-    override protected function setup () :void
-    {
+    override protected function setup () :void {
         super.setup();
 
         var obj :MovieObject = MovieObject.create("flump/walk");

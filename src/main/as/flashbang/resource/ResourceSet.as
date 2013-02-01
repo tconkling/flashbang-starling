@@ -9,23 +9,19 @@ import flashbang.util.LoadableBatch;
 
 public class ResourceSet extends LoadableBatch
 {
-    public function ResourceSet (maxSimultaneous :int = 0)
-    {
+    public function ResourceSet (maxSimultaneous :int = 0) {
         super(maxSimultaneous);
     }
 
-    public function add (loadParams :Object) :void
-    {
+    public function add (loadParams :Object) :void {
         addLoadable(Flashbang.rsrcs.createLoader(loadParams));
     }
 
-    public function unload () :void
-    {
+    public function unload () :void {
         Flashbang.rsrcs.unloadSet(this);
     }
 
-    override protected function succeed (result :* = undefined) :void
-    {
+    override protected function succeed (result :* = undefined) :void {
         // get all our resources
         var loaded :Vector.<Loadable> = result;
         var resources :Vector.<Resource> = new <Resource>[];

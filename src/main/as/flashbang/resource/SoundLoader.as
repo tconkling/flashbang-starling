@@ -46,13 +46,11 @@ public class SoundLoader extends ResourceLoader
      */
     public static const STREAM :String = "stream";
 
-    public function SoundLoader (params :Object)
-    {
+    public function SoundLoader (params :Object) {
         super(params);
     }
 
-    override protected function doLoad () :void
-    {
+    override protected function doLoad () :void {
         // parse loadParams
         var name :String = getLoadParam(NAME);
         var typeName :String = getLoadParam(TYPE, SoundType.SFX.name());
@@ -96,8 +94,7 @@ public class SoundLoader extends ResourceLoader
         }
     }
 
-    override protected function onLoadCanceled () :void
-    {
+    override protected function onLoadCanceled () :void {
         if (_sound != null) {
             try { _sound.close() }
             catch (e :Error) { /* swallow */ }

@@ -34,8 +34,7 @@ public class AppMode
      * The resultant Array will not have any null objects, so it may be smaller than the Array
      * that was passed in.
      */
-    public static function getObjects (objectRefs :Array) :Array
-    {
+    public static function getObjects (objectRefs :Array) :Array {
         // Array.map would be appropriate here, except that the resultant
         // Array might contain fewer entries than the source.
 
@@ -49,24 +48,20 @@ public class AppMode
         return objs;
     }
 
-    public function AppMode ()
-    {
+    public function AppMode () {
         _modeSprite.touchable = false;
     }
 
-    public final function get modeSprite () :Sprite
-    {
+    public final function get modeSprite () :Sprite {
         return _modeSprite;
     }
 
     /** Returns the Viewport that this AppMode lives in */
-    public final function get viewport () :Viewport
-    {
+    public final function get viewport () :Viewport {
         return _viewport;
     }
 
-    public function get touchInput () :TouchInput
-    {
+    public function get touchInput () :TouchInput {
         return _touchInput;
     }
 
@@ -124,8 +119,7 @@ public class AppMode
     }
 
     /** Removes a GameObject from the ObjectDB. */
-    public function destroyObjectNamed (name :String) :void
-    {
+    public function destroyObjectNamed (name :String) :void {
         var obj :GameObject = getObjectNamed(name);
         if (null != obj) {
             destroyObject(obj.ref);
@@ -133,8 +127,7 @@ public class AppMode
     }
 
     /** Removes all GameObjects in the given group from the ObjectDB. */
-    public function destroyObjectsInGroup (groupId :Object) :void
-    {
+    public function destroyObjectsInGroup (groupId :Object) :void {
         for each (var ref :GameObjectRef in getObjectRefsInGroup(groupId)) {
             if (!ref.isNull) {
                 ref.object.destroySelf();
@@ -143,8 +136,7 @@ public class AppMode
     }
 
     /** Removes a GameObject from the ObjectDB. */
-    public function destroyObject (ref :GameObjectRef) :void
-    {
+    public function destroyObject (ref :GameObjectRef) :void {
         if (null == ref) {
             return;
         }
@@ -194,8 +186,7 @@ public class AppMode
     }
 
     /** Returns the object in this mode with the given name, or null if no such object exists. */
-    public function getObjectNamed (name :String) :GameObject
-    {
+    public function getObjectNamed (name :String) :GameObject {
         return (_namedObjects.get(name) as GameObject);
     }
 
@@ -206,8 +197,7 @@ public class AppMode
      * Note: the returned Array will contain null object refs for objects that were destroyed
      * this frame and haven't yet been cleaned up.
      */
-    public function getObjectRefsInGroup (groupId :Object) :Array
-    {
+    public function getObjectRefsInGroup (groupId :Object) :Array {
         return _groupedObjects.get(groupId);
     }
 
@@ -218,14 +208,12 @@ public class AppMode
      *
      * This function is not as performant as getObjectRefsInGroup().
      */
-    public function getObjectsInGroup (groupId :Object) :Array
-    {
+    public function getObjectsInGroup (groupId :Object) :Array {
         return getObjects(getObjectRefsInGroup(groupId));
     }
 
     /** Called once per update tick. Updates all objects in the mode. */
-    public function update (dt :Number) :void
-    {
+    public function update (dt :Number) :void {
         beginUpdate(dt);
         endUpdate(dt);
         _runningTime += dt;
@@ -235,8 +223,7 @@ public class AppMode
      * Guarantees that the "second" GameObject will have its update logic run after "first"
      * during the update loop.
      */
-    public function setUpdateOrder (first :GameObject, second :GameObject) :void
-    {
+    public function setUpdateOrder (first :GameObject, second :GameObject) :void {
         Preconditions.checkArgument(second.mode == this && first.mode == this,
             "GameObject doesn't belong to this AppMode");
         Preconditions.checkArgument(second.isLiveObject && first.isLiveObject,
@@ -259,8 +246,7 @@ public class AppMode
     }
 
     /** Returns the number of live GameObjects in this ObjectDB. */
-    public function get objectCount () :uint
-    {
+    public function get objectCount () :uint {
         return _objectCount;
     }
 
@@ -268,32 +254,27 @@ public class AppMode
      * Returns the number of seconds this ObjectDB has been running, as measured by calls to
      * update().
      */
-    public function get runningTime () :Number
-    {
+    public function get runningTime () :Number {
         return _runningTime;
     }
 
     /** Called when the mode is active and receives touch input. */
-    public function handleTouches (touches :Vector.<Touch>) :void
-    {
+    public function handleTouches (touches :Vector.<Touch>) :void {
         _touchInput.handleTouches(touches);
     }
 
     /** Called when a key is pressed while this mode is active */
-    public function onKeyDown (keyEvent :KeyboardEvent) :void
-    {
+    public function onKeyDown (keyEvent :KeyboardEvent) :void {
         this.keyDown.dispatch(keyEvent);
     }
 
     /** Called when a key is released while this mode is active */
-    public function onKeyUp (keyEvent :KeyboardEvent) :void
-    {
+    public function onKeyUp (keyEvent :KeyboardEvent) :void {
         this.keyUp.dispatch(keyEvent);
     }
 
     /** Updates all objects in the mode. */
-    protected function beginUpdate (dt :Number) :void
-    {
+    protected function beginUpdate (dt :Number) :void {
         // update all objects
 
         var ref :GameObjectRef = _listHead;
@@ -308,8 +289,7 @@ public class AppMode
     }
 
     /** Removes dead objects from the object list at the end of an update. */
-    protected function endUpdate (dt :Number) :void
-    {
+    protected function endUpdate (dt :Number) :void {
         // clean out all objects that were destroyed during the update loop
 
         if (null != _objectsPendingRemoval) {
@@ -322,8 +302,7 @@ public class AppMode
     }
 
     /** Removes a single dead object from the object list. */
-    protected function finalizeObjectRemoval (obj :GameObject) :void
-    {
+    protected function finalizeObjectRemoval (obj :GameObject) :void {
         Preconditions.checkState(null != obj._ref && null == obj._ref._obj);
 
         // unlink the object ref
@@ -348,8 +327,7 @@ public class AppMode
      * Unlinks the GameObject from the db's linked list of objects. This happens during
      * object removal. It generally should not be called directly.
      */
-    protected function unlink (obj :GameObject) :void
-    {
+    protected function unlink (obj :GameObject) :void {
         var ref :GameObjectRef = obj._ref;
 
         var prev :GameObjectRef = ref._prev;
@@ -369,34 +347,28 @@ public class AppMode
     }
 
     /** Called when the mode is added to the mode stack */
-    protected function setup () :void
-    {
+    protected function setup () :void {
     }
 
     /** Called when the mode is removed from the mode stack */
-    protected function destroy () :void
-    {
+    protected function destroy () :void {
     }
 
     /** Called when the mode becomes active on the mode stack */
-    protected function enter () :void
-    {
+    protected function enter () :void {
     }
 
     /** Called when the mode becomes inactive on the mode stack */
-    protected function exit () :void
-    {
+    protected function exit () :void {
     }
 
-    internal function setupInternal (viewport :Viewport) :void
-    {
+    internal function setupInternal (viewport :Viewport) :void {
         _viewport = viewport;
         _touchInput = new TouchInput(_modeSprite);
         setup();
     }
 
-    internal function destroyInternal () :void
-    {
+    internal function destroyInternal () :void {
         Preconditions.checkState(!_destroyed, "already destroyed");
         _destroyed = true;
 
@@ -431,14 +403,12 @@ public class AppMode
         _modeSprite = null;
     }
 
-    internal function enterInternal () :void
-    {
+    internal function enterInternal () :void {
         _modeSprite.touchable = true;
         enter();
     }
 
-    internal function exitInternal () :void
-    {
+    internal function exitInternal () :void {
         _modeSprite.touchable = false;
         exit();
     }

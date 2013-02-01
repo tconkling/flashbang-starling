@@ -27,8 +27,7 @@ public class FramerateView extends Framerate
     /** The framerate threshold below which the text will be colored with "slowColor" */
     public var slowFps :Number = 15;
 
-    public function FramerateView ()
-    {
+    public function FramerateView () {
         super(1000);
 
         _tf = new TextField(150, 15, "", "_sans", 8);
@@ -36,18 +35,15 @@ public class FramerateView extends Framerate
         _tf.touchable = false;
     }
 
-    public function get display () :DisplayObject
-    {
+    public function get display () :DisplayObject {
         return _tf;
     }
 
-    public function get textField () :TextField
-    {
+    public function get textField () :TextField {
         return _tf;
     }
 
-    override protected function update (dt :Number) :void
-    {
+    override protected function update (dt :Number) :void {
         super.update(dt);
 
         var text :String;

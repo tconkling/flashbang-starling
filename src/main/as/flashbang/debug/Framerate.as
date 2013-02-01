@@ -20,8 +20,7 @@ public class Framerate extends GameObject
     public var fpsMin :Number = 30;
     public var fpsMax :Number = 30;
 
-    public function Framerate (timeWindow :int = DEFAULT_TIME_WINDOW)
-    {
+    public function Framerate (timeWindow :int = DEFAULT_TIME_WINDOW) {
         // keep enough historty for the number of 1/60 frames in timeWindow
         // TODO: if this all flies, establish a way to use historySize or approxTimeWindow
         setHistorySize(timeWindow * 60 / 1000);
@@ -30,20 +29,17 @@ public class Framerate extends GameObject
         _statsInterval = setInterval(calcStats, AVERAGE_INTERVAL);
     }
 
-    public function setHistorySize (histSize :int) :void
-    {
+    public function setHistorySize (histSize :int) :void {
         // start with all 30 to avoid edge special cases in sampler
         _fpsBuffer = Arrays.create(histSize, 30);
         _fpsOffset = 0;
     }
 
-    override protected function cleanup () :void
-    {
+    override protected function cleanup () :void {
         clearInterval(_statsInterval);
     }
 
-    override protected function update (dt :Number) :void
-    {
+    override protected function update (dt :Number) :void {
         if (_lastTime <= 0) {
             _lastTime = flash.utils.getTimer();
             return;
@@ -61,8 +57,7 @@ public class Framerate extends GameObject
         _lastTime = time;
     }
 
-    protected function calcStats () :void
-    {
+    protected function calcStats () :void {
         var fpsSum :Number = 0;
         fpsMin = Number.MAX_VALUE;
         fpsMax = Number.MIN_VALUE;

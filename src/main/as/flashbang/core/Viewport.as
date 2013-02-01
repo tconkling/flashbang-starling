@@ -22,15 +22,13 @@ public class Viewport
     public const topModeChanged :Signal = new Signal();
     public const destroyed :Signal = new Signal();
 
-    public function Viewport (app :FlashbangApp, name :String, parentSprite :Sprite)
-    {
+    public function Viewport (app :FlashbangApp, name :String, parentSprite :Sprite) {
         _app = app;
         _name = name;
         parentSprite.addChild(_topSprite);
     }
 
-    public final function get name () :String
-    {
+    public final function get name () :String {
         return _name;
     }
 
@@ -38,8 +36,7 @@ public class Viewport
      * Causes the Viewport to be destroyed.
      * (This won't happen immediately - it'll happen at the end of the current update loop)
      */
-    public function destroy () :void
-    {
+    public function destroy () :void {
         _destroyed = true;
     }
 
@@ -47,8 +44,7 @@ public class Viewport
      * Returns the top mode on the mode stack, or null
      * if the stack is empty.
      */
-    public final function get topMode () :AppMode
-    {
+    public final function get topMode () :AppMode {
         return (_modeStack.length > 0 ? _modeStack[_modeStack.length - 1] : null);
     }
 
@@ -80,8 +76,7 @@ public class Viewport
      * You can use a negative integer to specify a position relative
      * to the top of the stack (for example, -1 is the top of the stack).
      */
-    public function insertMode (mode :AppMode, index :int) :void
-    {
+    public function insertMode (mode :AppMode, index :int) :void {
         doModeTransition(ModeTransition.INSERT, mode, index);
     }
 
@@ -94,8 +89,7 @@ public class Viewport
      * You can use a negative integer to specify a position relative
      * to the top of the stack (for example, -1 is the top of the stack).
      */
-    public function removeMode (index :int) :void
-    {
+    public function removeMode (index :int) :void {
         doModeTransition(ModeTransition.REMOVE, null, index);
     }
 
@@ -104,8 +98,7 @@ public class Viewport
      * a new mode in its place.
      * (Mode changes take effect between game updates.)
      */
-    public function changeMode (mode :AppMode) :void
-    {
+    public function changeMode (mode :AppMode) :void {
         doModeTransition(ModeTransition.CHANGE, mode);
     }
 
@@ -113,8 +106,7 @@ public class Viewport
      * Pushes a mode to the mode stack.
      * (Mode changes take effect between game updates.)
      */
-    public function pushMode (mode :AppMode) :void
-    {
+    public function pushMode (mode :AppMode) :void {
         doModeTransition(ModeTransition.PUSH, mode);
     }
 
@@ -122,8 +114,7 @@ public class Viewport
      * Pops the top mode from the mode stack.
      * (Mode changes take effect between game updates.)
      */
-    public function popMode () :void
-    {
+    public function popMode () :void {
         doModeTransition(ModeTransition.REMOVE, null, -1);
     }
 
@@ -131,8 +122,7 @@ public class Viewport
      * Pops all modes from the mode stack.
      * Mode changes take effect before game updates.
      */
-    public function popAllModes () :void
-    {
+    public function popAllModes () :void {
         doModeTransition(ModeTransition.UNWIND);
     }
 
@@ -142,13 +132,11 @@ public class Viewport
      * of the mode stack.
      * Mode changes take effect before game updates.
      */
-    public function unwindToMode (mode :AppMode) :void
-    {
+    public function unwindToMode (mode :AppMode) :void {
         doModeTransition(ModeTransition.UNWIND, mode);
     }
 
-    public function update (dt :Number) :void
-    {
+    public function update (dt :Number) :void {
         handleModeTransitions();
 
         // update the top mode
@@ -161,8 +149,7 @@ public class Viewport
      * Called when the viewport receives touches.
      * By default it forwards the touches to its active mode.
      */
-    public function handleTouches (touches :Vector.<Touch>) :void
-    {
+    public function handleTouches (touches :Vector.<Touch>) :void {
         if (_modeStack.length > 0) {
             _modeStack[_modeStack.length - 1].handleTouches(touches);
         }
@@ -172,8 +159,7 @@ public class Viewport
      * Called when the viewport receives a keyDown event.
      * By default it forwards the event to its active mode
      */
-    public function onKeyDown (e :KeyboardEvent) :void
-    {
+    public function onKeyDown (e :KeyboardEvent) :void {
         if (_modeStack.length > 0) {
             _modeStack[_modeStack.length - 1].onKeyDown(e);
         }
@@ -183,15 +169,13 @@ public class Viewport
      * Called when the viewport receives a keyUp event.
      * By default it forwards the event to its active mode
      */
-    public function onKeyUp (e :KeyboardEvent) :void
-    {
+    public function onKeyUp (e :KeyboardEvent) :void {
         if (_modeStack.length > 0) {
             _modeStack[_modeStack.length - 1].onKeyUp(e);
         }
     }
 
-    internal function handleModeTransitions () :void
-    {
+    internal function handleModeTransitions () :void {
         if (_pendingModeTransitionQueue.length <= 0) {
             return;
         }
@@ -307,8 +291,7 @@ public class Viewport
         }
     }
 
-    internal function clearModeStackNow () :void
-    {
+    internal function clearModeStackNow () :void {
         _pendingModeTransitionQueue.length = 0;
         if (_modeStack.length > 0) {
             popAllModes();
@@ -316,13 +299,11 @@ public class Viewport
         }
     }
 
-    internal function get isDestroyed () :Boolean
-    {
+    internal function get isDestroyed () :Boolean {
         return _destroyed;
     }
 
-    internal function shutdown () :void
-    {
+    internal function shutdown () :void {
         clearModeStackNow();
         _modeStack = null;
         _pendingModeTransitionQueue = null;
