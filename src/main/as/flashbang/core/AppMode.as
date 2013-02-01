@@ -52,6 +52,7 @@ public class AppMode
     public function AppMode ()
     {
         _modeSprite.touchable = false;
+        _touchInput = new TouchInput(_modeSprite);
     }
 
     public final function get modeSprite () :Sprite
@@ -391,7 +392,6 @@ public class AppMode
     internal function setupInternal (viewport :Viewport) :void
     {
         _viewport = viewport;
-        _touchInput = new TouchInput(_modeSprite);
         setup();
     }
 
