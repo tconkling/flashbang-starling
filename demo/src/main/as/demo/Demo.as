@@ -6,11 +6,11 @@ package demo {
 import flashbang.core.Config;
 import flashbang.core.FlashbangApp;
 
-[SWF(width="320", height="480", frameRate="60", backgroundColor="#222222")]
+[SWF(width="480", height="320", frameRate="60", backgroundColor="#222222")]
 public class Demo extends flashbang.core.FlashbangApp
 {
-    public static const WIDTH :int = 320;
-    public static const HEIGHT :int = 480;
+    public static const WIDTH :int = 480;
+    public static const HEIGHT :int = 320;
 
     override protected function run () :void
     {
