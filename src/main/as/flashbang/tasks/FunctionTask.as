@@ -16,13 +16,11 @@ import flashbang.core.ObjectTask;
 public class FunctionTask
     implements ObjectTask
 {
-    public function FunctionTask (fn :Function)
-    {
+    public function FunctionTask (fn :Function) {
         _fn = fn;
     }
 
-    public function update (dt :Number, obj :GameObject) :Boolean
-    {
+    public function update (dt :Number, obj :GameObject) :Boolean {
         // If Function returns "false", the FunctionTask will not complete.
         // Any other return value (including void) will cause it to complete immediately.
         switch (_fn.length) {
@@ -30,11 +28,6 @@ public class FunctionTask
         case 1: return (_fn(dt) !== false);
         default: return (_fn() !== false);
         }
-    }
-
-    public function clone () :ObjectTask
-    {
-        return new FunctionTask(_fn);
     }
 
     protected var _fn :Function;

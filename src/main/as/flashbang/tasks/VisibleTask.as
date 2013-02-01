@@ -10,21 +10,14 @@ import flashbang.core.ObjectTask;
 
 public class VisibleTask extends DisplayObjectTask
 {
-    public function VisibleTask (visible :Boolean, disp :DisplayObject = null)
-    {
+    public function VisibleTask (visible :Boolean, disp :DisplayObject = null) {
         super(0, null, disp);
         _visible = visible;
     }
 
-    override public function update (dt :Number, obj :GameObject) :Boolean
-    {
+    override public function update (dt :Number, obj :GameObject) :Boolean  {
         getTarget(obj).visible = _visible;
         return true;
-    }
-
-    override public function clone () :ObjectTask
-    {
-        return new VisibleTask(_visible, _display);
     }
 
     protected var _visible :Boolean;

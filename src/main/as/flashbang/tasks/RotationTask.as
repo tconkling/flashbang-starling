@@ -3,22 +3,19 @@
 
 package flashbang.tasks {
 
-import starling.display.DisplayObject;
-
 import flashbang.core.GameObject;
-import flashbang.core.ObjectTask;
+
+import starling.display.DisplayObject;
 
 public class RotationTask extends DisplayObjectTask
 {
     public function RotationTask (radians :Number, time :Number = 0,
-        easingFn :Function = null, disp :DisplayObject = null)
-    {
+        easingFn :Function = null, disp :DisplayObject = null)  {
         super(time, easingFn, disp);
         _to = radians;
     }
 
-    override public function update (dt :Number, obj :GameObject) :Boolean
-    {
+    override public function update (dt :Number, obj :GameObject) :Boolean {
         if (0 == _elapsedTime) {
             _target = getTarget(obj);
             _from = _target.rotation;
@@ -27,11 +24,6 @@ public class RotationTask extends DisplayObjectTask
         _elapsedTime += dt;
         _target.rotation = interpolate(_from, _to);
         return (_elapsedTime >= _totalTime);
-    }
-
-    override public function clone () :ObjectTask
-    {
-        return new RotationTask(_to, _totalTime, _easingFn, _display);
     }
 
     protected var _to :Number;

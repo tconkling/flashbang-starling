@@ -12,24 +12,20 @@ import flashbang.components.DisplayComponent;
 
 public class DisplayObjectTask extends InterpolatingTask
 {
-    public function DisplayObjectTask (time :Number, easing :Function, display :DisplayObject)
-    {
+    public function DisplayObjectTask (time :Number, easing :Function, display :DisplayObject)  {
         super(time, easing);
-        _display = display;
+        _target = display;
     }
 
-    protected function getTarget (obj :GameObject) :DisplayObject
-    {
-        var display :DisplayObject = _display;
-        if (display == null) {
+    protected function getTarget (obj :GameObject) :DisplayObject  {
+        var target :DisplayObject = _target;
+        if (target == null) {
             var dc :DisplayComponent = obj as DisplayComponent;
             Preconditions.checkState(dc != null, "obj does not implement DisplayComponent");
-            display = dc.display;
+            target = dc.display;
         }
-        return display;
+        return target;
     }
-
-    protected var _display :DisplayObject;
 
     protected var _target :DisplayObject;
 }

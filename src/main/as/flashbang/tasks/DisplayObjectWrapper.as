@@ -11,46 +11,38 @@ import flashbang.components.LocationComponent;
 public class DisplayObjectWrapper
     implements DisplayComponent, LocationComponent
 {
-    public static function create (disp :DisplayObject) :DisplayObjectWrapper
-    {
+    public static function create (disp :DisplayObject) :DisplayObjectWrapper {
         return (disp != null ? new DisplayObjectWrapper(disp) : NULL_WRAPPER);
     }
 
-    public function get isNull () :Boolean
-    {
+    public function get isNull () :Boolean  {
         return (_disp == null);
     }
 
-    public function get display () :DisplayObject
-    {
+    public function get display () :DisplayObject {
         return _disp;
     }
 
-    public function get x () :Number
-    {
+    public function get x () :Number {
         return _disp.x;
     }
 
-    public function set x (val :Number) :void
-    {
+    public function set x (val :Number) :void {
         _disp.x = val;
     }
 
-    public function get y () :Number
-    {
+    public function get y () :Number {
         return _disp.y;
     }
 
-    public function set y (val :Number) :void
-    {
+    public function set y (val :Number) :void {
         _disp.y = val;
     }
 
     /**
      * @private
      */
-    public function DisplayObjectWrapper (disp :DisplayObject)
-    {
+    public function DisplayObjectWrapper (disp :DisplayObject) {
         _disp = disp;
     }
 

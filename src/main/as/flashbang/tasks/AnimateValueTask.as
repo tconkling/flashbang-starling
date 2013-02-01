@@ -4,14 +4,12 @@
 package flashbang.tasks {
 
 import flashbang.core.GameObject;
-import flashbang.core.ObjectTask;
 import flashbang.util.BoxedNumber;
 
 public class AnimateValueTask extends InterpolatingTask
 {
     public function AnimateValueTask (value :BoxedNumber, targetValue :Number, time :Number = 0,
-        easingFn :Function = null)
-    {
+        easingFn :Function = null) {
         super(time, easingFn);
 
         if (null == value) {
@@ -22,8 +20,7 @@ public class AnimateValueTask extends InterpolatingTask
         _value = value;
     }
 
-    override public function update (dt :Number, obj :GameObject) :Boolean
-    {
+    override public function update (dt :Number, obj :GameObject) :Boolean {
         if (0 == _elapsedTime) {
             _from = _value.value;
         }
@@ -31,11 +28,6 @@ public class AnimateValueTask extends InterpolatingTask
         _elapsedTime += dt;
         _value.value = interpolate(_from, _to);
         return (_elapsedTime >= _totalTime);
-    }
-
-    override public function clone () :ObjectTask
-    {
-        return new AnimateValueTask(_value, _to, _totalTime, _easingFn);
     }
 
     protected var _to :Number;

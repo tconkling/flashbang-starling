@@ -4,32 +4,35 @@
 package flashbang.objects {
 
 import flashbang.core.GameObject;
-import flashbang.tasks.*;
+import flashbang.core.ObjectTask;
+import flashbang.tasks.AnimateValueTask;
+import flashbang.tasks.FunctionTask;
+import flashbang.tasks.RepeatingTask;
+import flashbang.tasks.SelfDestructTask;
+import flashbang.tasks.SerialTask;
 import flashbang.util.BoxedNumber;
 
 public class SimpleTimer extends GameObject
 {
     public function SimpleTimer (delay :Number, callback :Function = null,
-        repeating :Boolean = false, timerName :String = null)
-    {
+        repeating :Boolean = false, timerName :String = null) {
+
         _name = timerName;
         _timeLeft.value = delay;
 
         if (repeating) {
-            var repeatingTask :RepeatingTask = new RepeatingTask();
-
-            // init _timeLeft to delay
-            repeatingTask.addTask(new AnimateValueTask(_timeLeft, delay, 0));
-
-            // animate _timeLeft to 0 over delay seconds
-            repeatingTask.addTask(new AnimateValueTask(_timeLeft, 0, delay));
-
-            if (null != callback) {
-                // call the callback
-                repeatingTask.addTask(new FunctionTask(callback));
-            }
-
-            addTask(repeatingTask);
+            addTask(new RepeatingTask(function () :ObjectTask {
+                var sequence :SerialTask = new SerialTask(
+                    // init _timeLeft to delay
+                    new AnimateValueTask(_timeLeft, delay, 0),
+                    // animate _timeLeft to 0 over delay seconds
+                    new AnimateValueTask(_timeLeft, 0, delay));
+                if (null != callback) {
+                    // call the callback
+                    sequence.addTask(new FunctionTask(callback));
+                }
+                return sequence;
+            }));
 
         } else {
             var serialTask :SerialTask = new SerialTask();
@@ -49,13 +52,11 @@ public class SimpleTimer extends GameObject
         }
     }
 
-    override public function get objectNames () :Array
-    {
+    override public function get objectNames () :Array {
         return _name == null ? [] : [ _name ];
     }
 
-    public function get timeLeft () :Number
-    {
+    public function get timeLeft () :Number  {
         return _timeLeft.value;
     }
 
