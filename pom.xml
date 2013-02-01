@@ -5,7 +5,7 @@
   <groupId>com.timconkling</groupId>
   <artifactId>flashbang-starling</artifactId>
   <packaging>swc</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
 
   <properties>
     <flex.version>4.6.0.23201</flex.version>
@@ -22,19 +22,19 @@
     <dependency>
       <groupId>com.gamua</groupId>
       <artifactId>starling-framework</artifactId>
-      <version>1.4-SNAPSHOT</version>
+      <version>1.4-83e5429</version>
       <type>swc</type>
     </dependency>
     <dependency>
       <groupId>com.threerings.flump</groupId>
       <artifactId>flump-runtime</artifactId>
-      <version>1.1-SNAPSHOT</version>
+      <version>1.02</version>
       <type>swc</type>
     </dependency>
     <dependency>
       <groupId>com.timconkling</groupId>
       <artifactId>aspire</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>1.0</version>
       <type>swc</type>
     </dependency>
   </dependencies>
