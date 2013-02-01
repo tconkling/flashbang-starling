@@ -3,7 +3,7 @@
 
 package demo {
 
-import flashbang.AppMode;
+import flashbang.core.AppMode;
 import flashbang.objects.Button;
 import flashbang.objects.MovieObject;
 import flashbang.objects.SimpleTextButton;

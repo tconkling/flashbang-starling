@@ -3,13 +3,13 @@
 
 package demo {
 
-import starling.display.Quad;
-
-import flashbang.AppMode;
+import flashbang.core.AppMode;
 import flashbang.objects.Button;
 import flashbang.objects.SimpleTextButton;
 
-public class PauseMode extends AppMode
+import starling.display.Quad;
+
+public class PauseMode extends flashbang.core.AppMode
 {
     override protected function setup () :void
     {

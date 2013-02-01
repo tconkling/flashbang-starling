@@ -3,11 +3,11 @@
 
 package demo {
 
-import flashbang.Config;
-import flashbang.FlashbangApp;
+import flashbang.core.Config;
+import flashbang.core.FlashbangApp;
 
 [SWF(width="320", height="480", frameRate="60", backgroundColor="#222222")]
-public class Demo extends FlashbangApp
+public class Demo extends flashbang.core.FlashbangApp
 {
     public static const WIDTH :int = 320;
     public static const HEIGHT :int = 480;
@@ -33,10 +33,10 @@ public class Demo extends FlashbangApp
 
 import aspire.util.Log;
 
-import flashbang.AppMode;
-import flashbang.resource.ResourceSet;
-
 import demo.GameMode;
+
+import flashbang.core.AppMode;
+import flashbang.resource.ResourceSet;
 
 class LoadingMode extends AppMode
 {
