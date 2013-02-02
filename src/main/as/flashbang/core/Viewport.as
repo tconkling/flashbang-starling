@@ -156,22 +156,12 @@ public class Viewport
     }
 
     /**
-     * Called when the viewport receives a keyDown event.
-     * By default it forwards the event to its active mode
+     * Called when the viewport receives a keyboard event.
+     * By default, it forwards the event to its active mode.
      */
-    public function onKeyDown (e :KeyboardEvent) :void {
+    public function handleKeyboardEvent (e :KeyboardEvent) :void {
         if (_modeStack.length > 0) {
-            _modeStack[_modeStack.length - 1].onKeyDown(e);
-        }
-    }
-
-    /**
-     * Called when the viewport receives a keyUp event.
-     * By default it forwards the event to its active mode
-     */
-    public function onKeyUp (e :KeyboardEvent) :void {
-        if (_modeStack.length > 0) {
-            _modeStack[_modeStack.length - 1].onKeyUp(e);
+            _modeStack[_modeStack.length - 1].handleKeyboardEvent(e);
         }
     }
 

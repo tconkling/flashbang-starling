@@ -3,12 +3,6 @@
 
 package flashbang.core {
 
-import starling.display.DisplayObject;
-import starling.display.DisplayObjectContainer;
-import starling.display.Sprite;
-import starling.events.KeyboardEvent;
-import starling.events.Touch;
-
 import aspire.util.Arrays;
 import aspire.util.Map;
 import aspire.util.Maps;
@@ -16,19 +10,19 @@ import aspire.util.Preconditions;
 import aspire.util.maps.ValueComputingMap;
 
 import flashbang.components.DisplayComponent;
+import flashbang.input.KeyboardInput;
 import flashbang.input.TouchInput;
 import flashbang.util.ListenerRegistrations;
 
-import org.osflash.signals.Signal;
+import starling.display.DisplayObject;
+import starling.display.DisplayObjectContainer;
+import starling.display.Sprite;
+import starling.events.KeyboardEvent;
+import starling.events.Touch;
 
 public class AppMode
     implements Updatable
 {
-    /** Dispatched when a key is pressed while this mode is active */
-    public const keyDown :Signal = new Signal(KeyboardEvent);
-    /** Dispatched when a key is released while this mode is active */
-    public const keyUp :Signal = new Signal(KeyboardEvent);
-
     /**
      * A convenience function that converts an Array of GameObjectRefs into an array of GameObjects.
      * The resultant Array will not have any null objects, so it may be smaller than the Array
@@ -63,6 +57,10 @@ public class AppMode
 
     public function get touchInput () :TouchInput {
         return _touchInput;
+    }
+
+    public function get keyboardInput () :KeyboardInput {
+        return _keyboardInput;
     }
 
     /**
@@ -263,14 +261,9 @@ public class AppMode
         _touchInput.handleTouches(touches);
     }
 
-    /** Called when a key is pressed while this mode is active */
-    public function onKeyDown (keyEvent :KeyboardEvent) :void {
-        this.keyDown.dispatch(keyEvent);
-    }
-
-    /** Called when a key is released while this mode is active */
-    public function onKeyUp (keyEvent :KeyboardEvent) :void {
-        this.keyUp.dispatch(keyEvent);
+    /** Called when the mode is active and receives a keyboard event. */
+    public function handleKeyboardEvent (e :KeyboardEvent) :void {
+        _keyboardInput.handleKeyboardEvent(e);
     }
 
     /** Updates all objects in the mode. */
@@ -399,6 +392,8 @@ public class AppMode
         _touchInput.shutdown();
         _touchInput = null;
 
+        _keyboardInput = null;
+
         _modeSprite.removeFromParent(/*dispose=*/true);
         _modeSprite = null;
     }
@@ -416,6 +411,7 @@ public class AppMode
     protected var _modeSprite :Sprite = new Sprite();
     protected var _viewport :Viewport;
     protected var _touchInput :TouchInput;
+    protected var _keyboardInput :KeyboardInput = new KeyboardInput();
 
     protected var _runningTime :Number = 0;
 

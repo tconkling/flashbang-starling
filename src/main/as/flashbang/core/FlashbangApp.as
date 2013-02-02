@@ -55,17 +55,13 @@ public class FlashbangApp extends flash.display.Sprite
         }
     }
 
-    /** Called when the app receives a keyDown event. By default it forwards it to each viewport */
-    public function onKeyDown (e :KeyboardEvent) :void {
+    /**
+     * Called when the app receives a keyboard event.
+     * By default it forwards the event each viewport
+     */
+    public function handleKeyboardEvent (e :KeyboardEvent) :void {
         for (var ii :int = _viewports.length - 1; ii >= 0; --ii) {
-            _viewports[ii].onKeyDown(e);
-        }
-    }
-
-    /** Called when the app receives a keyUp event. By default it forwards it to each viewport */
-    public function onKeyUp (e :KeyboardEvent) :void {
-        for (var ii :int = _viewports.length - 1; ii >= 0; --ii) {
-            _viewports[ii].onKeyUp(e);
+            _viewports[ii].handleKeyboardEvent(e);
         }
     }
 
@@ -200,8 +196,8 @@ public class FlashbangApp extends flash.display.Sprite
         // Create our default viewport
         createViewport(Viewport.DEFAULT);
 
-        _regs.addEventListener(_mainSprite.stage, KeyboardEvent.KEY_DOWN, onKeyDown);
-        _regs.addEventListener(_mainSprite.stage, KeyboardEvent.KEY_UP, onKeyUp);
+        _regs.addEventListener(_mainSprite.stage, KeyboardEvent.KEY_DOWN, handleKeyboardEvent);
+        _regs.addEventListener(_mainSprite.stage, KeyboardEvent.KEY_UP, handleKeyboardEvent);
         _regs.addEventListener(_mainSprite.stage, starling.events.Event.ENTER_FRAME, update);
         _lastTime = getAppTime();
 

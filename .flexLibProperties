@@ -11,6 +11,8 @@
     <classEntry path="flashbang.util.DisplayUtil"/>
     <classEntry path="flashbang.util.RectMeter"/>
     <classEntry path="flashbang.tasks.PlayMovieTask"/>
+    <classEntry path="flashbang.input.KeyboardInput"/>
+    <classEntry path="flashbang.input.KeyboardListener"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
