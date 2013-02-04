@@ -12,7 +12,7 @@ import aspire.util.maps.ValueComputingMap;
 import flashbang.components.DisplayComponent;
 import flashbang.input.KeyboardInput;
 import flashbang.input.TouchInput;
-import flashbang.util.ListenerRegistrations;
+import flashbang.util.Listeners;
 
 import starling.display.DisplayObject;
 import starling.display.DisplayObjectContainer;
@@ -425,7 +425,7 @@ public class AppMode
 
     protected var _groupedObjects :Map = ValueComputingMap.newArrayMapOf(Object);
 
-    protected var _regs :ListenerRegistrations = new ListenerRegistrations();
+    protected var _regs :Listeners = new Listeners();
 
     protected var _destroyed :Boolean;
 }

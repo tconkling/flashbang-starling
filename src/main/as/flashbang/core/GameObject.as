@@ -12,7 +12,7 @@ import aspire.util.StringUtil;
 import flashbang.components.DisplayComponent;
 import flashbang.tasks.ParallelTask;
 import flashbang.tasks.TaskContainer;
-import flashbang.util.ListenerRegistrations;
+import flashbang.util.Listeners;
 
 import org.osflash.signals.Signal;
 
@@ -391,7 +391,7 @@ public class GameObject
     // True if tasks were removed while an update was in progress
     protected var _collapseRemovedTasks :Boolean;
 
-    protected var _regs :ListenerRegistrations = new ListenerRegistrations();
+    protected var _regs :Listeners = new Listeners();
 
     protected var _dependentObjectRefs :Vector.<GameObjectRef>;
     protected var _pendingDependentObjects :Vector.<GameObject>;

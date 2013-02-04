@@ -22,7 +22,7 @@ import aspire.util.Registrations;
 
 import flashbang.audio.AudioManager;
 import flashbang.resource.ResourceManager;
-import flashbang.util.ListenerRegistrations;
+import flashbang.util.Listeners;
 
 import org.osflash.signals.Signal;
 
@@ -183,7 +183,7 @@ public class FlashbangApp extends flash.display.Sprite
         _starling = initStarling();
         // install our custom touch handler
         _starling.touchHandler = new AppTouchHandler(handleTouches);
-        _regs.addOneShotEventListener(_starling, starling.events.Event.ROOT_CREATED, rootCreated);
+        _regs.addEventListener(_starling, starling.events.Event.ROOT_CREATED, rootCreated).once();
         _starling.start();
     }
 
@@ -274,7 +274,7 @@ public class FlashbangApp extends flash.display.Sprite
     internal var _config :Config;
 
     protected var _mainSprite :starling.display.Sprite;
-    protected var _regs :ListenerRegistrations = new ListenerRegistrations();
+    protected var _regs :Listeners = new Listeners();
 
     protected var _shutdownPending :Boolean;
     protected var _lastTime :Number;
