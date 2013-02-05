@@ -183,6 +183,11 @@ public class AppMode
         --_objectCount;
     }
 
+    /** Returns the singleton object of the given class, or null if no such object exists.  */
+    public function getSingleton (clazz :Class) :GameObject {
+        return getObjectWithId(clazz);
+    }
+
     /** Returns the object in this mode with the given ID, or null if no such object exists. */
     public function getObjectWithId (id :Object) :GameObject {
         return (_idObjects.get(id) as GameObject);
