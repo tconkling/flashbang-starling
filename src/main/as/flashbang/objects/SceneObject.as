@@ -32,7 +32,7 @@ public class SceneObject extends GameObject
         return _touchable;
     }
 
-    override public function get objectNames () :Array {
+    override public function get objectIds () :Array {
         return _name == null ? [] : [ _name ];
     }
 

@@ -3,9 +3,6 @@
 
 package flashbang.core {
 
-import starling.display.DisplayObject;
-import starling.display.DisplayObjectContainer;
-
 import aspire.util.Preconditions;
 import aspire.util.StringUtil;
 
@@ -15,6 +12,9 @@ import flashbang.tasks.TaskContainer;
 import flashbang.util.Listeners;
 
 import org.osflash.signals.Signal;
+
+import starling.display.DisplayObject;
+import starling.display.DisplayObjectContainer;
 
 public class GameObject
 {
@@ -54,25 +54,24 @@ public class GameObject
     }
 
     /**
-     * Returns the names of this object. (Objects can have multiple names.)
-     * Two objects in the same mode cannot have the same name.
-     * Objects cannot change their names once added to a mode.
+     * Returns the IDs of this object. (Objects can have multiple IDs.)
+     * Two objects in the same mode cannot have the same ID.
+     * Objects cannot change their IDs once added to a mode. An ID can be any object;
+     * though it's common to use Classes and Strings.
      * <code>
-     * override public function get objectNames () :Array
-     * {
-     *     return [ "MyName", "MyOtherName" ].concat(super.objectNames);
+     * override public function get objectIds () :Array {
+     *     return [ "Hello", MyClass ].concat(super.objectIds);
      * }
      * </code>
      */
-    public function get objectNames () :Array {
+    public function get objectIds () :Array {
         return [];
     }
 
     /**
      * Override to return the groups that this object belongs to. E.g.:
      * <code>
-     * override public function get objectGroups () :Array
-     * {
+     * override public function get objectGroups () :Array {
      *     return [ "Foo", MyClass ].concat(super.objectGroups);
      * }
      * </code>
@@ -110,24 +109,6 @@ public class GameObject
     /** Adds a named task to this GameObject, replacing existing tasks of the name if they exist. */
     public function replaceNamedTask (name :String, task :ObjectTask) :void {
         modifyNamedTask(name, task, true);
-    }
-
-    private function modifyNamedTask (name :String, task :ObjectTask,
-        removeExistingTasks :Boolean) :void
-    {
-        if (null == task) {
-            throw new ArgumentError("task must be non-null");
-        }
-
-        if (null == name || name.length == 0) {
-            throw new ArgumentError("name must be at least 1 character long");
-        }
-
-        var namedTask :TaskContainer = findNamedTask(name, true);
-        if (removeExistingTasks) {
-            namedTask.removeAllTasks();
-        }
-        namedTask.addTask(task);
     }
 
     /** Removes all tasks from the GameObject. */
@@ -299,6 +280,23 @@ public class GameObject
             return tc;
         }
         return null;
+    }
+
+    private function modifyNamedTask (name :String, task :ObjectTask,
+        removeExistingTasks :Boolean) :void {
+        if (null == task) {
+            throw new ArgumentError("task must be non-null");
+        }
+
+        if (null == name || name.length == 0) {
+            throw new ArgumentError("name must be at least 1 character long");
+        }
+
+        var namedTask :TaskContainer = findNamedTask(name, true);
+        if (removeExistingTasks) {
+            namedTask.removeAllTasks();
+        }
+        namedTask.addTask(task);
     }
 
     internal function addedToModeInternal () :void {

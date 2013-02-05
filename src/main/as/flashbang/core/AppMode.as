@@ -96,12 +96,12 @@ public class AppMode
         obj._mode = this;
         obj._ref = ref;
 
-        // does the object have names?
-        for each (var objectName :String in obj.objectNames) {
-            var existing :GameObject = _namedObjects.put(objectName, obj);
+        // does the object have IDs?
+        for each (var objectId :Object in obj.objectIds) {
+            var existing :GameObject = _idObjects.put(objectId, obj);
             Preconditions.checkState(null == existing,
-                "two objects with the same name added to the AppMode",
-                "name", objectName, "new", obj, "existing", existing);
+                "two objects with the same ID added to the AppMode",
+                "id", objectId, "new", obj, "existing", existing);
         }
 
         // add this object to the groups it belongs to
@@ -117,8 +117,8 @@ public class AppMode
     }
 
     /** Removes a GameObject from the ObjectDB. */
-    public function destroyObjectNamed (name :String) :void {
-        var obj :GameObject = getObjectNamed(name);
+    public function destroyObjectWithId (id :Object) :void {
+        var obj :GameObject = getObjectWithId(id);
         if (null != obj) {
             destroyObject(obj.ref);
         }
@@ -162,9 +162,9 @@ public class AppMode
         // the ref no longer points to the object
         ref._obj = null;
 
-        // does the object have a name?
-        for each (var objectName :String in obj.objectNames) {
-            _namedObjects.remove(objectName);
+        // does the object have IDs?
+        for each (var objectId :Object in obj.objectIds) {
+            _idObjects.remove(objectId);
         }
 
         // object group removal takes place in finalizeObjectRemoval()
@@ -183,9 +183,9 @@ public class AppMode
         --_objectCount;
     }
 
-    /** Returns the object in this mode with the given name, or null if no such object exists. */
-    public function getObjectNamed (name :String) :GameObject {
-        return (_namedObjects.get(name) as GameObject);
+    /** Returns the object in this mode with the given ID, or null if no such object exists. */
+    public function getObjectWithId (id :Object) :GameObject {
+        return (_idObjects.get(id) as GameObject);
     }
 
     /**
@@ -381,7 +381,7 @@ public class AppMode
         _listHead = null;
         _objectCount = 0;
         _objectsPendingRemoval = null;
-        _namedObjects = null;
+        _idObjects = null;
         _groupedObjects = null;
 
         _regs.cancel();
@@ -420,9 +420,7 @@ public class AppMode
 
     protected var _objectsPendingRemoval :Vector.<GameObject>;
 
-    /** stores a mapping from String to Object */
-    protected var _namedObjects :Map = Maps.newMapOf(String);
-
+    protected var _idObjects :Map = Maps.newMapOf(Object); // <Object,GameObject>
     protected var _groupedObjects :Map = ValueComputingMap.newArrayMapOf(Object);
 
     protected var _regs :Listeners = new Listeners();

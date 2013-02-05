@@ -52,7 +52,7 @@ public class SimpleTimer extends GameObject
         }
     }
 
-    override public function get objectNames () :Array {
+    override public function get objectIds () :Array {
         return _name == null ? [] : [ _name ];
     }
 
