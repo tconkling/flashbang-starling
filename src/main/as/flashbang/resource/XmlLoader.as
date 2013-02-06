@@ -3,6 +3,9 @@
 
 package flashbang.resource {
 
+import aspire.util.ClassUtil;
+import aspire.util.XmlUtil;
+
 import flash.errors.IOError;
 import flash.events.Event;
 import flash.events.IOErrorEvent;
@@ -11,9 +14,6 @@ import flash.net.URLLoader;
 import flash.net.URLLoaderDataFormat;
 import flash.net.URLRequest;
 import flash.utils.ByteArray;
-
-import aspire.util.ClassUtil;
-import aspire.util.XmlUtil;
 
 public class XmlLoader extends ResourceLoader
 {
@@ -45,7 +45,7 @@ public class XmlLoader extends ResourceLoader
             loadFromURL(data as String);
         } else if (data is ByteArray) {
             var ba :ByteArray = ByteArray(data);
-            createXml(ba.readUTFBytes(ba.length));
+            onDataLoaded(ba.readUTFBytes(ba.length));
         } else {
             throw new Error("Unrecognized XML data source: '" +
                 ClassUtil.tinyClassName(data) + "'");
@@ -58,7 +58,7 @@ public class XmlLoader extends ResourceLoader
         _loader.addEventListener(Event.COMPLETE, function (..._) :void {
             var data :* = _loader.data;
             _loader.close();
-            createXml(data);
+            onDataLoaded(data);
         });
 
         _loader.addEventListener(IOErrorEvent.IO_ERROR, function (e :IOErrorEvent) :void {
@@ -73,15 +73,16 @@ public class XmlLoader extends ResourceLoader
         _loader.load(new URLRequest(urlString));
     }
 
-    protected function createXml (data :*) :void {
+    protected function onDataLoaded (data :*) :void {
         // override the default XML settings, so we get the full text content
         var settings :Object = XML.defaultSettings();
         settings["ignoreWhitespace"] = false;
         settings["prettyPrinting"] = false;
-        var xml :XML = XmlUtil.newXML(data, settings);
-        var name :String = requireLoadParam(NAME, String);
+        onXmlLoaded(XmlUtil.newXML(data, settings));
+    }
 
-        succeed(new XmlResource(name, xml));
+    protected function onXmlLoaded (xml :XML) :void {
+        succeed(new XmlResource(requireLoadParam(NAME, String), xml));
     }
 
     override protected function onLoadCanceled () :void {
