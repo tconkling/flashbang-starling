@@ -1,7 +1,7 @@
 //
 // Flashbang
 
-package flashbang.util {
+package flashbang.loader {
 
 import aspire.util.Enum;
 

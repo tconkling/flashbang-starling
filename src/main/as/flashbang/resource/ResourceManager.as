@@ -18,10 +18,10 @@ public class ResourceManager
     }
 
     public function registerDefaultLoaders () :void {
-        registerResourceLoader("xml", XmlLoader);
-        registerResourceLoader("sound", SoundLoader);
+        registerResourceLoader("xml", XmlResourceLoader);
+        registerResourceLoader("sound", SoundResourceLoader);
         registerResourceLoader("flump", FlumpLibraryLoader);
-        registerResourceLoader("font", FontLoader);
+        registerResourceLoader("font", FontResourceLoader);
     }
 
     public function registerResourceLoader (resourceType :String, loaderClass :Class) :void {

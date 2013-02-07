@@ -15,7 +15,7 @@ import flash.net.URLLoaderDataFormat;
 import flash.net.URLRequest;
 import flash.utils.ByteArray;
 
-public class XmlLoader extends ResourceLoader
+public class XmlResourceLoader extends ResourceLoader
 {
     /** Load params */
 
@@ -30,7 +30,7 @@ public class XmlLoader extends ResourceLoader
      */
     public static const DATA :String = "data";
 
-    public function XmlLoader (params :Object) {
+    public function XmlResourceLoader (params :Object) {
         super(params);
     }
 

@@ -1,7 +1,7 @@
 //
 // Flashbang
 
-package flashbang.util {
+package flashbang.loader {
 
 import flash.errors.IOError;
 import flash.events.Event;
@@ -10,9 +10,9 @@ import flash.net.URLLoader;
 import flash.net.URLLoaderDataFormat;
 import flash.net.URLRequest;
 
-public class URLLoadable extends Loadable
+public class UrlLoader extends DataLoader
 {
-    public function URLLoadable (request :URLRequest, dataFormat :String = null) {
+    public function UrlLoader (request :URLRequest, dataFormat :String = null) {
         _request = request;
         _format = (dataFormat || URLLoaderDataFormat.TEXT);
     }

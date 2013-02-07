@@ -1,29 +1,29 @@
 //
 // Flashbang
 
-package flashbang.util {
+package flashbang.loader {
 
 import aspire.util.Preconditions;
 
-public class LoadableBatch extends Loadable
+public class BatchLoader extends DataLoader
 {
     /**
-     * Creates a new LoadableBatch.
+     * Creates a new BatchLoader.
      *
-     * @param maxSimultaneous the number of Loadables that can be loading simultaneously
+     * @param maxSimultaneous the number of DataLoaders that can be loading simultaneously
      * (or 0 for unlimited).
      */
-    public function LoadableBatch (maxSimultaneous :int = 0) {
+    public function BatchLoader (maxSimultaneous :int = 0) {
         _maxSimultaneous = maxSimultaneous;
     }
 
-    /** Adds a Loadable to the batch */
-    public function addLoadable (loadable :Loadable) :void {
+    /** Adds a loader to the batch */
+    public function addLoader (loader :DataLoader) :void {
         Preconditions.checkState(this.state == LoadState.INIT,
             "Batch is loading or loaded", "state", this.state);
-        Preconditions.checkArgument(loadable.state == LoadState.INIT,
-            "Loadable has already been loaded", "state", loadable.state);
-        _pending.push(loadable);
+        Preconditions.checkArgument(loader.state == LoadState.INIT,
+            "Loader has already been loaded", "state", loader.state);
+        _pending.push(loader);
     }
 
     override protected function doLoad () :void {
@@ -41,26 +41,26 @@ public class LoadableBatch extends Loadable
         while (this.state == LoadState.LOADING &&
                _pending.length > 0 &&
                (_maxSimultaneous <= 0 || _loading.length < _maxSimultaneous)) {
-            loadOneObject(_pending.shift());
+            loadOne(_pending.shift());
         }
     }
 
-    protected function loadOneObject (loadable :Loadable) :void {
-        var self :LoadableBatch = this;
-        _loading.push(loadable);
-        loadable.load(
+    protected function loadOne (loader :DataLoader) :void {
+        var self :BatchLoader = this;
+        _loading.push(loader);
+        loader.load(
             function () :void {
                 // we may have gotten canceled
                 if (self.state == LoadState.LOADING) {
-                    removeFirst(_loading, loadable);
-                    _loaded.push(loadable);
+                    removeFirst(_loading, loader);
+                    _loaded.push(loader);
                     loadMore();
                 }
             },
             function (e :Error) :void {
                 // we may have gotten canceled
                 if (self.state == LoadState.LOADING) {
-                    removeFirst(_loading, loadable);
+                    removeFirst(_loading, loader);
                     onLoadCanceled();
                     fail(e);
                 }
@@ -68,8 +68,8 @@ public class LoadableBatch extends Loadable
     }
 
     override protected function onLoadCanceled () :void {
-        for each (var loadable :Loadable in _loading) {
-            loadable.cancel();
+        for each (var loader :DataLoader in _loading) {
+            loader.cancel();
         }
 
         cleanup();
@@ -81,7 +81,7 @@ public class LoadableBatch extends Loadable
         _loaded = null;
     }
 
-    protected static function removeFirst (v :Vector.<Loadable>, l :Loadable) :void {
+    protected static function removeFirst (v :Vector.<DataLoader>, l :DataLoader) :void {
         var len :int = v.length;
         for (var ii :int = 0; ii < len; ++ii) {
             if (v[ii] == l) {
@@ -93,8 +93,8 @@ public class LoadableBatch extends Loadable
 
     protected var _maxSimultaneous :int;
 
-    private var _pending :Vector.<Loadable> = new <Loadable>[];
-    private var _loading :Vector.<Loadable> = new <Loadable>[];
-    private var _loaded :Vector.<Loadable> = new <Loadable>[];
+    private var _pending :Vector.<DataLoader> = new <DataLoader>[];
+    private var _loading :Vector.<DataLoader> = new <DataLoader>[];
+    private var _loaded :Vector.<DataLoader> = new <DataLoader>[];
 }
 }

@@ -4,17 +4,17 @@
 package flashbang.resource {
 
 import flashbang.core.Flashbang;
-import flashbang.util.Loadable;
-import flashbang.util.LoadableBatch;
+import flashbang.loader.DataLoader;
+import flashbang.loader.BatchLoader;
 
-public class ResourceSet extends LoadableBatch
+public class ResourceSet extends BatchLoader
 {
     public function ResourceSet (maxSimultaneous :int = 0) {
         super(maxSimultaneous);
     }
 
     public function add (loadParams :Object) :void {
-        addLoadable(Flashbang.rsrcs.createLoader(loadParams));
+        addLoader(Flashbang.rsrcs.createLoader(loadParams));
     }
 
     public function unload () :void {
@@ -23,9 +23,9 @@ public class ResourceSet extends LoadableBatch
 
     override protected function succeed (result :* = undefined) :void {
         // get all our resources
-        var loaded :Vector.<Loadable> = result;
+        var loaded :Vector.<DataLoader> = result;
         var resources :Vector.<Resource> = new <Resource>[];
-        for each (var l :Loadable in loaded) {
+        for each (var l :DataLoader in loaded) {
             if (l is ResourceLoader) {
                 var thisResult :* = l.result;
                 if (thisResult is Resource) {
@@ -41,7 +41,7 @@ public class ResourceSet extends LoadableBatch
 
         Flashbang.rsrcs.addSet(this, resources);
 
-        // Don't pass result through to LoadableBatch. We don't want extra references
+        // Don't pass result through to BatchLoader. We don't want extra references
         // to the resources
         super.succeed();
     }

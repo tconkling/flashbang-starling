@@ -5,9 +5,9 @@ package flashbang.resource {
 
 import starling.text.BitmapFont;
 
-import flashbang.util.LoadableBatch;
+import flashbang.loader.BatchLoader;
 
-public class FontLoader extends ResourceLoader
+public class FontResourceLoader extends ResourceLoader
 {
     /** The name of the Font (required) */
     public static const NAME :String = "name";
@@ -31,21 +31,21 @@ public class FontLoader extends ResourceLoader
     /** The scale of the font texture (optional, @default 1) */
     public static const SCALE :String = "scale";
 
-    public function FontLoader (params :Object) {
+    public function FontResourceLoader (params :Object) {
         super(params);
     }
 
     override protected function doLoad () :void {
         var name :String = requireLoadParam(NAME, String);
 
-        var xmlLoader :XmlLoader =
-            new XmlLoader({ name: "dummy", data: requireLoadParam(XML_DATA) });
+        var xmlLoader :XmlResourceLoader =
+            new XmlResourceLoader({ name: "dummy", data: requireLoadParam(XML_DATA) });
         var textureLoader :TextureLoader =
             new TextureLoader(requireLoadParam(TEXTURE_DATA), getLoadParam(SCALE, 1));
 
-        _batch = new LoadableBatch();
-        _batch.addLoadable(xmlLoader);
-        _batch.addLoadable(textureLoader);
+        _batch = new BatchLoader();
+        _batch.addLoader(xmlLoader);
+        _batch.addLoader(textureLoader);
 
         _batch.load(
             function () :void {
@@ -68,8 +68,8 @@ public class FontLoader extends ResourceLoader
         }
     }
 
-    protected var _batch :LoadableBatch;
-    protected var _xmlLoader :XmlLoader;
+    protected var _batch :BatchLoader;
+    protected var _xmlLoader :XmlResourceLoader;
 }
 }
 
@@ -87,7 +87,7 @@ import starling.textures.Texture;
 
 import aspire.util.ClassUtil;
 
-import flashbang.util.Loadable;
+import flashbang.loader.DataLoader;
 
 class LoadedTexture
 {
@@ -129,7 +129,7 @@ class LoadedTexture
     protected var _loader :Loader;
 }
 
-class TextureLoader extends Loadable
+class TextureLoader extends DataLoader
 {
     public function TextureLoader (data :Object, scale :Number) {
         _data = data;

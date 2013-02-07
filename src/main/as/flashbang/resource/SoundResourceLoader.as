@@ -14,7 +14,7 @@ import aspire.util.F;
 
 import flashbang.audio.SoundType;
 
-public class SoundLoader extends ResourceLoader
+public class SoundResourceLoader extends ResourceLoader
 {
     /** Load params */
 
@@ -46,7 +46,7 @@ public class SoundLoader extends ResourceLoader
      */
     public static const STREAM :String = "stream";
 
-    public function SoundLoader (params :Object) {
+    public function SoundResourceLoader (params :Object) {
         super(params);
     }
 

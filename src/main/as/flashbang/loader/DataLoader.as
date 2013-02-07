@@ -1,7 +1,7 @@
 //
 // Flashbang
 
-package flashbang.util {
+package flashbang.loader {
 
 import aspire.util.Log;
 import aspire.util.Preconditions;
@@ -9,9 +9,9 @@ import aspire.util.Preconditions;
 import org.osflash.signals.ISignal;
 import org.osflash.signals.Signal;
 
-public class Loadable
+public class DataLoader
 {
-    public function Loadable () {
+    public function DataLoader () {
         _state = LoadState.INIT;
     }
 
@@ -31,7 +31,7 @@ public class Loadable
         return _failed;
     }
 
-    /** @return the Loadable's LoadState */
+    /** @return the Loader's LoadState */
     public final function get state () :LoadState {
         return _state;
     }
@@ -42,7 +42,7 @@ public class Loadable
     }
 
     /**
-     * Loads the Loadable.
+     * Loads the DataLoader.
      *
      * @param onLoaded (optional) a function to call if and when the load succeeds.
      * It should take 0 or 1 arguments. If it takes 1 argument, it will be passed
@@ -146,7 +146,7 @@ public class Loadable
     private var _state :LoadState = LoadState.INIT;
     private var _result :* = undefined;
 
-    protected static const log :Log = Log.getLog(Loadable);
+    protected static const log :Log = Log.getLog(DataLoader);
 }
 
 }

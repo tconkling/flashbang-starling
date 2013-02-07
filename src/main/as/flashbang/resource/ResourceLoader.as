@@ -7,9 +7,9 @@ import aspire.util.ClassUtil;
 import aspire.util.Joiner;
 import aspire.util.StringUtil;
 
-import flashbang.util.Loadable;
+import flashbang.loader.DataLoader;
 
-public class ResourceLoader extends Loadable
+public class ResourceLoader extends DataLoader
 {
     public function ResourceLoader (params :Object) {
         _params = params;
