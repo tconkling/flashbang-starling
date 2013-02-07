@@ -10,9 +10,9 @@ import flash.net.URLLoader;
 import flash.net.URLLoaderDataFormat;
 import flash.net.URLRequest;
 
-public class UrlLoader extends DataLoader
+public class UrlDataLoader extends DataLoader
 {
-    public function UrlLoader (request :URLRequest, dataFormat :String = null) {
+    public function UrlDataLoader (request :URLRequest, dataFormat :String = null) {
         _request = request;
         _format = (dataFormat || URLLoaderDataFormat.TEXT);
     }
