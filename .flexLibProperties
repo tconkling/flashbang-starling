@@ -13,6 +13,7 @@
     <classEntry path="flashbang.tasks.PlayMovieTask"/>
     <classEntry path="flashbang.input.KeyboardInput"/>
     <classEntry path="flashbang.input.KeyboardListener"/>
+    <classEntry path="flashbang.loader.XmlLoader"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

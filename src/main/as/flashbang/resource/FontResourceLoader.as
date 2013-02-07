@@ -3,9 +3,10 @@
 
 package flashbang.resource {
 
-import starling.text.BitmapFont;
-
 import flashbang.loader.BatchLoader;
+import flashbang.loader.XmlLoader;
+
+import starling.text.BitmapFont;
 
 public class FontResourceLoader extends ResourceLoader
 {
@@ -38,8 +39,7 @@ public class FontResourceLoader extends ResourceLoader
     override protected function doLoad () :void {
         var name :String = requireLoadParam(NAME, String);
 
-        var xmlLoader :XmlResourceLoader =
-            new XmlResourceLoader({ name: "dummy", data: requireLoadParam(XML_DATA) });
+        var xmlLoader :XmlLoader = new XmlLoader(requireLoadParam(XML_DATA));
         var textureLoader :TextureLoader =
             new TextureLoader(requireLoadParam(TEXTURE_DATA), getLoadParam(SCALE, 1));
 
@@ -51,7 +51,7 @@ public class FontResourceLoader extends ResourceLoader
             function () :void {
                 try {
                     var texture :LoadedTexture = textureLoader.result;
-                    var xml :XML = XmlResource(xmlLoader.result).xml;
+                    var xml :XML = xmlLoader.result;
                     var font :BitmapFont = new BitmapFont(texture.texture, xml);
                     succeed(new FontResource(name, font));
                 } catch (e :Error) {
@@ -69,7 +69,6 @@ public class FontResourceLoader extends ResourceLoader
     }
 
     protected var _batch :BatchLoader;
-    protected var _xmlLoader :XmlResourceLoader;
 }
 }
 
