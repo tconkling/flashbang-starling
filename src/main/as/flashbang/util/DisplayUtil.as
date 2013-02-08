@@ -7,6 +7,8 @@ import aspire.geom.Vector2;
 
 import flash.geom.Point;
 
+import flashbang.core.Flashbang;
+
 import starling.display.DisplayObject;
 import starling.display.DisplayObjectContainer;
 import starling.display.Quad;
@@ -14,6 +16,13 @@ import starling.display.Sprite;
 
 public class DisplayUtil
 {
+    /** Returns a stage-sized rectangle filled with the given color */
+    public static function fillStageRect (color :uint = 0, alpha :Number = 1) :Quad {
+        var r :Quad = fillRect(Flashbang.stageWidth, Flashbang.stageHeight, color);
+        r.alpha = alpha;
+        return r;
+    }
+
     /** Returns a rectangle filled with the given color */
     public static function fillRect (width :Number, height :Number, color :uint) :Quad {
         return new Quad(width, height, color);
