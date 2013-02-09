@@ -6,12 +6,12 @@ package flashbang.objects {
 import starling.display.Sprite;
 
 /**
- * A SceneObject that creates and manages a Sprite as its displayObject.
+ * A SceneObject that manages a Sprite as its displayObject.
  */
 public class SpriteObject extends SceneObject
 {
-    public function SpriteObject (name :String = null, group :String = null) {
-        super(new Sprite(), name, group);
+    public function SpriteObject (sprite :Sprite = null, id :Object = null, group :Object = null) {
+        super(sprite || new Sprite(), id, group);
         _sprite = Sprite(_displayObject);
     }
 
