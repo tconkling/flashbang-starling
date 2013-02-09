@@ -43,7 +43,7 @@ public class Button extends SpriteObject
         showState(_state);
 
         var self :Button = this;
-        _regs.addSignalListener(this.touchSignals.touchBegan, function (touch :Touch) :void {
+        _regs.addSignalListener(this.touchBegan, function (touch :Touch) :void {
             if (self.enabled && _captureReg == null) {
                 var l :PointerListener = PointerAdapter.withTouchId(touch.id)
                     .onPointerMove(self.onPointerMove)

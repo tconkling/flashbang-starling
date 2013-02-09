@@ -3,52 +3,66 @@
 
 package flashbang.objects {
 
-import starling.display.DisplayObject;
-
-import flashbang.core.GameObject;
 import flashbang.components.DisplayComponent;
+import flashbang.core.GameObject;
 import flashbang.input.TouchSignals;
 import flashbang.input.Touchable;
+
+import org.osflash.signals.ISignal;
+
+import starling.display.DisplayObject;
 
 /**
  * A convenience class that implements DisplayComponent and manages a displayObject directly.
  */
 public class SceneObject extends GameObject
-    implements DisplayComponent
+    implements DisplayComponent, Touchable
 {
-    public function SceneObject (displayObject :DisplayObject, name :String = null,
-        group :String = null)
-    {
+    public function SceneObject (displayObject :DisplayObject, id :Object = null,
+        group :Object = null) {
         _displayObject = displayObject;
-        _name = name;
-        _group = group;
-    }
-
-    /** Convenience function that returns a Touchable interface for the DisplayObject */
-    public function get touchSignals () :Touchable {
-        if (_touchable == null) {
-            _touchable = TouchSignals.forDisp(_displayObject);
-        }
-        return _touchable;
-    }
-
-    override public function get objectIds () :Array {
-        return _name == null ? [] : [ _name ];
-    }
-
-    override public function get objectGroups () :Array {
-        return _group == null ? [] : [ _group ];
     }
 
     public final function get display () :DisplayObject {
         return _displayObject;
     }
 
-    protected var _displayObject :DisplayObject;
-    protected var _name :String;
-    protected var _group :String;
+    public function get touchEvent () :ISignal { // Signal<TouchEvent>
+        return getTouchable().touchEvent;
+    }
 
+    public function get touchBegan () :ISignal { // Signal<Touch>
+        return getTouchable().touchBegan;
+    }
+
+    public function get touchMoved () :ISignal { // Signal<Touch>
+        return getTouchable().touchMoved;
+    }
+
+    public function get touchEnded () :ISignal { // Signal<Touch>
+        return getTouchable().touchEnded;
+    }
+
+    override public function get objectIds () :Array {
+        return (_id != null ? [ _id ] : []);
+    }
+
+    override public function get objectGroups () :Array {
+        return (_group != null ? [ _group ] : []);
+    }
+
+    protected function getTouchable () :Touchable {
+        if (_touchable == null) {
+            _touchable = TouchSignals.forDisp(_displayObject);
+        }
+        return _touchable;
+    }
+
+    protected var _displayObject :DisplayObject;
     protected var _touchable :Touchable; // lazily instantiated
+
+    protected var _id :Object;
+    protected var _group :Object;
 }
 
 }
