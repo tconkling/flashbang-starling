@@ -3,11 +3,11 @@
 
 package flashbang.debug {
 
+import flashbang.components.DisplayComponent;
+import flashbang.util.TextFieldBuilder;
+
 import starling.display.DisplayObject;
 import starling.text.TextField;
-import starling.utils.HAlign;
-
-import flashbang.components.DisplayComponent;
 
 public class FramerateView extends Framerate
     implements DisplayComponent
@@ -29,10 +29,12 @@ public class FramerateView extends Framerate
 
     public function FramerateView () {
         super(1000);
-
-        _tf = new TextField(150, 15, "", "_sans", 8);
-        _tf.hAlign = HAlign.LEFT;
-        _tf.touchable = false;
+        _tf = new TextFieldBuilder()
+            .font("_sans")
+            .fontSize(8)
+            .touchable(false)
+            .autoSizeSingleLine()
+            .build();
     }
 
     public function get display () :DisplayObject {

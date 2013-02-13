@@ -3,18 +3,16 @@
 
 package flashbang.objects {
 
-import flash.geom.Point;
-
-import starling.events.Touch;
-import starling.events.TouchEvent;
-import starling.events.TouchPhase;
-
 import aspire.util.Registration;
+
+import flash.geom.Point;
 
 import flashbang.input.PointerAdapter;
 import flashbang.input.PointerListener;
 
 import org.osflash.signals.Signal;
+
+import starling.events.Touch;
 
 /**
  * A button base class. Abstract.

@@ -2,15 +2,21 @@
 // flashbang
 
 package flashbang.objects {
+
+import flashbang.util.TextFieldBuilder;
+
 import starling.display.Quad;
 import starling.text.TextField;
-import starling.text.TextFieldAutoSize;
 
 public class SimpleTextButton extends Button
 {
     public function SimpleTextButton (text :String, fontSize :Number = 12) {
-        _tf = new TextField(1, 1, text, "_sans", fontSize);
-        _tf.autoSize = TextFieldAutoSize.SINGLE_LINE;
+        _tf = new TextFieldBuilder()
+            .text(text)
+            .font("_sans")
+            .fontSize(12)
+            .autoSizeSingleLine()
+            .build();
         _tf.x = PADDING;
         _tf.y = PADDING;
 

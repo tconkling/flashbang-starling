@@ -14,6 +14,7 @@
     <classEntry path="flashbang.input.KeyboardInput"/>
     <classEntry path="flashbang.input.KeyboardListener"/>
     <classEntry path="flashbang.loader.XmlLoader"/>
+    <classEntry path="flashbang.util.TextFieldBuilder"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
