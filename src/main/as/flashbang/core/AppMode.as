@@ -172,10 +172,6 @@ public class AppMode
         obj.removedFromModeInternal();
         obj.cleanupInternal();
 
-        if (null == _objectsPendingRemoval) {
-            _objectsPendingRemoval = new <GameObject>[];
-        }
-
         // the ref will be unlinked from the objects list
         // at the end of the update()
         _objectsPendingRemoval.push(obj);
@@ -289,14 +285,10 @@ public class AppMode
     /** Removes dead objects from the object list at the end of an update. */
     protected function endUpdate (dt :Number) :void {
         // clean out all objects that were destroyed during the update loop
-
-        if (null != _objectsPendingRemoval) {
-            for each (var obj :GameObject in _objectsPendingRemoval) {
-                finalizeObjectRemoval(obj);
-            }
-
-            _objectsPendingRemoval = null;
+        for (var ii :int = _objectsPendingRemoval.length - 1; ii >= 0; --ii) {
+            finalizeObjectRemoval(_objectsPendingRemoval[ii]);
         }
+        _objectsPendingRemoval.length = 0;
     }
 
     /** Removes a single dead object from the object list. */
@@ -423,7 +415,7 @@ public class AppMode
     protected var _listHead :GameObjectRef;
     protected var _objectCount :uint;
 
-    protected var _objectsPendingRemoval :Vector.<GameObject>;
+    protected var _objectsPendingRemoval :Vector.<GameObject> = new <GameObject>[];
 
     protected var _idObjects :Map = Maps.newMapOf(Object); // <Object,GameObject>
     protected var _groupedObjects :Map = ValueComputingMap.newArrayMapOf(Object);
