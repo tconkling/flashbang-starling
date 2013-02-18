@@ -110,6 +110,18 @@ public class DisplayUtil
         }
     }
 
+    /** Removes disp from its parent, and adds replacement at the same index */
+    public static function replaceInParent (disp :DisplayObject, replacement :DisplayObject,
+        dispose :Boolean = false) :void {
+
+        var parent :DisplayObjectContainer = disp.parent;
+        if (parent != null) {
+            var idx :int = parent.getChildIndex(disp);
+            parent.removeChildAt(idx, dispose);
+            parent.addChildAt(replacement, idx);
+        }
+    }
+
     protected static const P :Point = new Point();
 }
 }
