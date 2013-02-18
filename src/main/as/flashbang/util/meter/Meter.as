@@ -1,7 +1,7 @@
 //
 // flashbang
 
-package flashbang.util {
+package flashbang.util.meter {
 
 public interface Meter
 {
