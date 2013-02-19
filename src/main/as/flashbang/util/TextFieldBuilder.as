@@ -11,6 +11,10 @@ import starling.utils.VAlign;
 
 public class TextFieldBuilder
 {
+    public function TextFieldBuilder (text :String = "") {
+        this.text(text);
+    }
+
     /** Creates the TextField */
     public function build () :TextField {
         var tf :TextField = new TextField(100, 100, "");
