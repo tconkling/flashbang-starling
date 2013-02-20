@@ -116,28 +116,33 @@ public class TextFieldBuilder
     }
 
     /** Equivalent to <code>hAlign(HAlign.LEFT)</code> */
-    public function alignLeft () :TextFieldBuilder {
+    public function hAlignLeft () :TextFieldBuilder {
         return hAlign(HAlign.LEFT);
     }
 
     /** Equivalent to <code>hAlign(HAlign.CENTER)</code> */
-    public function alignCenter () :TextFieldBuilder {
+    public function hAlignCenter () :TextFieldBuilder {
         return hAlign(HAlign.CENTER);
     }
 
     /** Equivalent to <code>hAlign(HAlign.RIGHT)</code> */
-    public function alignRight () :TextFieldBuilder {
+    public function hAlignRight () :TextFieldBuilder {
         return hAlign(HAlign.RIGHT);
     }
 
     /** Equivalent to <code>vAlign(VAlign.TOP)</code> */
-    public function alignTop () :TextFieldBuilder {
+    public function vAlignTop () :TextFieldBuilder {
         return vAlign(VAlign.TOP);
     }
 
     /** Equivalent to <code>vAlign(VAlign.CENTER)</code> */
     public function vAlignCenter () :TextFieldBuilder {
         return vAlign(VAlign.CENTER);
+    }
+
+    /** Equivalent to <code>vAlign(VAlign.BOTTOM)</code> */
+    public function vAlignBottom () :TextFieldBuilder {
+        return vAlign(VAlign.BOTTOM);
     }
 
     /** Specifies whether the text is boldface. @default false */
