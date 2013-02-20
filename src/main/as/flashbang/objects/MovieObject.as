@@ -18,6 +18,10 @@ public class MovieObject extends SpriteObject
         _movie = movie;
     }
 
+    public function get movie () :Movie {
+        return _movie;
+    }
+
     override protected function update (dt :Number) :void {
         _movie.advanceTime(dt);
     }
