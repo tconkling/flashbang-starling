@@ -138,13 +138,13 @@ public class FlashbangApp extends flash.display.Sprite
         return _starling;
     }
 
-    protected final function get config () :Config {
+    protected final function get config () :FlashbangConfig {
         return _config;
     }
 
     /** Subclasses can override this to create a custom Config */
-    protected function createConfig () :Config {
-        return new Config();
+    protected function createConfig () :FlashbangConfig {
+        return new FlashbangConfig();
     }
 
     /** Subclasses should override this to push their initial AppMode to the mode stack */
@@ -271,7 +271,7 @@ public class FlashbangApp extends flash.display.Sprite
     internal var _rsrcs :ResourceManager = new ResourceManager();
     internal var _audio :AudioManager;
     internal var _starling :Starling;
-    internal var _config :Config;
+    internal var _config :FlashbangConfig;
 
     protected var _mainSprite :starling.display.Sprite;
     protected var _regs :Listeners = new Listeners();

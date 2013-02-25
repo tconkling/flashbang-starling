@@ -3,7 +3,7 @@
 
 package flashbang.core {
 
-public class Config
+public class FlashbangConfig
 {
     /** The width (in points) of the Starling stage */
     public var stageWidth :int = 480;
