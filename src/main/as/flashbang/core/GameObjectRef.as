@@ -15,7 +15,7 @@ public class GameObjectRef
         }
     }
 
-    public function get object () :GameObject {
+    public function get object () :* {
         return _obj;
     }
 

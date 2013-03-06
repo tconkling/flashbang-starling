@@ -180,13 +180,13 @@ public class AppMode
     }
 
     /** Returns the singleton object of the given class, or null if no such object exists.  */
-    public function getSingleton (clazz :Class) :GameObject {
+    public function getSingleton (clazz :Class) :* {
         return getObjectWithId(clazz);
     }
 
     /** Returns the object in this mode with the given ID, or null if no such object exists. */
-    public function getObjectWithId (id :Object) :GameObject {
-        return (_idObjects.get(id) as GameObject);
+    public function getObjectWithId (id :Object) :* {
+        return _idObjects.get(id);
     }
 
     /**
