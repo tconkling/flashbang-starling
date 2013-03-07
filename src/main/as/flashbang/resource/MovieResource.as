@@ -3,12 +3,16 @@
 
 package flashbang.resource {
 
+import flashbang.core.Flashbang;
+import flashbang.util.DisplayObjectCreator;
+
 import flump.display.Library;
 import flump.display.Movie;
 
-import flashbang.core.Flashbang;
+import starling.display.DisplayObject;
 
 public class MovieResource extends Resource
+    implements DisplayObjectCreator
 {
     /**
      * Creates a Movie from the MovieResource with the given name.
@@ -32,6 +36,11 @@ public class MovieResource extends Resource
 
     public function create () :Movie {
         return _library.createMovie(_movieName);
+    }
+
+    /** from DisplayObjectCreator */
+    public function createDisplayObject () :DisplayObject {
+        return create();
     }
 
     override protected function unload () :void {

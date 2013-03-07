@@ -16,6 +16,7 @@
     <classEntry path="flashbang.loader.XmlLoader"/>
     <classEntry path="flashbang.util.TextFieldBuilder"/>
     <classEntry path="flashbang.util.meter.MeterMetrics"/>
+    <classEntry path="flashbang.util.DisplayObjectCreator"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
