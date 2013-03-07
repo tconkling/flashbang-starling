@@ -10,6 +10,7 @@ import flump.display.Library;
 
 import starling.display.DisplayObject;
 import starling.display.Image;
+import starling.textures.Texture;
 
 public class ImageResource extends Resource
     implements DisplayObjectCreator
@@ -38,6 +39,14 @@ public class ImageResource extends Resource
         return _library.createImage(_imageName);
     }
 
+    /** @return the Texture associated with this ImageResource */
+    public function get texture () :Texture {
+        if (_texture == null) {
+            _texture = _library.getImageTexture(_imageName);
+        }
+        return _texture;
+    }
+
     /** from DisplayObjectCreator */
     public function createDisplayObject () :DisplayObject {
         return create();
@@ -45,10 +54,12 @@ public class ImageResource extends Resource
 
     override protected function unload () :void {
         _library = null;
+        _texture = null;
     }
 
     protected var _library :Library;
     protected var _imageName :String;
+    protected var _texture :Texture;
 }
 }
 
