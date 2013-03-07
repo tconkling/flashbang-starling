@@ -14,7 +14,7 @@ public class SimpleTextButton extends Button
         _tf = new TextFieldBuilder()
             .text(text)
             .font("_sans")
-            .fontSize(12)
+            .fontSize(fontSize)
             .autoSizeSingleLine()
             .build();
         _tf.x = PADDING;
