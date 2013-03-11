@@ -14,6 +14,8 @@ import flashbang.input.KeyboardInput;
 import flashbang.input.TouchInput;
 import flashbang.util.Listeners;
 
+import flump.display.MoviePlayer;
+
 import starling.display.DisplayObject;
 import starling.display.DisplayObjectContainer;
 import starling.display.Sprite;
@@ -280,6 +282,9 @@ public class AppMode
 
             ref = ref._next;
         }
+
+        // update movies
+        _moviePlayer.advanceTime(dt);
     }
 
     /** Removes dead objects from the object list at the end of an update. */
@@ -355,6 +360,7 @@ public class AppMode
     internal function setupInternal (viewport :Viewport) :void {
         _viewport = viewport;
         _touchInput = new TouchInput(_modeSprite);
+        _moviePlayer = new MoviePlayer(_modeSprite);
         setup();
     }
 
@@ -391,6 +397,9 @@ public class AppMode
 
         _keyboardInput = null;
 
+        _moviePlayer.dispose();
+        _moviePlayer = null;
+
         _modeSprite.removeFromParent(/*dispose=*/true);
         _modeSprite = null;
     }
@@ -409,6 +418,7 @@ public class AppMode
     protected var _viewport :Viewport;
     protected var _touchInput :TouchInput;
     protected var _keyboardInput :KeyboardInput = new KeyboardInput();
+    protected var _moviePlayer :MoviePlayer;
 
     protected var _runningTime :Number = 0;
 

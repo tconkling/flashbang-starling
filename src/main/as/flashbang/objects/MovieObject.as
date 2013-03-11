@@ -22,10 +22,6 @@ public class MovieObject extends SpriteObject
         return _movie;
     }
 
-    override protected function update (dt :Number) :void {
-        _movie.advanceTime(dt);
-    }
-
     protected var _movie :Movie;
 }
 }
