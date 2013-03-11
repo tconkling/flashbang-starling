@@ -35,13 +35,12 @@
       </libraryPathEntry>
       <libraryPathEntry kind="3" linkType="1" path="${M2_REPO}/org/osflash/signals/0.9/signals-0.9.swc" sourcepath="/export/as3-signals/src" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="${M2_REPO}/deng/fzip/a5430bd/fzip-a5430bd.swc" useDefaultLinkType="false"/>
-      <libraryPathEntry kind="3" linkType="1" path="${M2_REPO}/com/threerings/flump/flump-runtime/1.1-SNAPSHOT/flump-runtime-1.1-SNAPSHOT.swc" sourcepath="/export/flump/runtime/src/main/as" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="/Starling/bin-debug/Starling.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="/aspire/dist/aspire.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="/flump-runtime/dist/flump-runtime.swc" useDefaultLinkType="false"/>
     </libraryPath>
     <sourceAttachmentPath>
       <sourceAttachmentPathEntry kind="3" linkType="1" path="${M2_REPO}/org/osflash/signals/0.9/signals-0.9.swc" sourcepath="/export/as3-signals/src" useDefaultLinkType="false"/>
-      <sourceAttachmentPathEntry kind="3" linkType="1" path="${M2_REPO}/com/threerings/flump/flump-runtime/1.1-SNAPSHOT/flump-runtime-1.1-SNAPSHOT.swc" sourcepath="/export/flump/runtime/src/main/as" useDefaultLinkType="false"/>
     </sourceAttachmentPath>
   </compiler>
   <applications>
