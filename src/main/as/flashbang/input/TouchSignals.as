@@ -39,12 +39,20 @@ class TouchableDisplayObject
         return _touchEvent;
     }
 
+    public function get touchHover () :ISignal {
+        return getFilteredTouchSignal(TouchPhase.HOVER);
+    }
+
     public function get touchBegan () :ISignal {
         return getFilteredTouchSignal(TouchPhase.BEGAN);
     }
 
     public function get touchMoved () :ISignal {
         return getFilteredTouchSignal(TouchPhase.MOVED);
+    }
+
+    public function get touchStationary () :ISignal {
+        return getFilteredTouchSignal(TouchPhase.STATIONARY);
     }
 
     public function get touchEnded () :ISignal {
@@ -57,8 +65,10 @@ class TouchableDisplayObject
         }
         var idx :int;
         switch (phase) {
+        case TouchPhase.HOVER: idx = HOVER; break;
         case TouchPhase.BEGAN: idx = BEGAN; break;
         case TouchPhase.MOVED: idx = MOVED; break;
+        case TouchPhase.STATIONARY: idx = STATIONARY; break;
         case TouchPhase.ENDED: idx = ENDED; break;
         default:
             throw new Error("Unrecognized TouchPhase '" + phase + "'");
@@ -72,9 +82,11 @@ class TouchableDisplayObject
         return sig;
     }
 
-    protected static const BEGAN :int = 0;
-    protected static const MOVED :int = 1;
-    protected static const ENDED :int = 2;
+    protected static const HOVER :int = 0;
+    protected static const BEGAN :int = 1;
+    protected static const MOVED :int = 2;
+    protected static const STATIONARY :int = 3;
+    protected static const ENDED :int = 4;
 
     protected static const NUM_PHASES :int = ENDED + 1;
 
