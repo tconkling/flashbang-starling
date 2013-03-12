@@ -22,7 +22,7 @@ public class GameObject
     public const destroyed :Signal = new Signal();
 
     public function toString () :String {
-        return StringUtil.simpleToString(this, [ "isLiveObject", "objectNames", "objectGroups" ]);
+        return StringUtil.simpleToString(this, [ "isLiveObject", "objectIds", "objectGroups" ]);
     }
 
     /**
