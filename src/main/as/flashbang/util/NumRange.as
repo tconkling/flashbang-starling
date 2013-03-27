@@ -17,7 +17,7 @@ public class NumRange
         this.max = max;
     }
 
-    public function next (rands :Randoms) :int {
+    public function nextValue (rands :Randoms) :Number {
         return rands.getNumberInRange(min, max);
     }
 
