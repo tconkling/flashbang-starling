@@ -3,26 +3,26 @@
 
 package flashbang.util {
 
+import aspire.util.Cloneable;
 import aspire.util.Randoms;
 
 public class NumRange
+    implements Cloneable
 {
     public var min :Number;
     public var max :Number;
-    public var rands :Randoms;
 
-    public function NumRange (min :Number, max :Number, rands :Randoms) {
+    public function NumRange (min :Number, max :Number) {
         this.min = min;
         this.max = max;
-        this.rands = rands;
     }
 
-    public function next () :Number {
+    public function next (rands :Randoms) :int {
         return rands.getNumberInRange(min, max);
     }
 
-    public function clone () :NumRange {
-        return new NumRange(min, max, rands);
+    public function clone () :Object {
+        return new NumRange(min, max);
     }
 }
 
