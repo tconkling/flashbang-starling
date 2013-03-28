@@ -21,6 +21,28 @@ public class RectMeter extends SpriteMeterBase
         updateDisplay();
     }
 
+    override public function set width (val :Number) :void {
+        if (_width != val) {
+            _width = val;
+            updateDisplay();
+        }
+    }
+
+    override public function set height (val :Number) :void {
+        if (_height != val) {
+            _height = val;
+            updateDisplay();
+        }
+    }
+
+    public function setSize (width :Number, height :Number) :void {
+        if (_width != width || _height != height) {
+            _width = width;
+            _height = height;
+            updateDisplay();
+        }
+    }
+
     public function get fill () :MeterFill {
         return _fill;
     }
@@ -98,12 +120,12 @@ public class RectMeter extends SpriteMeterBase
     override protected function updateDisplay () :void {
         removeChildren();
 
-        var metrics :MeterMetrics = MeterMetrics.calculate(this, _width, _height, _fill, METRICS);
+        const metrics :MeterMetrics = MeterMetrics.calculate(this, _width, _height, _fill, METRICS);
 
         // draw foreground
         if (metrics.fgWidth > 0 && metrics.fgHeight > 0) {
-            var fgColor :uint = ColorUtil.blend(_fgColorFull, _fgColorEmpty, this.normalizedValue);
-            var fg :DisplayObject = DisplayUtil.fillRect(metrics.fgWidth, metrics.fgHeight, fgColor);
+            const fgColor :uint = ColorUtil.blend(_fgColorFull, _fgColorEmpty, this.normalizedValue);
+            const fg :DisplayObject = DisplayUtil.fillRect(metrics.fgWidth, metrics.fgHeight, fgColor);
             fg.x = metrics.fgX;
             fg.y = metrics.fgY;
             addChild(fg);
@@ -111,7 +133,7 @@ public class RectMeter extends SpriteMeterBase
 
         // draw background
         if (metrics.bgWidth > 0 && metrics.bgHeight > 0) {
-            var bg :DisplayObject = DisplayUtil.fillRect(metrics.bgWidth, metrics.bgHeight, _bgColor);
+            const bg :DisplayObject = DisplayUtil.fillRect(metrics.bgWidth, metrics.bgHeight, _bgColor);
             bg.x = metrics.bgX;
             bg.y = metrics.bgY;
             addChild(bg);
