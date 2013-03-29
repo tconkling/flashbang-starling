@@ -17,6 +17,8 @@
     <classEntry path="flashbang.util.TextFieldBuilder"/>
     <classEntry path="flashbang.util.meter.MeterMetrics"/>
     <classEntry path="flashbang.util.DisplayObjectCreator"/>
+    <classEntry path="flashbang.tasks.SpriteTask"/>
+    <classEntry path="flashbang.tasks.ClipRectTask"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
