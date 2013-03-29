@@ -17,8 +17,9 @@ public class IntRange
         this.max = max;
     }
 
-    public function nextValue (rands :Randoms) :int {
-        return rands.getInRange(min, max);
+    /** Returns a random int in [min, max) */
+    public function random (rands :Randoms) :int {
+        return rands.getIntInRange(min, max);
     }
 
     public function clone () :Object {
