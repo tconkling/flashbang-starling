@@ -84,16 +84,20 @@ public class DataLoader
         _result = result;
         _state = LoadState.SUCCEEDED;
 
-        if (_loadedCallback != null) {
-            if (_loadedCallback.length == 0) {
-                _loadedCallback();
-            } else {
-                _loadedCallback(_result);
+        try {
+            if (_loadedCallback != null) {
+                if (_loadedCallback.length == 0) {
+                    _loadedCallback();
+                } else {
+                    _loadedCallback(_result);
+                }
             }
-        }
 
-        if (_loaded != null) {
-            _loaded.dispatch(_result);
+            if (_loaded != null) {
+                _loaded.dispatch(_result);
+            }
+        } catch (e :Error) {
+            log.error("Error thrown in DataLoader.succeed callback", e);
         }
     }
 
@@ -108,16 +112,20 @@ public class DataLoader
         _result = e;
         _state = LoadState.FAILED;
 
-        if (_errorCallback != null) {
-            if (_errorCallback.length == 0) {
-                _errorCallback();
-            } else {
-                _errorCallback(e);
+        try {
+            if (_errorCallback != null) {
+                if (_errorCallback.length == 0) {
+                    _errorCallback();
+                } else {
+                    _errorCallback(e);
+                }
             }
-        }
 
-        if (_failed != null) {
-            _failed.dispatch(e);
+            if (_failed != null) {
+                _failed.dispatch(e);
+            }
+        } catch (e :Error) {
+            log.error("Error thrown in DataLoader.fail callback", e);
         }
     }
 
