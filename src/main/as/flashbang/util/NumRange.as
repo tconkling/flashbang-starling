@@ -10,20 +10,28 @@ public class NumRange
     implements Cloneable
 {
     public var min :Number;
-    public var max :Number;
+    public var range :Number;
 
-    public function NumRange (min :Number, max :Number) {
+    public function NumRange (min :Number = 0, range :Number = 0) {
         this.min = min;
-        this.max = max;
+        this.range = range;
     }
 
-    /** Returns a random Number in [min, max) */
+    public function get max () :Number {
+        return min + range;
+    }
+
+    public function set max (val :Number) :void {
+        range = val - min;
+    }
+
+    /** Returns a random Number in [min, min+range) */
     public function random (rands :Randoms) :Number {
-        return rands.getNumberInRange(min, max);
+        return rands.getNumberInRange(min, min + range);
     }
 
     public function clone () :Object {
-        return new NumRange(min, max);
+        return new NumRange(min, range);
     }
 }
 
