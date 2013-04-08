@@ -9,6 +9,11 @@ public class GameObjectRef
         return NULL;
     }
 
+    /** @return the GameObjectRef for the given GameObject, or GameObjectRef.Null() if obj is null */
+    public static function forObject (obj :GameObject = null) :GameObjectRef {
+        return (obj != null ? obj.ref : Null());
+    }
+
     public function destroyObject () :void {
         if (null != _obj) {
             _obj.destroySelf();
