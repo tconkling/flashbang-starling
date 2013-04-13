@@ -251,7 +251,7 @@ public class AppMode
      * Returns the number of seconds this ObjectDB has been running, as measured by calls to
      * update().
      */
-    public function get runningTime () :Number {
+    public function get time () :Number {
         return _runningTime;
     }
 
