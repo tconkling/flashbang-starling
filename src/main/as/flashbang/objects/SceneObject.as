@@ -59,6 +59,14 @@ public class SceneObject extends GameObject
         return (_group != null ? [ _group ] : []);
     }
 
+    override protected function cleanup () :void {
+        super.cleanup();
+        if (_displayObject != null) {
+            _displayObject.dispose();
+            _displayObject = null;
+        }
+    }
+
     protected function getTouchable () :Touchable {
         if (_touchable == null) {
             _touchable = TouchSignals.forDisp(_displayObject);

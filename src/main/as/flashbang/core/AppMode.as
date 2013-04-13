@@ -147,17 +147,13 @@ public class AppMode
             return;
         }
 
+        // If the GameObject has a DisplayObject, remove it from the displayList.
+        // We do *not* dispose of the DisplayObject: that is up to the GameObject.
+        // SceneObject does this automatically in destroy().
         if (obj is DisplayComponent) {
-            // if the object is attached to a DisplayObject, and if that
-            // DisplayObject is in a display list, remove it from the display list
-            // so that it will no longer be drawn to the screen
             var disp :DisplayObject = DisplayComponent(obj).display;
             if (null != disp) {
-                if (disp.parent != null) {
-                    disp.removeFromParent(/*dispose=*/true);
-                } else {
-                    disp.dispose();
-                }
+                disp.removeFromParent();
             }
         }
 
