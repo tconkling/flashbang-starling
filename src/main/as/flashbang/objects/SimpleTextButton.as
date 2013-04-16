@@ -15,7 +15,7 @@ public class SimpleTextButton extends Button
             .text(text)
             .font("_sans")
             .fontSize(fontSize)
-            .autoSizeSingleLine()
+            .autoSize()
             .build();
         _tf.x = PADDING;
         _tf.y = PADDING;

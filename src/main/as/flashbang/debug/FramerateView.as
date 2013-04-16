@@ -33,7 +33,7 @@ public class FramerateView extends Framerate
             .font("_sans")
             .fontSize(8)
             .touchable(false)
-            .autoSizeSingleLine()
+            .autoSize()
             .build();
     }
 

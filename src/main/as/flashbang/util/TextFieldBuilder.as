@@ -57,44 +57,54 @@ public class TextFieldBuilder
         return this;
     }
 
-    /** The width of the TextField. Valid only if autoSize is NONE. @default 100 */
+    /**
+     * The width of the TextField.
+     * Ignored if TextFieldAutoSize is HORIZONTAL or BOTH_DIRECTIONS.
+     * @default 100
+     */
     public function width (val :Number) :TextFieldBuilder {
         _props.width = val;
         return this;
     }
 
-    /** The height of the TextField. Valid only if autoSize is NONE. @default 100 */
+    /**
+     * The height of the TextField.
+     * Ignored if TextFieldAutoSize is VERTICAL or BOTH_DIRECTIONS.
+     * @default 100
+     */
     public function height (val :Number) :TextFieldBuilder {
         _props.height = val;
         return this;
     }
 
-    /** Sets the TextField's autoSize param. @default "none" */
-    public function autoSize (type :String) :TextFieldBuilder {
+    /**
+     * Sets the TextField's autoSize param.
+     * Called without a parameter is equivalent to TextFieldAutoSize.BOTH_DIRECTIONS.
+     * @default "none"
+     */
+    public function autoSize (type :String = "bothDirections") :TextFieldBuilder {
         _props.autoSize = type;
         return this;
     }
 
-    /** Specifies the max width to use if autoSizing is enabled, or 0 for no max width. @default 0 */
-    public function autoSizeMaxWidth (val :Number) :TextFieldBuilder {
-        _props.autoSizeMaxWidth = val;
-        return this;
-    }
-
-    /** Specifies the max height to use if autoSizing is enabled, or 0 for no max height. @default 0 */
-    public function autoSizeMaxHeight (val :Number) :TextFieldBuilder {
-        _props.autoSizeMaxHeight = val;
-        return this;
-    }
-
     /** Equivalent to <code>autoSize(TextFieldAutoSize.SINGLE_LINE)</code> */
-    public function autoSizeSingleLine () :TextFieldBuilder {
-        return autoSize(TextFieldAutoSize.SINGLE_LINE);
+    public function autoSizeHorizontal () :TextFieldBuilder {
+        return autoSize(TextFieldAutoSize.HORIZONTAL);
     }
 
-    /** Equivalent to <code>autoSize(TextFieldAutoSize.MULTI_LINE)</code> */
-    public function autoSizeMultiline () :TextFieldBuilder {
-        return autoSize(TextFieldAutoSize.MULTI_LINE);
+    /** Equivalent to <code>autoSize(TextFieldAutoSize.VERTICAL)</code> */
+    public function autoSizeVertical () :TextFieldBuilder {
+        return autoSize(TextFieldAutoSize.VERTICAL);
+    }
+
+    /**
+     * If true, the TextField will scale its font size down so that the complete
+     * text fits into the TextField's bounds. Incompatible with autoSizing.
+     * @default false
+     */
+    public function autoScale (val :Boolean) :TextFieldBuilder {
+        _props.autoScale = val;
+        return this;
     }
 
     /** Specifies whether this object receives touch events. @default true */
