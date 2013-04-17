@@ -31,8 +31,12 @@ public class SceneObject extends GameObject
         return getTouchable().touchEvent;
     }
 
-    public function get touchHover () :ISignal { // Signal<Touch>
-        return getTouchable().touchHover;
+    public function get hoverBegan () :ISignal { // Signal<Touch>
+        return getTouchable().hoverBegan;
+    }
+
+    public function get hoverEnded () :ISignal { // Signal<>
+        return getTouchable().hoverEnded;
     }
 
     public function get touchBegan () :ISignal { // Signal<Touch>

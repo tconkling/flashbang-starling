@@ -14,16 +14,16 @@ public class TouchSignals
 }
 }
 
-import starling.display.DisplayObject;
-import starling.events.Touch;
-import starling.events.TouchEvent;
-import starling.events.TouchPhase;
-
 import flashbang.input.Touchable;
 import flashbang.util.EventSignal;
 
 import org.osflash.signals.ISignal;
 import org.osflash.signals.Signal;
+
+import starling.display.DisplayObject;
+import starling.events.Touch;
+import starling.events.TouchEvent;
+import starling.events.TouchPhase;
 
 class TouchableDisplayObject
     implements Touchable
@@ -39,8 +39,12 @@ class TouchableDisplayObject
         return _touchEvent;
     }
 
-    public function get touchHover () :ISignal {
-        return getFilteredTouchSignal(TouchPhase.HOVER);
+    public function get hoverBegan () :ISignal {
+        return getHoverSignals().began;
+    }
+
+    public function get hoverEnded () :ISignal {
+        return getHoverSignals().ended;
     }
 
     public function get touchBegan () :ISignal {
@@ -59,13 +63,19 @@ class TouchableDisplayObject
         return getFilteredTouchSignal(TouchPhase.ENDED);
     }
 
+    protected function getHoverSignals () :HoverSignals {
+        if (_hoverSignals == null) {
+            _hoverSignals = new HoverSignals(_displayObject, EventSignal(this.touchEvent));
+        }
+        return _hoverSignals;
+    }
+
     protected function getFilteredTouchSignal (phase :String) :ISignal {
         if (_filteredTouchSignals == null) {
             _filteredTouchSignals = new Vector.<FilteredTouchSignal>(NUM_PHASES, true);
         }
         var idx :int;
         switch (phase) {
-        case TouchPhase.HOVER: idx = HOVER; break;
         case TouchPhase.BEGAN: idx = BEGAN; break;
         case TouchPhase.MOVED: idx = MOVED; break;
         case TouchPhase.STATIONARY: idx = STATIONARY; break;
@@ -82,17 +92,38 @@ class TouchableDisplayObject
         return sig;
     }
 
-    protected static const HOVER :int = 0;
-    protected static const BEGAN :int = 1;
-    protected static const MOVED :int = 2;
-    protected static const STATIONARY :int = 3;
-    protected static const ENDED :int = 4;
+    protected static const BEGAN :int = 0;
+    protected static const MOVED :int = 1;
+    protected static const STATIONARY :int = 2;
+    protected static const ENDED :int = 3;
 
     protected static const NUM_PHASES :int = ENDED + 1;
 
     protected var _displayObject :DisplayObject;
     protected var _touchEvent :EventSignal; // lazily instantiated
     protected var _filteredTouchSignals :Vector.<FilteredTouchSignal>; // lazily instantiated
+    protected var _hoverSignals :HoverSignals; // lazily instantiated
+}
+
+class HoverSignals {
+    public const began :Signal = new Signal(Touch);
+    public const ended :Signal = new Signal();
+
+    public function HoverSignals (disp :DisplayObject, touchEventSignal :EventSignal) {
+        var hovered :Boolean = false;
+        touchEventSignal.add(function (e :TouchEvent) :void {
+            var touch :Touch = null;
+            if (!hovered && (touch = e.getTouch(disp, TouchPhase.HOVER)) != null) {
+                hovered = true;
+                began.dispatch(touch);
+            } else if (hovered) {// && !e.interactsWith(disp)) {
+                if (!e.interactsWith(disp)) {
+                    hovered = false;
+                    ended.dispatch();
+                }
+            }
+        });
+    }
 }
 
 class FilteredTouchSignal extends Signal {

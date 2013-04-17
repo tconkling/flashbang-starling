@@ -16,7 +16,10 @@ public interface Touchable
     function get touchEvent () :ISignal; // Signal<TouchEvent>
 
     /** Fired when a Touch in the HOVER phase is dispatched on the object */
-    function get touchHover () :ISignal; // Signal<Touch>
+    function get hoverBegan () :ISignal; // Signal<Touch>
+
+    /** Fired when a hovered object loses its hovered status */
+    function get hoverEnded () :ISignal; // Signal<>
 
     /** Fired when a Touch in the BEGAN phase is dispatched on the object */
     function get touchBegan () :ISignal; // Signal<Touch>
