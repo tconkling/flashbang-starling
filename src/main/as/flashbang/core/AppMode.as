@@ -118,7 +118,12 @@ public class AppMode
         return ref;
     }
 
-    /** Removes a GameObject from the ObjectDB. */
+    /** Removes the singleton of the given class from the ObjectDB, if it exists. */
+    public function destroySingleton (clazz :Class) :void {
+        destroyObjectWithId(clazz);
+    }
+
+    /** Removes the GameObject with the given id from the ObjectDB, if it exists. */
     public function destroyObjectWithId (id :Object) :void {
         var obj :GameObject = getObjectWithId(id);
         if (null != obj) {
