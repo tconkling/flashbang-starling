@@ -1,25 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
-  <includeClasses>
-    <classEntry path="flashbang.loader.UrlDataLoader"/>
-    <classEntry path="flashbang.input.Touchable"/>
-    <classEntry path="flashbang.util.EventSignal"/>
-    <classEntry path="flashbang.input.TouchSignals"/>
-    <classEntry path="flashbang.util.meter.Meter"/>
-    <classEntry path="flashbang.util.meter.SpriteMeterBase"/>
-    <classEntry path="flashbang.util.meter.MeterFill"/>
-    <classEntry path="flashbang.util.DisplayUtil"/>
-    <classEntry path="flashbang.util.meter.RectMeter"/>
-    <classEntry path="flashbang.tasks.PlayMovieTask"/>
-    <classEntry path="flashbang.input.KeyboardInput"/>
-    <classEntry path="flashbang.input.KeyboardListener"/>
-    <classEntry path="flashbang.loader.XmlLoader"/>
-    <classEntry path="flashbang.util.TextFieldBuilder"/>
-    <classEntry path="flashbang.util.meter.MeterMetrics"/>
-    <classEntry path="flashbang.util.DisplayObjectCreator"/>
-    <classEntry path="flashbang.tasks.SpriteTask"/>
-    <classEntry path="flashbang.tasks.ClipRectTask"/>
-  </includeClasses>
+  <includeClasses/>
   <includeResources/>
   <namespaceManifests/>
 </flexLibProperties>
