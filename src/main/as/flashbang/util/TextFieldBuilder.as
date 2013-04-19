@@ -121,7 +121,7 @@ public class TextFieldBuilder
 
     /** Vertical alignment. @default "center" */
     public function vAlign (type :String) :TextFieldBuilder {
-        _props.hAlign = type;
+        _props.vAlign = type;
         return this;
     }
 
