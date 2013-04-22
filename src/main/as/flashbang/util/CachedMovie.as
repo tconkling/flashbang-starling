@@ -14,7 +14,7 @@ import flump.display.Movie;
  */
 public interface CachedMovie extends Registration
 {
-    /** Releases the Movie to the cache. */
+    /** Releases the Movie to the cache. Also detaches it from its parent, if it has one. */
     function release () :void;
 
     /** The movie */
