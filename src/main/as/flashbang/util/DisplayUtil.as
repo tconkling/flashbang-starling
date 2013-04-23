@@ -4,6 +4,7 @@
 package flashbang.util {
 
 import aspire.geom.Vector2;
+import aspire.util.F;
 
 import flash.geom.Point;
 
@@ -120,6 +121,55 @@ public class DisplayUtil
             parent.removeChildAt(idx, dispose);
             parent.addChildAt(replacement, idx);
         }
+    }
+
+    /**
+     * Call <code>callback</code> for <code>disp</code> and all its descendants.
+     *
+     * @param disp the root of the hierarchy at which to start the iteration
+     * @param callback function to call for each node in the display tree for disp. The passed
+     * object will never be null and the function will be called exactly once for each node, unless
+     * iteration is halted. The callback can have one of four signatures:
+     * <listing version="3.0">
+     *     function callback (disp :DisplayObject) :void
+     *     function callback (disp :DisplayObject) :Boolean
+     *     function callback (disp :DisplayObject, depth :int) :void
+     *     function callback (disp :DisplayObject, depth :int) :Boolean
+     * </listing>
+     *
+     * If <code>callback</code> returns <code>true</code>, traversal will halt.
+     *
+     * The passed in depth is 0 for <code>disp</code>, and increases by 1 for each level of
+     * children.
+     *
+     * @return <code>true</code> if <code>callback</code> returned <code>true</code>
+     */
+    public static function walkDisplayObjects (root :DisplayObject, callback :Function,
+        maxDepth :int = int.MAX_VALUE) :Boolean {
+        return walkDisplayObjectsImpl(root, maxDepth, F.adapt(callback), 0);
+    }
+
+    /** Helper for applyToHierarchy */
+    protected static function walkDisplayObjectsImpl (root :DisplayObject, maxDepth :int,
+        callback :Function, depth :int) :Boolean {
+        // halt traversal if callbackFunction returns true
+        if (Boolean(callback(root, depth))) {
+            return true;
+        }
+
+        if (++depth > maxDepth || !(root is DisplayObjectContainer)) {
+            return false;
+        }
+        var container :DisplayObjectContainer = DisplayObjectContainer(root);
+        var nn :int = container.numChildren;
+        for (var ii :int = 0; ii < nn; ii++) {
+            var child :DisplayObject = container.getChildAt(ii);
+            if (walkDisplayObjectsImpl(child, maxDepth, callback, depth)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     protected static const P :Point = new Point();
