@@ -37,6 +37,7 @@ public class MovieCache
             movie.skewX = movie.skewY = 0;
             movie.rotation = 0;
             movie.alpha = 1;
+            movie.clipRect = null;
         }
 
         return new CachedMovieImpl(movie, F.callback(releaseMovie, movie, name));
