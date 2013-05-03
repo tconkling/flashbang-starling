@@ -20,7 +20,7 @@ public class Viewport
     public static const DEFAULT :String = "DefaultViewport";
 
     public const topModeChanged :Signal = new Signal();
-    public const destroyed :Signal = new Signal();
+    public const disposed :Signal = new Signal();
 
     public function Viewport (app :FlashbangApp, name :String, parentSprite :Sprite) {
         _app = app;
@@ -36,8 +36,8 @@ public class Viewport
      * Causes the Viewport to be destroyed.
      * (This won't happen immediately - it'll happen at the end of the current update loop)
      */
-    public function destroy () :void {
-        _destroyed = true;
+    public function dispose () :void {
+        _disposed = true;
     }
 
     /**
@@ -220,7 +220,7 @@ public class Viewport
                 initialTopMode = null;
             }
 
-            mode.destroyInternal();
+            mode.disposeInternal();
             _modeStack.splice(index, 1);
         }
 
@@ -289,17 +289,17 @@ public class Viewport
         }
     }
 
-    internal function get isDestroyed () :Boolean {
-        return _destroyed;
+    internal function get isDisposed () :Boolean {
+        return _disposed;
     }
 
-    internal function shutdown () :void {
+    internal function disposeNow () :void {
         clearModeStackNow();
         _modeStack = null;
         _pendingModeTransitionQueue = null;
         _topSprite.removeFromParent(/*dispose=*/true);
         _topSprite = null;
-        this.destroyed.dispatch();
+        this.disposed.dispatch();
     }
 
 
@@ -308,7 +308,7 @@ public class Viewport
     protected var _topSprite :Sprite = new Sprite();
     protected var _modeStack :Vector.<AppMode> = new <AppMode>[];
     protected var _pendingModeTransitionQueue :Vector.<PendingTransition> = new <PendingTransition>[];
-    protected var _destroyed :Boolean;
+    protected var _disposed :Boolean;
 }
 }
 

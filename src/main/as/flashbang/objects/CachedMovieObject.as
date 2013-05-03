@@ -19,11 +19,11 @@ public class CachedMovieObject extends MovieObject
         _cached = cachedMovie;
     }
 
-    override protected function cleanup () :void {
+    override protected function dispose () :void {
         _cached.release();
         // null out displayObject so that it doesn't get disposed.
         _displayObject = null;
-        super.cleanup();
+        super.dispose();
     }
 
     protected var _cached :CachedMovie;

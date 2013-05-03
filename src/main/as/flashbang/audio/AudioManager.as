@@ -47,8 +47,11 @@ public class AudioManager
         return _soundTypeControls[type.ordinal()];
     }
 
-    public function shutdown () :void {
+    public function dispose () :void {
         stopAllSounds();
+        _activeChannels = null;
+        _masterControls = null;
+        _soundTypeControls = null;
     }
 
     public function update (dt :Number) :void {

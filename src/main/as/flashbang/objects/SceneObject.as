@@ -63,8 +63,8 @@ public class SceneObject extends GameObject
         return (_group != null ? [ _group ] : []);
     }
 
-    override protected function cleanup () :void {
-        super.cleanup();
+    override protected function dispose () :void {
+        super.dispose();
         if (_displayObject != null) {
             _displayObject.dispose();
             _displayObject = null;

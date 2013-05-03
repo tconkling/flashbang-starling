@@ -28,7 +28,7 @@ import org.osflash.signals.Signal;
 
 public class FlashbangApp extends flash.display.Sprite
 {
-    public const didShutdown :Signal = new Signal();
+    public const disposed :Signal = new Signal();
 
     public function FlashbangApp () {
         // Start starling when we're added to the stage
@@ -42,10 +42,10 @@ public class FlashbangApp extends flash.display.Sprite
      * immediately when this function is called - if it is running, it will be
      * shut down at the end of the current update.
      *
-     * It's an error to continue to use a FlashbangApp that has been shut down.
+     * It's an error to continue to use a FlashbangApp that has been disposed.
      */
-    public function shutdown () :void {
-        _shutdownPending = true;
+    public function dispose () :void {
+        _disposePending = true;
     }
 
     /** Called when the app receives touches. By default it forwards them to each viewport */
@@ -226,27 +226,27 @@ public class FlashbangApp extends flash.display.Sprite
         // update viewports
         for (var ii :int = _viewports.length - 1; ii >= 0; --ii) {
             var viewport :Viewport = _viewports[ii];
-            if (!viewport.isDestroyed) {
+            if (!viewport.isDisposed) {
                 viewport.update(dt);
             }
-            if (viewport.isDestroyed) {
+            if (viewport.isDisposed) {
                 _viewports.splice(ii, 1);
-                viewport.shutdown();
+                viewport.disposeNow();
             }
         }
 
         // should the MainLoop be stopped?
-        if (_shutdownPending) {
+        if (_disposePending) {
             _regs.cancel();
-            shutdownNow();
+            disposeNow();
         }
 
         _lastTime = newTime;
     }
 
-    protected function shutdownNow () :void {
+    protected function disposeNow () :void {
         for each (var viewport :Viewport in _viewports) {
-            viewport.shutdown();
+            viewport.disposeNow();
         }
         _viewports = null;
 
@@ -256,16 +256,16 @@ public class FlashbangApp extends flash.display.Sprite
         _regs.cancel();
         _regs = null;
 
-        _audio.shutdown();
+        _audio.dispose();
         _audio = null;
 
-        _rsrcs.shutdown();
+        _rsrcs.dispose();
         _rsrcs = null;
 
         _starling.dispose();
         _starling = null;
 
-        didShutdown.dispatch();
+        disposed.dispatch();
     }
 
     internal var _rsrcs :ResourceManager = new ResourceManager();
@@ -276,7 +276,7 @@ public class FlashbangApp extends flash.display.Sprite
     protected var _mainSprite :starling.display.Sprite;
     protected var _regs :Listeners = new Listeners();
 
-    protected var _shutdownPending :Boolean;
+    protected var _disposePending :Boolean;
     protected var _lastTime :Number;
     protected var _updatables :Vector.<Updatable> = new <Updatable>[];
     protected var _viewports :Vector.<Viewport> = new <Viewport>[];

@@ -16,7 +16,7 @@ public class TouchInput
         _dispatcher = new TouchDispatcher(root);
     }
 
-    public function shutdown () :void {
+    public function dispose () :void {
         _dispatcher.dispose();
         _dispatcher = null;
         _listeners = null;

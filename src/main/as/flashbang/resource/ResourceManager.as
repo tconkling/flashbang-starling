@@ -13,8 +13,10 @@ public class ResourceManager
         registerDefaultLoaders();
     }
 
-    public function shutdown () :void {
+    public function dispose () :void {
         unloadAll();
+        _resources = null;
+        _loaderClasses = null;
     }
 
     public function registerDefaultLoaders () :void {

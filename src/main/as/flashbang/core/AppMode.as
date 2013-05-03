@@ -173,7 +173,7 @@ public class AppMode
         // object group removal takes place in finalizeObjectRemoval()
 
         obj.removedFromModeInternal();
-        obj.cleanupInternal();
+        obj.disposeInternal();
 
         // the ref will be unlinked from the objects list
         // at the end of the update()
@@ -347,7 +347,7 @@ public class AppMode
     }
 
     /** Called when the mode is removed from the mode stack */
-    protected function destroy () :void {
+    protected function dispose () :void {
     }
 
     /** Called when the mode becomes active on the mode stack */
@@ -365,18 +365,18 @@ public class AppMode
         setup();
     }
 
-    internal function destroyInternal () :void {
-        Preconditions.checkState(!_destroyed, "already destroyed");
-        _destroyed = true;
+    internal function disposeInternal () :void {
+        Preconditions.checkState(!_disposed, "already disposed");
+        _disposed = true;
 
-        destroy();
+        dispose();
 
         var ref :GameObjectRef = _listHead;
         while (null != ref) {
             if (!ref.isNull) {
                 var obj :GameObject = ref._obj;
                 ref._obj = null;
-                obj.cleanupInternal();
+                obj.disposeInternal();
             }
 
             ref = ref._next;
@@ -393,7 +393,7 @@ public class AppMode
 
         _viewport = null;
 
-        _touchInput.shutdown();
+        _touchInput.dispose();
         _touchInput = null;
 
         _keyboardInput = null;
@@ -433,7 +433,7 @@ public class AppMode
 
     protected var _regs :Listeners = new Listeners();
 
-    protected var _destroyed :Boolean;
+    protected var _disposed :Boolean;
 }
 
 }

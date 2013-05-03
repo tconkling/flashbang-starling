@@ -89,7 +89,7 @@ public class GameObject
     /**
      * Removes the GameObject from its parent database.
      * If a subclass needs to cleanup after itself after being destroyed, it should do
-     * so either in removedFromDb or cleanup.
+     * so either in removedFromDb or dispose.
      */
     public final function destroySelf () :void {
         _mode.destroyObject(_ref);
@@ -227,7 +227,7 @@ public class GameObject
      * Called immediately after the GameObject has been removed from an AppMode.
      *
      * removedFromDB is not called when the GameObject's AppMode is removed from the mode stack.
-     * For logic that must be run in this instance, see {@link #cleanup}.
+     * For logic that must be run in this instance, see {@link #dispose}.
      *
      * (Subclasses can override this to do something useful.)
      */
@@ -241,12 +241,12 @@ public class GameObject
      * If the GameObject is removed from the active AppMode, {@link #removedFromDB}
      * will be called before destroyed.
      *
-     * {@link #cleanup} should be used for logic that must be always be run when the GameObject is
+     * {@link #dispose} should be used for logic that must be always be run when the GameObject is
      * destroyed (disconnecting event listeners, releasing resources, etc).
      *
      * (Subclasses can override this to do something useful.)
      */
-    protected function cleanup () :void {
+    protected function dispose () :void {
     }
 
     protected function manageDependentObject (obj :GameObject) :void {
@@ -327,8 +327,8 @@ public class GameObject
         this.destroyed.dispatch();
     }
 
-    internal function cleanupInternal () :void {
-        cleanup();
+    internal function disposeInternal () :void {
+        dispose();
         _regs.cancel();
         _regs = null;
     }

@@ -35,7 +35,7 @@ public class Framerate extends GameObject
         _fpsOffset = 0;
     }
 
-    override protected function cleanup () :void {
+    override protected function dispose () :void {
         clearInterval(_statsInterval);
     }
 
