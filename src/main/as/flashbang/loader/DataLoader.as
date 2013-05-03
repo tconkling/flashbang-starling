@@ -3,8 +3,12 @@
 
 package flashbang.loader {
 
+import aspire.util.ClassUtil;
+import aspire.util.Joiner;
 import aspire.util.Log;
 import aspire.util.Preconditions;
+
+import flash.events.ErrorEvent;
 
 import org.osflash.signals.ISignal;
 import org.osflash.signals.Signal;
@@ -101,15 +105,20 @@ public class DataLoader
         }
     }
 
-    /** Subclasses must call this if there's a load error */
-    protected function fail (e :Error) :void {
+    /**
+     * Subclasses must call this if there's a load error.
+     * Data pertaining to the failure (an Error object, an ErrorEvent, or anything else) should
+     * be passed as the result. It will be coerced into an Error object and passed to the loader's
+     * failure handlers.
+     */
+    protected function fail (result :* = undefined) :void {
         if (_state == LoadState.CANCELED) {
             return;
         }
 
         Preconditions.checkState(_state == LoadState.LOADING, "not loading", "state", _state);
 
-        _result = e;
+        _result = resultToError(result);
         _state = LoadState.FAILED;
 
         try {
@@ -117,15 +126,15 @@ public class DataLoader
                 if (_errorCallback.length == 0) {
                     _errorCallback();
                 } else {
-                    _errorCallback(e);
+                    _errorCallback(_result);
                 }
             }
 
             if (_failed != null) {
-                _failed.dispatch(e);
+                _failed.dispatch(_result);
             }
-        } catch (e :Error) {
-            log.error("Error thrown in DataLoader.fail callback", e);
+        } catch (ee :Error) {
+            log.error("Error thrown in DataLoader.fail callback", ee);
         }
     }
 
@@ -142,6 +151,19 @@ public class DataLoader
      */
     protected function doLoad () :void {
         throw new Error("abstract");
+    }
+
+    protected static function resultToError (result :*) :Error {
+        if (result is Error) {
+            return result;
+        } else if (result is ErrorEvent) {
+            var ee :ErrorEvent = result as ErrorEvent;
+            return new Error(Joiner.pairs("An ErrorEvent occurred",
+                "type", ClassUtil.tinyClassName(ee), "message", ee.text));
+        } else {
+            return new Error("An unknown failure occurred" +
+                (result != null ? " (" + result + ")" : ""));
+        }
     }
 
     // lazily instantiated
