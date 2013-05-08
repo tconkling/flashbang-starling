@@ -36,7 +36,7 @@ public class XmlResourceLoader extends ResourceLoader
             fail);
     }
 
-    override protected function onLoadCanceled () :void {
+    override protected function onCanceled () :void {
         if (_loader != null) {
             _loader.cancel();
             _loader = null;

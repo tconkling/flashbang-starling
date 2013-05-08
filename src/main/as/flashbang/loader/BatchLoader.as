@@ -61,14 +61,14 @@ public class BatchLoader extends DataLoader
                 // we may have gotten canceled
                 if (self.state == LoadState.LOADING) {
                     removeFirst(_loading, loader);
-                    onLoadCanceled();
+                    onCanceled();
                     fail(e);
                 }
             });
     }
 
-    override protected function onLoadCanceled () :void {
-        for each (var loader :DataLoader in _loading) {
+    override protected function onCanceled () :void {
+        for each (var loader :DataLoader in _pending.concat(_loading)) {
             loader.cancel();
         }
 

@@ -74,9 +74,11 @@ public class FlumpLibraryLoader extends ResourceLoader
         succeed(resources);
     }
 
-    override protected function onLoadCanceled () :void {
-        _exec.shutdownNow();
-        _exec = null;
+    override protected function onCanceled () :void {
+        if (_exec != null) {
+            _exec.shutdownNow();
+            _exec = null;
+        }
     }
 
     protected var _name :String;

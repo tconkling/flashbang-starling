@@ -76,7 +76,7 @@ public class XmlLoader extends DataLoader
         succeed(XmlUtil.newXML(data, settings));
     }
 
-    override protected function onLoadCanceled () :void {
+    override protected function onCanceled () :void {
         if (_loader != null) {
             try {
                 _loader.close();

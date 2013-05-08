@@ -34,7 +34,7 @@ public class UrlDataLoader extends DataLoader
         _loader.load(_request);
     }
 
-    override protected function onLoadCanceled () :void {
+    override protected function onCanceled () :void {
         // Loader may already be closed.
         if (_loader != null) {
             try {

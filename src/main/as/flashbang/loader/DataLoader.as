@@ -78,9 +78,15 @@ public class DataLoader
 
     /** Cancels an in-progress load */
     public final function cancel () :void {
-        Preconditions.checkState(_state == LoadState.LOADING, "not loading", "state", _state);
+        if (_state == LoadState.CANCELED) {
+            // already canceled
+            return;
+        }
+
+        Preconditions.checkState(_state == LoadState.INIT || _state == LoadState.LOADING,
+            "can't cancel", "state", _state);
         _state = LoadState.CANCELED;
-        onLoadCanceled();
+        onCanceled();
     }
 
     /** Subclasses must call this when they've successfully loaded */
@@ -146,8 +152,9 @@ public class DataLoader
 
     /**
      * Subclasses may override this to respond to the canceling of an in-progress load.
+     * This may also be called if a load is canceled before it has begun loading.
      */
-    protected function onLoadCanceled () :void {
+    protected function onCanceled () :void {
     }
 
     /**

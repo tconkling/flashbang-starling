@@ -61,7 +61,7 @@ public class FontResourceLoader extends ResourceLoader
             fail);
     }
 
-    override protected function onLoadCanceled () :void {
+    override protected function onCanceled () :void {
         if (_batch != null) {
             _batch.cancel();
             _batch = null;
@@ -166,7 +166,7 @@ class TextureLoader extends DataLoader
         }
     }
 
-    override protected function onLoadCanceled () :void {
+    override protected function onCanceled () :void {
         // Loader may already be closed.
         if (_loader != null) {
             try {
