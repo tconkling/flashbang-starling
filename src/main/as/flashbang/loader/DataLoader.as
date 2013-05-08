@@ -7,6 +7,7 @@ import aspire.util.ClassUtil;
 import aspire.util.Joiner;
 import aspire.util.Log;
 import aspire.util.Preconditions;
+import aspire.util.Registration;
 
 import flash.events.ErrorEvent;
 
@@ -14,6 +15,7 @@ import org.osflash.signals.ISignal;
 import org.osflash.signals.Signal;
 
 public class DataLoader
+    implements Registration
 {
     public function DataLoader () {
         _state = LoadState.INIT;
@@ -38,6 +40,10 @@ public class DataLoader
     /** @return the Loader's LoadState */
     public final function get state () :LoadState {
         return _state;
+    }
+
+    public function get wasCanceled () :Boolean {
+        return this.state == LoadState.CANCELED;
     }
 
     /** Return the result of the load (if successful), or the load error (if the load failed) */
