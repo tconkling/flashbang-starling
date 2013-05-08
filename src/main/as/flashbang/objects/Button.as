@@ -3,12 +3,16 @@
 
 package flashbang.objects {
 
+import aspire.util.F;
 import aspire.util.Registration;
 
 import flash.geom.Point;
 
 import flashbang.input.PointerAdapter;
 import flashbang.input.PointerListener;
+import flashbang.tasks.FunctionTask;
+import flashbang.tasks.SerialTask;
+import flashbang.tasks.TimedTask;
 
 import org.osflash.signals.Signal;
 
@@ -29,6 +33,23 @@ public class Button extends SpriteObject
     public function set enabled (val :Boolean) :void {
         if (val != this.enabled) {
             setState(val ? UP : DISABLED);
+        }
+    }
+
+    /**
+     * Simulates a click on the button. If it's not disabled, the button will fire the
+     * clicked signal and show a short down-up animation.
+     */
+    public function click () :void {
+        if (this.enabled) {
+            this.clicked.dispatch();
+
+            if (_state != DOWN) {
+                addTask(new SerialTask(
+                    new FunctionTask(function () :void { showState(DOWN); }),
+                    new TimedTask(0.25),
+                    new FunctionTask(function () :void { showState(_state); })));
+            }
         }
     }
 
