@@ -61,6 +61,17 @@ public class Button extends SpriteObject
         showState(_state);
 
         var self :Button = this;
+        _regs.addSignalListener(this.hoverBegan, function (t :Touch) :void {
+            if (_state != DISABLED) {
+                setState(OVER);
+            }
+        });
+        _regs.addSignalListener(this.hoverEnded, function () :void {
+            if (_state != DISABLED) {
+                setState(UP);
+            }
+        });
+
         _regs.addSignalListener(this.touchBegan, function (touch :Touch) :void {
             if (self.enabled && _captureReg == null) {
                 var l :PointerListener = PointerAdapter.withTouchId(touch.id)
