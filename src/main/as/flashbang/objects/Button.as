@@ -3,7 +3,6 @@
 
 package flashbang.objects {
 
-import aspire.util.F;
 import aspire.util.Registration;
 
 import flash.geom.Point;
