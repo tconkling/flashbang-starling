@@ -117,8 +117,8 @@ public class Button extends SpriteObject
     }
 
     protected function hitTest (touch :Touch) :Boolean {
-        var p :Point = _sprite.globalToLocal(new Point(touch.globalX, touch.globalY));
-        return (_sprite.hitTest(p, true) != null);
+        P.setTo(touch.globalX, touch.globalY);
+        return (_sprite.hitTest(_sprite.globalToLocal(P, P), true) != null);
     }
 
     protected var _state :int = 0;
@@ -129,5 +129,7 @@ public class Button extends SpriteObject
     protected static const DOWN :int = 1;
     protected static const OVER :int = 2;
     protected static const DISABLED :int = 3;
+
+    protected static const P :Point = new Point();
 }
 }
