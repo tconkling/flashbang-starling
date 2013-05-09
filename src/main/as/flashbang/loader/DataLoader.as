@@ -37,13 +37,21 @@ public class DataLoader
         return _failed;
     }
 
+    /** @return a Signal(LoadState) that fires when the loader's state changes */
+    public final function get stateChanged () :ISignal {
+        if (_stateChanged == null) {
+            _stateChanged = new Signal(LoadState);
+        }
+        return _stateChanged;
+    }
+
     /** @return the Loader's LoadState */
     public final function get state () :LoadState {
         return _state;
     }
 
     public function get wasCanceled () :Boolean {
-        return this.state == LoadState.CANCELED;
+        return _state == LoadState.CANCELED;
     }
 
     /** Return the result of the load (if successful), or the load error (if the load failed) */
@@ -67,7 +75,7 @@ public class DataLoader
 
         _loadedCallback = onLoaded;
         _errorCallback = onLoadErr;
-        _state = LoadState.LOADING;
+        setState(LoadState.LOADING);
 
         try {
             doLoad();
@@ -78,27 +86,26 @@ public class DataLoader
 
     /** Cancels an in-progress load */
     public final function cancel () :void {
-        if (_state == LoadState.CANCELED) {
-            // already canceled
+        if (this.wasCanceled) {
             return;
         }
 
         Preconditions.checkState(_state == LoadState.INIT || _state == LoadState.LOADING,
             "can't cancel", "state", _state);
-        _state = LoadState.CANCELED;
+        setState(LoadState.CANCELED);
         onCanceled();
     }
 
     /** Subclasses must call this when they've successfully loaded */
     protected function succeed (result :* = undefined) :void {
-        if (_state == LoadState.CANCELED) {
+        if (this.wasCanceled) {
             return;
         }
 
         Preconditions.checkState(_state == LoadState.LOADING, "not loading", "state", _state);
 
         _result = result;
-        _state = LoadState.SUCCEEDED;
+        setState(LoadState.SUCCEEDED);
 
         try {
             if (_loadedCallback != null) {
@@ -124,14 +131,14 @@ public class DataLoader
      * failure handlers.
      */
     protected function fail (result :* = undefined) :void {
-        if (_state == LoadState.CANCELED) {
+        if (this.wasCanceled) {
             return;
         }
 
         Preconditions.checkState(_state == LoadState.LOADING, "not loading", "state", _state);
 
         _result = resultToError(result);
-        _state = LoadState.FAILED;
+        setState(LoadState.FAILED);
 
         try {
             if (_errorCallback != null) {
@@ -179,14 +186,25 @@ public class DataLoader
         }
     }
 
+    private function setState (state :LoadState) :void {
+        if (_state == state) {
+            return;
+        }
+        _state = state;
+        if (_stateChanged != null) {
+            _stateChanged.dispatch(_state);
+        }
+    }
+
     // lazily instantiated
     private var _loaded :Signal;
     private var _failed :Signal;
+    private var _stateChanged :Signal;
 
     private var _loadedCallback :Function;
     private var _errorCallback :Function;
 
-    private var _state :LoadState = LoadState.INIT;
+    private var _state :LoadState;
     private var _result :* = undefined;
 
     protected static const log :Log = Log.getLog(DataLoader);
