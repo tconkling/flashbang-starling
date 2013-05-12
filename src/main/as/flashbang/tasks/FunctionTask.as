@@ -5,28 +5,38 @@ package flashbang.tasks {
 
 import flashbang.core.GameObject;
 import flashbang.core.ObjectTask;
+import flashbang.core.Updatable;
 
 /**
- * A Task that calls a function.
+ * A Task that calls a function repeatedly.
  * The function may take up to two arguments: (dt :Number, obj :GameObject).
- * It may return either nothing, or a Boolean.
- * If the function returns a Boolean, it will be called on each update until it
- * returns false.
+ * The function will be called until it returns false.
  */
-public class FunctionTask
-    implements ObjectTask
+public class FunctionTask extends ObjectTask
+    implements Updatable
 {
     public function FunctionTask (fn :Function) {
         _fn = fn;
     }
 
-    public function update (dt :Number, obj :GameObject) :Boolean {
+    public function update (dt :Number) :void {
         // If Function returns "false", the FunctionTask will not complete.
         // Any other return value (including void) will cause it to complete immediately.
+        var complete :Boolean;
         switch (_fn.length) {
-        case 2: return (_fn(dt, obj) !== false);
-        case 1: return (_fn(dt) !== false);
-        default: return (_fn() !== false);
+        case 2:
+            complete = (_fn(dt, this.parent) !== false);
+            break;
+        case 1:
+            complete = (_fn(dt) !== false);
+            break;
+        default:
+            complete = (_fn() !== false);
+            break;
+        }
+
+        if (complete) {
+            destroySelf();
         }
     }
 

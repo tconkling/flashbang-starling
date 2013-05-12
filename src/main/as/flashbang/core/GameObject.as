@@ -3,417 +3,195 @@
 
 package flashbang.core {
 
-import aspire.util.ClassUtil;
 import aspire.util.Preconditions;
-import aspire.util.StringUtil;
 
-import flashbang.components.DisplayComponent;
-import flashbang.tasks.ParallelTask;
-import flashbang.tasks.TaskContainer;
-import flashbang.util.Listeners;
-
-import org.osflash.signals.Signal;
-
-import starling.display.DisplayObject;
 import starling.display.DisplayObjectContainer;
 
-public class GameObject
+public class GameObject extends GameObjectBase
+    implements GameObjectContainer
 {
-    public const destroyed :Signal = new Signal();
-
-    public function toString () :String {
-        return StringUtil.simpleToString(this, [ "isLiveObject", "objectIds", "objectGroups" ]);
+    public function addObject (obj :GameObjectBase,
+        displayParent :DisplayObjectContainer = null, displayIdx :int = -1) :GameObjectRef {
+        return addObjectInternal(obj, null, false, displayParent, displayIdx);
     }
 
-    /**
-     * Returns the unique GameObjectRef that stores a reference to this GameObject.
-     */
-    public final function get ref () :GameObjectRef {
-        return _ref;
+    public function addNamedObject (name :String, obj :GameObjectBase,
+        displayParent :DisplayObjectContainer = null, displayIdx :int = -1) :GameObjectRef {
+        return addObjectInternal(obj, name, false, displayParent, displayIdx);
     }
 
-    /**
-     * Returns the AppMode that this object is contained in.
-     */
-    public final function get mode () :AppMode {
-        return _mode;
+    public function replaceNamedObject (name :String, obj :GameObjectBase,
+        displayParent :DisplayObjectContainer = null, displayIdx :int = -1) :GameObjectRef {
+        return addObjectInternal(obj, name, true, displayParent, displayIdx);
     }
 
-    /**
-     * Returns the Viewport that this object is a part of
-     */
-    public final function get viewport () :Viewport {
-        return _mode.viewport;
-    }
-
-    /**
-     * Returns true if the object is in an AppMode and is "live"
-     * (not pending removal from the database)
-     */
-    public final function get isLiveObject () :Boolean {
-        return (null != _ref && !_ref.isNull);
-    }
-
-    /** Subclasses can return true to have their class automatically used as an object ID */
-    public function get isSingleton () :Boolean {
-        return false;
-    }
-
-    /**
-     * Returns the IDs of this object. (Objects can have multiple IDs.)
-     * Two objects in the same mode cannot have the same ID.
-     * Objects cannot change their IDs once added to a mode. An ID can be any object;
-     * though it's common to use Classes and Strings.
-     * <code>
-     * override public function get objectIds () :Array {
-     *     return [ "Hello", MyClass ].concat(super.objectIds);
-     * }
-     * </code>
-     */
-    public function get objectIds () :Array {
-        return (this.isSingleton ? [ ClassUtil.getClass(this) ] : []);
-    }
-
-    /**
-     * Override to return the groups that this object belongs to. E.g.:
-     * <code>
-     * override public function get objectGroups () :Array {
-     *     return [ "Foo", MyClass ].concat(super.objectGroups);
-     * }
-     * </code>
-     */
-    public function get objectGroups () :Array {
-        return [];
-    }
-
-    /**
-     * Removes the GameObject from its parent database.
-     * If a subclass needs to cleanup after itself after being destroyed, it should do
-     * so either in removedFromDb or dispose.
-     */
-    public final function destroySelf () :void {
-        _mode.destroyObject(_ref);
-    }
-
-    /** Adds an unnamed task to this GameObject. */
-    public function addTask (task :ObjectTask) :void {
-        if (null == task) {
-            throw new ArgumentError("task must be non-null");
-        }
-
-        if (_lazyAnonymousTasks == null) {
-            _lazyAnonymousTasks = new ParallelTask();
-        }
-        _lazyAnonymousTasks.addTask(task);
-    }
-
-    /** Adds a named task to this GameObject. */
-    public function addNamedTask (name :String, task :ObjectTask) :void {
-        modifyNamedTask(name, task, false);
-    }
-
-    /** Adds a named task to this GameObject, replacing existing tasks of the name if they exist. */
-    public function replaceNamedTask (name :String, task :ObjectTask) :void {
-        modifyNamedTask(name, task, true);
-    }
-
-    /** Removes all tasks from the GameObject. */
-    public function removeAllTasks () :void {
-        if (_updatingTasks && _lazyNamedTasks != null) {
-            // if we're updating tasks, invalidate all named task containers so that
-            // they stop iterating their children
-            for each (var taskContainer :TaskContainer in _lazyNamedTasks) {
-                if (taskContainer != null) {// Could've been removed already
-                    taskContainer.removeAllTasks();
-                }
+    public function getNamedObject (name :String) :GameObjectBase {
+        var cur :GameObjectRef = _children;
+        while (cur != null) {
+            if (cur._obj != null && cur._obj._name == name) {
+                return cur._obj;
             }
-        }
-
-        if (_lazyAnonymousTasks != null) {
-            _lazyAnonymousTasks.removeAllTasks();
-        }
-        _lazyNamedTasks = null;
-    }
-
-    /** Removes all tasks with the given name from the GameObject. */
-    public function removeNamedTasks (name :String) :void {
-        if (null == name || name.length == 0) {
-            throw new ArgumentError("name must be at least 1 character long");
-        }
-
-        var namedTask :TaskContainer = findNamedTask(name);
-        if (namedTask != null) {
-            var idx :int = _lazyNamedTasks.indexOf(namedTask);
-            // if we're updating tasks, invalidate this task container so that it stops iterating
-            // its children.  Instead of removing it from the array immediately, null it out so
-            // the order of iteration isn't disturbed.
-            if (_updatingTasks) {
-                namedTask.removeAllTasks();
-                _lazyNamedTasks[idx] = null;
-                _collapseRemovedTasks = true;
-            } else {
-                _lazyNamedTasks.splice(idx, 1);
-                if (_lazyNamedTasks.length == 0) {
-                    _lazyNamedTasks = null;
-                }
-            }
-        }
-    }
-
-    /** Returns true if the GameObject has any tasks. */
-    public function hasTasks () :Boolean {
-        if (_lazyAnonymousTasks != null && _lazyAnonymousTasks.hasTasks()) {
-            return true;
-
-        } else if (_lazyNamedTasks != null) {
-            return _lazyNamedTasks.some(function (container :ParallelTask, ..._) :Boolean {
-                return container.hasTasks();
-            });
-        } else {
-            return false;
-        }
-    }
-
-    /** Returns true if the GameObject has any tasks with the given name. */
-    public function hasTasksNamed (name :String) :Boolean {
-        var namedTask :TaskContainer = findNamedTask(name);
-        return namedTask != null && namedTask.hasTasks();
-    }
-
-    /**
-     * Causes the lifecycle of the given GameObject to be managed by this object. Dependent
-     * objects will be added to this object's AppMode, and will be destroyed when this
-     * object is destroyed.
-     */
-    public function addDependentObject (obj :GameObject,
-        displayParent :DisplayObjectContainer = null, displayIdx :int = -1) :void
-    {
-        Preconditions.checkNotNull(obj);
-
-        // Was a displayParent specified?
-        // We attach the object's displayObject to its displayParent immediately,
-        // even if we're not yet live, to ensure that the displayList is ordered
-        // as the client code intends.
-        if (displayParent != null) {
-            obj.attachToDisplayList(displayParent, displayIdx);
-        }
-
-        if (_mode != null) {
-            manageDependentObject(obj);
-        } else {
-            if (_pendingDependentObjects == null) {
-                _pendingDependentObjects = new <GameObject>[];
-            }
-            _pendingDependentObjects.push(obj);
-        }
-    }
-
-    /**
-     * Called once per update tick. (Subclasses can override this to do something useful.)
-     *
-     * @param dt the number of seconds that have elapsed since the last update.
-     */
-    protected function update (dt :Number) :void {
-    }
-
-    /**
-     * Called immediately after the GameObject has been added to an AppMode.
-     * (Subclasses can override this to do something useful.)
-     */
-    protected function addedToMode () :void {
-    }
-
-    /**
-     * Called immediately after the GameObject has been removed from an AppMode.
-     *
-     * removedFromDB is not called when the GameObject's AppMode is removed from the mode stack.
-     * For logic that must be run in this instance, see {@link #dispose}.
-     *
-     * (Subclasses can override this to do something useful.)
-     */
-    protected function removedFromMode () :void {
-    }
-
-    /**
-     * Called after the GameObject has been removed from the active AppMode, or if the
-     * object's containing AppMode is removed from the mode stack.
-     *
-     * If the GameObject is removed from the active AppMode, {@link #removedFromDB}
-     * will be called before destroyed.
-     *
-     * {@link #dispose} should be used for logic that must be always be run when the GameObject is
-     * destroyed (disconnecting event listeners, releasing resources, etc).
-     *
-     * (Subclasses can override this to do something useful.)
-     */
-    protected function dispose () :void {
-    }
-
-    protected function manageDependentObject (obj :GameObject) :void {
-        var ref :GameObjectRef;
-
-        // the dependent object may already be in the DB
-        if (obj._mode != null) {
-            Preconditions.checkState(obj._mode == _mode,
-                "Dependent object belongs to another AppMode");
-            ref = obj.ref;
-
-        } else {
-            ref = _mode.addObject(obj);
-        }
-
-        if (_dependentObjectRefs == null) {
-            _dependentObjectRefs = new <GameObjectRef>[];
-        }
-        _dependentObjectRefs.push(ref);
-    }
-
-    protected function findNamedTask (name :String, create :Boolean = false) :ParallelTask {
-        if (_lazyNamedTasks == null) {
-            if (!create) {
-                return null;
-            }
-            _lazyNamedTasks = new <NamedParallelTask>[];
-        }
-        var tc :NamedParallelTask;
-        for (var idx :int = _lazyNamedTasks.length - 1; idx >= 0; --idx) {
-            if ((tc = _lazyNamedTasks[idx]).name === name) {
-                return tc;
-            }
-        }
-        if (create) {
-            _lazyNamedTasks.push(tc = new NamedParallelTask(name));
-            return tc;
+            cur = cur._next;
         }
         return null;
     }
 
-    private function modifyNamedTask (name :String, task :ObjectTask,
-        removeExistingTasks :Boolean) :void {
-        if (null == task) {
-            throw new ArgumentError("task must be non-null");
-        }
-
-        if (null == name || name.length == 0) {
-            throw new ArgumentError("name must be at least 1 character long");
-        }
-
-        var namedTask :TaskContainer = findNamedTask(name, true);
-        if (removeExistingTasks) {
-            namedTask.removeAllTasks();
-        }
-        namedTask.addTask(task);
+    public function hasNamedObject (name :String) :Boolean {
+        return getNamedObject(name) != null;
     }
 
-    internal function addedToModeInternal () :void {
-        if (_pendingDependentObjects != null) {
-            for each (var obj :GameObject in _pendingDependentObjects) {
-                manageDependentObject(obj);
-            }
-            _pendingDependentObjects = null;
-        }
-        addedToMode();
-    }
+    public function removeObject (obj :GameObjectBase) :void {
+        Preconditions.checkArgument(obj._parent == this, "We don't own this object");
 
-    internal function removedFromModeInternal () :void {
-        if (_dependentObjectRefs != null) {
-            for each (var ref :GameObjectRef in _dependentObjectRefs) {
-                if (ref.isLive) {
-                    ref.object.destroySelf();
-                }
-            }
-        }
-        removedFromMode();
-        this.destroyed.dispatch();
-    }
-
-    internal function disposeInternal () :void {
-        dispose();
-        _regs.cancel();
-        _regs = null;
-    }
-
-    internal function updateInternal (dt :Number) :void {
-        if (_lazyAnonymousTasks != null || _lazyNamedTasks != null) {
-            _updatingTasks = true;
-            if (_lazyAnonymousTasks != null) {
-                _lazyAnonymousTasks.update(dt, this);
-            }
-            if (_lazyNamedTasks != null) {
-                for each (var namedTask :ParallelTask in _lazyNamedTasks) {
-                    if (namedTask != null) {// Can be nulled out by being removed during the update
-                        namedTask.update(dt, this);
-                    }
-                }
-            }
-            if (_collapseRemovedTasks) {
-               // Only iterate over the _lazyNamedTasks array if there are removed tasks in there
-                _collapseRemovedTasks = false;
-                for (var ii :int = 0; ii < _lazyNamedTasks.length; ii++) {
-                    if (_lazyNamedTasks[ii] === null) {
-                        _lazyNamedTasks.splice(ii, 1);
-                    }
-                }
-                if (_lazyNamedTasks.length == 0) {
-                    _lazyNamedTasks = null;
-                }
-            }
-            _updatingTasks = false;
+        // We may be in the middle of being removed ourselves, in which case this object
+        // will be removed automatically.
+        if (this.wasRemoved) {
+            return;
         }
 
-        // Call update() if we're still alive (a task could've destroyed us)
-        if (this.isLiveObject) {
-            update(dt);
-        }
-    }
+        // remove from the list
+        var ref :GameObjectRef = obj._ref;
+        var prev :GameObjectRef = ref._prev;
+        var next :GameObjectRef = ref._next;
 
-    internal function attachToDisplayList (displayParent :DisplayObjectContainer,
-        displayIdx :int) :void
-    {
-        Preconditions.checkState(this is DisplayComponent, "obj must implement DisplayComponent");
-
-        // Attach the object to a display parent.
-        // (This is purely a convenience - the client is free to do the attaching themselves)
-        var disp :DisplayObject = (this as DisplayComponent).display;
-        Preconditions.checkState(null != disp,
-            "obj must return a non-null displayObject to be attached to a display parent");
-
-        if (displayIdx < 0 || displayIdx >= displayParent.numChildren) {
-            displayParent.addChild(disp);
+        if (null != prev) {
+            prev._next = next;
         } else {
-            displayParent.addChildAt(disp, displayIdx);
+            // if prev is null, ref was the head of the list
+            Preconditions.checkState(ref == _children);
+            _children = next;
+        }
+
+        if (null != next) {
+            next._prev = prev;
+        }
+
+        // object performs cleanup
+        obj.removedInternal();
+    }
+
+    public function removeNamedObjects (name :String) :void {
+        removeObjects(function (obj :GameObjectBase) :Boolean {
+            return obj._name == name;
+        });
+    }
+
+    protected function removeObjects (pred :Function) :void {
+        var cur :GameObjectRef = _children;
+        while (cur != null) {
+            var next :GameObjectRef = cur._next;
+            var obj :GameObjectBase = cur._obj;
+            if (obj != null && pred(obj)) {
+                removeObject(obj);
+            }
+            cur = next;
         }
     }
 
-    // Note: this is null until needed. Subclassers beware
-    protected var _lazyAnonymousTasks :ParallelTask;
-    // This is really a linked map : String -> ParallelTask. We use an array though and take the
-    // hit in lookup time to gain in iteration time. Also, it is null until needed. Subclassers
-    // beware.
-    protected var _lazyNamedTasks :Vector.<NamedParallelTask> = null;//<NamedParallelTask>
-    protected var _updatingTasks :Boolean;
-    // True if tasks were removed while an update was in progress
-    protected var _collapseRemovedTasks :Boolean;
+    internal function addObjectInternal (obj :GameObjectBase,
+        name :String, replaceExisting :Boolean,
+        displayParent :DisplayObjectContainer, displayIdx :int = -1) :GameObjectRef {
 
-    protected var _regs :Listeners = new Listeners();
+        // Object initialization happens here.
+        // Uninitialization happens in GameObjectBase.removedInternal
 
-    protected var _dependentObjectRefs :Vector.<GameObjectRef>;
-    protected var _pendingDependentObjects :Vector.<GameObject>;
+        Preconditions.checkState(!this.wasRemoved, "cannot add to an object that's been removed");
+        Preconditions.checkArgument(obj._ref == null, "cannot re-parent GameObjects");
 
-    // managed by AppMode
-    internal var _ref :GameObjectRef;
-    internal var _mode :AppMode;
-}
+        if (name != null && replaceExisting) {
+            removeNamedObjects(name);
+        }
 
-}
+        if (displayParent != null) {
+            obj.attachToDisplayList(displayParent, displayIdx);
+        }
 
-import flashbang.tasks.ParallelTask;
+        // create a new GameObjectRef
+        var ref :GameObjectRef = new GameObjectRef();
+        ref._obj = obj;
 
-class NamedParallelTask extends ParallelTask
-{
-    public var name :String;
+        // add the ref to the list
+        var oldListHead :GameObjectRef = _children;
+        _children = ref;
 
-    public function NamedParallelTask (name :String) {
-        this.name = name;
+        if (null != oldListHead) {
+            ref._next = oldListHead;
+            oldListHead._prev = ref;
+        }
+
+        // object name
+        obj._name = name;
+        obj._parent = this;
+        obj._ref = ref;
+
+        if (_mode != null) {
+            registerObject(obj);
+        } else {
+            if (_pendingChildren == null) {
+                _pendingChildren = new Vector.<GameObjectRef>();
+            }
+            _pendingChildren.push(ref);
+        }
+
+        return ref;
     }
+
+    internal function registerObject (obj :GameObjectBase) :void {
+        _mode.registerObjectInternal(obj);
+        obj._mode = _mode;
+        obj.addedInternal();
+    }
+
+    override internal function addedInternal () :void {
+        super.addedInternal();
+        if (_pendingChildren != null) {
+            for each (var ref :GameObjectRef in _pendingChildren) {
+                registerObject(ref._obj);
+            }
+        }
+        _pendingChildren = null;
+    }
+
+    override internal function removedInternal () :void {
+        // null out ref immediately - so that we're not considered "live"
+        // while children are being removed - rather than waiting for
+        // GameObjectBase.removedInternal to do it at the end of the function
+        _ref._obj = null;
+
+        var cur :GameObjectRef = _children;
+        _children = null;
+        while (cur != null) {
+            var next :GameObjectRef = cur._next;
+            if (cur._obj != null) {
+                // call removedInternal directly - we don't need to tear down
+                // our child list piece by piece
+                cur._obj.removedInternal();
+            }
+            cur = next;
+        }
+
+        super.removedInternal();
+    }
+
+    override internal function disposeInternal () :void {
+        _ref._obj = null;
+        // dispose our children
+        var cur :GameObjectRef = _children;
+        _children = null;
+        while (cur != null) {
+            var next :GameObjectRef = cur._next;
+            if (cur._obj != null) {
+                cur._obj.disposeInternal();
+            }
+            cur = next;
+        }
+
+        super.disposeInternal();
+    }
+
+    // our child list head
+    protected var _children :GameObjectRef;
+    protected var _pendingChildren :Vector.<GameObjectRef>;
+}
+
 }

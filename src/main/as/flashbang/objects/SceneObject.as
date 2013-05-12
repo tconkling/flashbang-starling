@@ -55,11 +55,11 @@ public class SceneObject extends GameObject
         return getTouchable().touchEnded;
     }
 
-    override public function get objectIds () :Array {
+    override public function get ids () :Array {
         return (_id != null ? [ _id ] : []);
     }
 
-    override public function get objectGroups () :Array {
+    override public function get groups () :Array {
         return (_group != null ? [ _group ] : []);
     }
 

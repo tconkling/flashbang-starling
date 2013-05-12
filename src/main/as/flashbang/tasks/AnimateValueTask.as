@@ -3,7 +3,6 @@
 
 package flashbang.tasks {
 
-import flashbang.core.GameObject;
 import flashbang.util.BoxedNumber;
 
 public class AnimateValueTask extends InterpolatingTask
@@ -17,22 +16,19 @@ public class AnimateValueTask extends InterpolatingTask
         }
 
         _to = targetValue;
-        _value = value;
+        _boxed = value;
     }
 
-    override public function update (dt :Number, obj :GameObject) :Boolean {
-        if (0 == _elapsedTime) {
-            _from = _value.value;
+    override protected function updateValues () :void {
+        if (isNaN(_from)) {
+            _from = _boxed.value;
         }
-
-        _elapsedTime += dt;
-        _value.value = interpolate(_from, _to);
-        return (_elapsedTime >= _totalTime);
+        _boxed.value = interpolate(_from, _to);
     }
 
     protected var _to :Number;
-    protected var _from :Number;
-    protected var _value :BoxedNumber;
+    protected var _from :Number = NaN;
+    protected var _boxed :BoxedNumber;
 }
 
 }

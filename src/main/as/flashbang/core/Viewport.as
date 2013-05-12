@@ -141,7 +141,7 @@ public class Viewport
 
         // update the top mode
         if (_modeStack.length > 0) {
-            _modeStack[_modeStack.length - 1].update(dt);
+            _modeStack[_modeStack.length - 1].updateInternal(dt);
         }
     }
 

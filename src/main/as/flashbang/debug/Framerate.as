@@ -3,15 +3,17 @@
 
 package flashbang.debug {
 
+import aspire.util.Arrays;
+
 import flash.utils.clearInterval;
 import flash.utils.getTimer;
 import flash.utils.setInterval;
 
-import aspire.util.Arrays;
-
 import flashbang.core.GameObject;
+import flashbang.core.Updatable;
 
 public class Framerate extends GameObject
+    implements Updatable
 {
     // init with optimistic numbers to avoid special cases later
     public var fpsCur :Number = 30;
@@ -35,11 +37,7 @@ public class Framerate extends GameObject
         _fpsOffset = 0;
     }
 
-    override protected function dispose () :void {
-        clearInterval(_statsInterval);
-    }
-
-    override protected function update (dt :Number) :void {
+    public function update (dt :Number) :void {
         if (_lastTime <= 0) {
             _lastTime = flash.utils.getTimer();
             return;
@@ -55,6 +53,10 @@ public class Framerate extends GameObject
         _fpsOffset = (_fpsOffset + 1) % _fpsBuffer.length;
 
         _lastTime = time;
+    }
+
+    override protected function dispose () :void {
+        clearInterval(_statsInterval);
     }
 
     protected function calcStats () :void {

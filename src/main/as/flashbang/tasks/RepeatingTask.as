@@ -3,7 +3,6 @@
 
 package flashbang.tasks {
 
-import flashbang.core.GameObject;
 import flashbang.core.ObjectTask;
 
 /**
@@ -13,26 +12,35 @@ import flashbang.core.ObjectTask;
  * When the RepeatingTask completes its task, it will call taskCreator to regenerate the task.
  * If taskCreator returns null, the RepeatingTask will complete; else it will keep running.
  */
-public class RepeatingTask
-    implements ObjectTask
+public class RepeatingTask extends ObjectTask
 {
     public function RepeatingTask (taskCreator :Function) {
         _taskCreator = taskCreator;
     }
 
-    public function update (dt :Number, obj :GameObject) :Boolean {
-        if (_curTask == null) {
-            _curTask = _taskCreator();
-            if (_curTask == null) {
-                return true;
-            }
-        }
+    override protected function added () :void {
+        restart();
+    }
 
-        if (_curTask.update(dt, obj)) {
+    override protected function removed () :void {
+        if (_curTask != null) {
+            _curTask.destroySelf();
             _curTask = null;
         }
+    }
 
-        return false;
+    protected function restart () :void {
+        if (!this.isLiveObject || !this.parent.isLiveObject) {
+            return;
+        }
+
+        _curTask = _taskCreator();
+        if (_curTask == null) {
+            destroySelf();
+            return;
+        }
+        this.regs.addSignalListener(_curTask.destroyed, restart);
+        this.parent.addObject(_curTask);
     }
 
     protected var _taskCreator :Function;

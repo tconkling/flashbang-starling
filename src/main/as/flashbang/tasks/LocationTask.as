@@ -5,51 +5,55 @@ package flashbang.tasks {
 
 import aspire.util.Preconditions;
 
+import flashbang.components.DisplayComponent;
 import flashbang.components.LocationComponent;
-import flashbang.core.GameObject;
 
 import starling.display.DisplayObject;
 
-public class LocationTask extends DisplayObjectTask
+public class LocationTask extends InterpolatingTask
 {
     public function LocationTask (x :Number, y :Number, time :Number = 0,
         easingFn :Function = null, disp :DisplayObject = null) {
-        super(time, easingFn, disp);
+        super(time, easingFn);
         _toX = x;
         _toY = y;
+        if (disp != null) {
+            _target = new DisplayObjectWrapper(disp);
+        }
     }
 
-    override public function update (dt :Number, obj :GameObject) :Boolean {
-        if (0 == _elapsedTime) {
-            _lc = getLocationTarget(obj);
-            _fromX = _lc.x;
-            _fromY = _lc.y;
+    override protected function added () :void {
+        super.added();
+        // If we weren't given a target, operate on our parent object
+        if (_target == null) {
+            _target = this.parent as LocationComponent;
+            if (_target == null) {
+                var dc :DisplayComponent = this.parent as DisplayComponent;
+                var disp :DisplayObject = dc.display;
+                if (disp != null) {
+                    _target = new DisplayObjectWrapper(disp);
+                }
+            }
+            Preconditions.checkState(_target != null,
+                "parent does not implement LocationComponent");
         }
-
-        _elapsedTime += dt;
-
-        _lc.x = interpolate(_fromX, _toX);
-        _lc.y = interpolate(_fromY, _toY);
-
-        return (_elapsedTime >= _totalTime);
     }
 
-    protected function getLocationTarget (obj :GameObject) :LocationComponent {
-        var display :DisplayObject = super.getTarget(obj);
-        if (display != null) {
-            return new DisplayObjectWrapper(display);
+    override protected function updateValues () :void {
+        if (isNaN(_fromX)) {
+            _fromX = _target.x;
+            _fromY = _target.y;
         }
-        var lc :LocationComponent = obj as LocationComponent;
-        Preconditions.checkState(lc != null, "obj does not implement LocationComponent");
-        return lc;
+        _target.x = interpolate(_fromX, _toX);
+        _target.y = interpolate(_fromY, _toY);
     }
 
     protected var _toX :Number;
     protected var _toY :Number;
-    protected var _fromX :Number;
-    protected var _fromY :Number;
+    protected var _fromX :Number = NaN;
+    protected var _fromY :Number = NaN;
 
-    protected var _lc :LocationComponent;
+    protected var _target :LocationComponent;
 }
 
 }

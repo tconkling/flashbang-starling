@@ -9,21 +9,21 @@ import aspire.util.Maps;
 import aspire.util.Preconditions;
 import aspire.util.maps.ValueComputingMap;
 
-import flashbang.components.DisplayComponent;
 import flashbang.input.KeyboardInput;
 import flashbang.input.TouchInput;
 import flashbang.util.Listeners;
 
 import flump.display.MoviePlayer;
 
-import starling.display.DisplayObject;
+import org.osflash.signals.Signal;
+
 import starling.display.DisplayObjectContainer;
 import starling.display.Sprite;
 import starling.events.KeyboardEvent;
 import starling.events.Touch;
 
 public class AppMode
-    implements Updatable
+    implements GameObjectContainer
 {
     /**
      * A convenience function that converts an Array of GameObjectRefs into an array of GameObjects.
@@ -46,6 +46,7 @@ public class AppMode
 
     public function AppMode () {
         _modeSprite.touchable = false;
+        _rootObject = new RootObject(this);
     }
 
     public final function get modeSprite () :Sprite {
@@ -65,59 +66,6 @@ public class AppMode
         return _keyboardInput;
     }
 
-    /**
-     * Adds a GameObject to the ObjectDB. The GameObject must not be owned by another ObjectDB.
-     *
-     * If obj is a SceneObject and displayParent is not null, the function will attach
-     * obj's displayObject to displayParent.
-     */
-    public function addObject (obj :GameObject, displayParent :DisplayObjectContainer = null,
-        displayIdx :int = -1) :GameObjectRef
-    {
-        Preconditions.checkArgument(obj._ref == null,
-            "obj must never have belonged to another AppMode");
-
-        if (displayParent != null) {
-            obj.attachToDisplayList(displayParent, displayIdx);
-        }
-
-        // create a new GameObjectRef
-        var ref :GameObjectRef = new GameObjectRef();
-        ref._obj = obj;
-
-        // add the ref to the list
-        var oldListHead :GameObjectRef = _listHead;
-        _listHead = ref;
-
-        if (null != oldListHead) {
-            ref._next = oldListHead;
-            oldListHead._prev = ref;
-        }
-
-        // initialize object
-        obj._mode = this;
-        obj._ref = ref;
-
-        // does the object have IDs?
-        for each (var objectId :Object in obj.objectIds) {
-            var existing :GameObject = _idObjects.put(objectId, obj);
-            Preconditions.checkState(null == existing,
-                "two objects with the same ID added to the AppMode",
-                "id", objectId, "new", obj, "existing", existing);
-        }
-
-        // add this object to the groups it belongs to
-        for each (var groupId :Object in obj.objectGroups) {
-            _groupedObjects.get(groupId).push(ref);
-        }
-
-        obj.addedToModeInternal();
-
-        ++_objectCount;
-
-        return ref;
-    }
-
     /** Removes the singleton of the given class from the ObjectDB, if it exists. */
     public function destroySingleton (clazz :Class) :void {
         destroyObjectWithId(clazz);
@@ -127,7 +75,7 @@ public class AppMode
     public function destroyObjectWithId (id :Object) :void {
         var obj :GameObject = getObjectWithId(id);
         if (null != obj) {
-            destroyObject(obj.ref);
+            obj.destroySelf();
         }
     }
 
@@ -138,48 +86,6 @@ public class AppMode
                 ref.object.destroySelf();
             }
         }
-    }
-
-    /** Removes a GameObject from the ObjectDB. */
-    public function destroyObject (ref :GameObjectRef) :void {
-        if (null == ref) {
-            return;
-        }
-
-        var obj :GameObject = ref.object;
-
-        if (null == obj) {
-            return;
-        }
-
-        // If the GameObject has a DisplayObject, remove it from the displayList.
-        // We do *not* dispose of the DisplayObject: that is up to the GameObject.
-        // SceneObject does this automatically in destroy().
-        if (obj is DisplayComponent) {
-            var disp :DisplayObject = DisplayComponent(obj).display;
-            if (null != disp) {
-                disp.removeFromParent();
-            }
-        }
-
-        // the ref no longer points to the object
-        ref._obj = null;
-
-        // does the object have IDs?
-        for each (var objectId :Object in obj.objectIds) {
-            _idObjects.remove(objectId);
-        }
-
-        // object group removal takes place in finalizeObjectRemoval()
-
-        obj.removedFromModeInternal();
-        obj.disposeInternal();
-
-        // the ref will be unlinked from the objects list
-        // at the end of the update()
-        _objectsPendingRemoval.push(obj);
-
-        --_objectCount;
     }
 
     /** Returns the singleton object of the given class, or null if no such object exists.  */
@@ -214,48 +120,7 @@ public class AppMode
         return getObjects(getObjectRefsInGroup(groupId));
     }
 
-    /** Called once per update tick. Updates all objects in the mode. */
-    public function update (dt :Number) :void {
-        beginUpdate(dt);
-        endUpdate(dt);
-        _runningTime += dt;
-    }
-
-    /**
-     * Guarantees that the "second" GameObject will have its update logic run after "first"
-     * during the update loop.
-     */
-    public function setUpdateOrder (first :GameObject, second :GameObject) :void {
-        Preconditions.checkArgument(second.mode == this && first.mode == this,
-            "GameObject doesn't belong to this AppMode");
-        Preconditions.checkArgument(second.isLiveObject && first.isLiveObject,
-            "GameObject is not live");
-
-        // unlink second from the list
-        unlink(second);
-
-        // relink it directly after first
-        var firstRef :GameObjectRef = first._ref;
-        var secondRef :GameObjectRef = second._ref;
-        var nextRef :GameObjectRef = firstRef._next;
-
-        firstRef._next = secondRef;
-        secondRef._prev = firstRef;
-        secondRef._next = nextRef;
-        if (nextRef != null) {
-            nextRef._prev = secondRef;
-        }
-    }
-
-    /** Returns the number of live GameObjects in this ObjectDB. */
-    public function get objectCount () :uint {
-        return _objectCount;
-    }
-
-    /**
-     * Returns the number of seconds this ObjectDB has been running, as measured by calls to
-     * update().
-     */
+    /** @return total time the mode has been running, as measured by calls to update(). */
     public function get time () :Number {
         return _runningTime;
     }
@@ -270,76 +135,48 @@ public class AppMode
         _keyboardInput.handleKeyboardEvent(e);
     }
 
-    /** Updates all objects in the mode. */
-    protected function beginUpdate (dt :Number) :void {
-        // update all objects
+    public function addObject (obj :GameObjectBase,
+        displayParent :DisplayObjectContainer = null, displayIdx :int = -1) :GameObjectRef {
+        return _rootObject.addObject(obj, displayParent, displayIdx);
+    }
 
-        var ref :GameObjectRef = _listHead;
-        while (null != ref) {
-            var obj :GameObject = ref._obj;
-            if (null != obj) {
-                obj.updateInternal(dt);
-            }
+    public function addNamedObject (name :String, obj :GameObjectBase,
+        displayParent :DisplayObjectContainer = null, displayIdx :int = -1) :GameObjectRef {
+        return _rootObject.addNamedObject(name, obj, displayParent, displayIdx);
+    }
 
-            ref = ref._next;
-        }
+    public function replaceNamedObject (name :String, obj :GameObjectBase,
+        displayParent :DisplayObjectContainer = null, displayIdx :int = -1) :GameObjectRef {
+        return _rootObject.replaceNamedObject(name, obj, displayParent, displayIdx);
+    }
 
-        // update movies
+    public function getNamedObject (name :String) :GameObjectBase {
+        return _rootObject.getNamedObject(name);
+    }
+
+    public function hasNamedObject (name :String) :Boolean {
+        return _rootObject.hasNamedObject(name);
+    }
+
+    public function removeObject (obj :GameObjectBase) :void {
+        _rootObject.removeObject(obj);
+    }
+
+    public function removeNamedObjects (name :String) :void {
+        _rootObject.removeNamedObjects(name);
+    }
+
+    public function get isLiveObject () :Boolean {
+        return !_disposed;
+    }
+
+    /** Called once per update tick. Updates all objects in the mode. */
+    protected function update (dt :Number) :void {
+        _runningTime += dt;
+        // update all Updatable objects
+        _update.dispatch(dt);
+        // update Movies
         _moviePlayer.advanceTime(dt);
-    }
-
-    /** Removes dead objects from the object list at the end of an update. */
-    protected function endUpdate (dt :Number) :void {
-        // clean out all objects that were destroyed during the update loop
-        for (var ii :int = _objectsPendingRemoval.length - 1; ii >= 0; --ii) {
-            finalizeObjectRemoval(_objectsPendingRemoval[ii]);
-        }
-        _objectsPendingRemoval.length = 0;
-    }
-
-    /** Removes a single dead object from the object list. */
-    protected function finalizeObjectRemoval (obj :GameObject) :void {
-        Preconditions.checkState(null != obj._ref && null == obj._ref._obj);
-
-        // unlink the object ref
-        unlink(obj);
-
-        // remove the object from the groups it belongs to
-        // (we do this here, rather than in destroyObject(),
-        // because client code might be iterating an
-        // object group Array when destroyObject is called)
-        var ref :GameObjectRef = obj._ref;
-        for each (var groupId :Object in obj.objectGroups) {
-            var wasInArray :Boolean = Arrays.removeFirst(_groupedObjects.get(groupId), ref);
-            Preconditions.checkState(wasInArray,
-                "destroyed GameObject is returning different object groups than it did on creation",
-                "obj", obj);
-        }
-
-        obj._mode = null;
-    }
-
-    /**
-     * Unlinks the GameObject from the db's linked list of objects. This happens during
-     * object removal. It generally should not be called directly.
-     */
-    protected function unlink (obj :GameObject) :void {
-        var ref :GameObjectRef = obj._ref;
-
-        var prev :GameObjectRef = ref._prev;
-        var next :GameObjectRef = ref._next;
-
-        if (null != prev) {
-            prev._next = next;
-        } else {
-            // if prev is null, ref was the head of the list
-            Preconditions.checkState(ref == _listHead);
-            _listHead = next;
-        }
-
-        if (null != next) {
-            next._prev = prev;
-        }
     }
 
     /** Called when the mode is added to the mode stack */
@@ -358,6 +195,10 @@ public class AppMode
     protected function exit () :void {
     }
 
+    /** Called when an object is registered with the mode */
+    protected function registerObject (obj :GameObjectBase) :void {
+    }
+
     internal function setupInternal (viewport :Viewport) :void {
         _viewport = viewport;
         _touchInput = new TouchInput(_modeSprite);
@@ -371,20 +212,10 @@ public class AppMode
 
         dispose();
 
-        var ref :GameObjectRef = _listHead;
-        while (null != ref) {
-            if (!ref.isNull) {
-                var obj :GameObject = ref._obj;
-                ref._obj = null;
-                obj.disposeInternal();
-            }
+        _rootObject.disposeInternal();
+        _rootObject = null;
 
-            ref = ref._next;
-        }
-
-        _listHead = null;
-        _objectCount = 0;
-        _objectsPendingRemoval = null;
+        _deadGroupedObjects = null;
         _idObjects = null;
         _groupedObjects = null;
 
@@ -415,6 +246,57 @@ public class AppMode
         exit();
     }
 
+    internal function updateInternal (dt :Number) :void {
+        update(dt);
+        _updateComplete.dispatch();
+    }
+
+    internal function registerObjectInternal (obj :GameObjectBase) :void {
+        // Handle IDs
+        var ids :Array = obj.ids;
+        if (ids.length > 0) {
+            _regs.addSignalListener(obj.destroyed, function () :void {
+                for each (var id :Object in ids) {
+                    _idObjects.remove(id);
+                }
+            });
+            for each (var id :Object in ids) {
+                var existing :GameObject = _idObjects.put(id, obj);
+                Preconditions.checkState(null == existing,
+                    "two objects with the same ID added to the AppMode",
+                    "id", id, "new", obj, "existing", existing);
+            }
+        }
+
+        // Handle groups
+        var groups :Array = obj.groups;
+        if (groups.length > 0) {
+            _regs.addSignalListener(obj.destroyed, function () :void {
+                // perform group removal at the end of an update, so that
+                // group iteration is safe during the update
+                _updateComplete.addOnce(function () :void {
+                    for each (var group :Object in groups) {
+                        Arrays.removeFirst(_groupedObjects.get(group), obj.ref);
+                    }
+                });
+
+            });
+            for each (var group :Object in groups) {
+                (_groupedObjects.get(group) as Array).push(obj.ref);
+            }
+        }
+
+        // If the object is updateable, wire up its update function to our signal
+        if (obj is Updatable) {
+            obj.regs.addSignalListener(_update, Updatable(obj).update);
+        }
+
+        registerObject(obj);
+    }
+
+    protected const _update :Signal = new Signal(Number);
+    protected const _updateComplete :Signal = new Signal();
+
     protected var _modeSprite :Sprite = new Sprite();
     protected var _viewport :Viewport;
     protected var _touchInput :TouchInput;
@@ -423,13 +305,11 @@ public class AppMode
 
     protected var _runningTime :Number = 0;
 
-    protected var _listHead :GameObjectRef;
-    protected var _objectCount :uint;
-
-    protected var _objectsPendingRemoval :Vector.<GameObject> = new <GameObject>[];
+    protected var _rootObject :RootObject;
 
     protected var _idObjects :Map = Maps.newMapOf(Object); // <Object,GameObject>
     protected var _groupedObjects :Map = ValueComputingMap.newArrayMapOf(Object);
+    protected var _deadGroupedObjects :Vector.<GameObject> = new <GameObject>[];
 
     protected var _regs :Listeners = new Listeners();
 

@@ -33,7 +33,7 @@ public class GameObjectRef
     }
 
     // managed by ObjectDB
-    internal var _obj :GameObject;
+    internal var _obj :GameObjectBase;
     internal var _next :GameObjectRef;
     internal var _prev :GameObjectRef;
 

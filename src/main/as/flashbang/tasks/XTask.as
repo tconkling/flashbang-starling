@@ -5,44 +5,17 @@ package flashbang.tasks {
 
 import starling.display.DisplayObject;
 
-import aspire.util.Preconditions;
-
-import flashbang.core.GameObject;
-import flashbang.core.ObjectTask;
-import flashbang.components.LocationComponent;
-
-public class XTask extends DisplayObjectTask
+public class XTask extends LocationTask
 {
-    public function XTask (x :Number, time :Number = 0, easingFn :Function = null,
-        disp :DisplayObject = null) {
-        super(time, easingFn, disp);
-        _toX = x;
+    public function XTask (x :Number, time :Number = 0, easingFn :Function = null, disp :DisplayObject = null) {
+        super(x, 0, time, easingFn, disp);
     }
 
-    override public function update (dt :Number, obj :GameObject) :Boolean {
-        if (0 == _elapsedTime) {
-            _lc = getLocationTarget(obj);
-            _fromX = _lc.x;
+    override protected function updateValues () :void {
+        if (isNaN(_fromX)) {
+            _fromX = _target.x;
         }
-
-        _elapsedTime += dt;
-        _lc.x = interpolate(_fromX, _toX);
-        return (_elapsedTime >= _totalTime);
+        _target.x = interpolate(_fromX, _toX);
     }
-
-    protected function getLocationTarget (obj :GameObject) :LocationComponent {
-        var display :DisplayObject = super.getTarget(obj);
-        if (display != null) {
-            return new DisplayObjectWrapper(display);
-        }
-        var lc :LocationComponent = obj as LocationComponent;
-        Preconditions.checkState(lc != null, "obj does not implement LocationComponent");
-        return lc;
-    }
-
-    protected var _toX :Number;
-    protected var _fromX :Number;
-
-    protected var _lc :LocationComponent;
 }
 }

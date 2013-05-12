@@ -3,12 +3,11 @@
 
 package flashbang.tasks {
 
-import starling.display.DisplayObject;
-
 import aspire.util.Preconditions;
 
-import flashbang.core.GameObject;
 import flashbang.components.DisplayComponent;
+
+import starling.display.DisplayObject;
 
 public class DisplayObjectTask extends InterpolatingTask
 {
@@ -17,14 +16,14 @@ public class DisplayObjectTask extends InterpolatingTask
         _target = display;
     }
 
-    protected function getTarget (obj :GameObject) :DisplayObject  {
-        var target :DisplayObject = _target;
-        if (target == null) {
-            var dc :DisplayComponent = obj as DisplayComponent;
-            Preconditions.checkState(dc != null, "obj does not implement DisplayComponent");
-            target = dc.display;
+    override protected function added () :void {
+        super.added();
+        // If we weren't given a target, operate on our parent object
+        if (_target == null) {
+            var dc :DisplayComponent = this.parent as DisplayComponent;
+            Preconditions.checkState(dc != null, "parent does not implement DisplayComponent");
+            _target = dc.display;
         }
-        return target;
     }
 
     protected var _target :DisplayObject;

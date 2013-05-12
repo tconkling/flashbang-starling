@@ -3,8 +3,6 @@
 
 package flashbang.tasks {
 
-import flashbang.core.GameObject;
-
 import starling.display.DisplayObject;
 
 public class ScaleTask extends DisplayObjectTask
@@ -16,23 +14,19 @@ public class ScaleTask extends DisplayObjectTask
         _toY = y;
     }
 
-    override public function update (dt :Number, obj :GameObject) :Boolean {
-        if (0 == _elapsedTime) {
-            _target = getTarget(obj);
+    override protected function updateValues () :void {
+        if (isNaN(_fromX)) {
             _fromX = _target.scaleX;
             _fromY = _target.scaleY;
         }
-
-        _elapsedTime += dt;
         _target.scaleX = interpolate(_fromX, _toX);
         _target.scaleY = interpolate(_fromY, _toY);
-        return (_elapsedTime >= _totalTime);
     }
 
     protected var _toX :Number;
     protected var _toY :Number;
-    protected var _fromX :Number;
-    protected var _fromY :Number;
+    protected var _fromX :Number = NaN;
+    protected var _fromY :Number = NaN;
 }
 
 }

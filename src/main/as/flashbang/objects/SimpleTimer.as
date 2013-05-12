@@ -21,7 +21,7 @@ public class SimpleTimer extends GameObject
         _timeLeft.value = delay;
 
         if (repeating) {
-            addTask(new RepeatingTask(function () :ObjectTask {
+            addObject(new RepeatingTask(function () :ObjectTask {
                 var sequence :SerialTask = new SerialTask(
                     // init _timeLeft to delay
                     new AnimateValueTask(_timeLeft, delay, 0),
@@ -48,11 +48,11 @@ public class SimpleTimer extends GameObject
             // self-destruct when complete
             serialTask.addTask(new SelfDestructTask());
 
-            addTask(serialTask);
+            addObject(serialTask);
         }
     }
 
-    override public function get objectIds () :Array {
+    override public function get ids () :Array {
         return _name == null ? [] : [ _name ];
     }
 

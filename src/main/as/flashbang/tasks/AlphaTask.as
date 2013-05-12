@@ -15,19 +15,15 @@ public class AlphaTask extends DisplayObjectTask
         _to = alpha;
     }
 
-    override public function update (dt :Number, obj :GameObject) :Boolean {
-        if (0 == _elapsedTime) {
-            _target = getTarget(obj);
+    override protected function updateValues () :void {
+        if (isNaN(_from)) {
             _from = _target.alpha;
         }
-
-        _elapsedTime += dt;
         _target.alpha = interpolate(_from, _to);
-        return (_elapsedTime >= _totalTime);
     }
 
     protected var _to :Number;
-    protected var _from :Number;
+    protected var _from :Number = NaN;
 }
 
 }

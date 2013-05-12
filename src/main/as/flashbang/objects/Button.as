@@ -44,7 +44,7 @@ public class Button extends SpriteObject
             this.clicked.dispatch();
 
             if (_state != DOWN) {
-                addTask(new SerialTask(
+                addObject(new SerialTask(
                     new FunctionTask(function () :void { showState(DOWN); }),
                     new TimedTask(0.25),
                     new FunctionTask(function () :void { showState(_state); })));
@@ -57,28 +57,28 @@ public class Button extends SpriteObject
         throw new Error("abstract");
     }
 
-    override protected function addedToMode () :void {
+    override protected function added () :void {
         showState(_state);
 
         var self :Button = this;
-        _regs.addSignalListener(this.hoverBegan, function (t :Touch) :void {
+        this.regs.addSignalListener(this.hoverBegan, function (t :Touch) :void {
             if (_state != DISABLED) {
                 setState(OVER);
             }
         });
-        _regs.addSignalListener(this.hoverEnded, function () :void {
+        this.regs.addSignalListener(this.hoverEnded, function () :void {
             if (_state != DISABLED) {
                 setState(UP);
             }
         });
 
-        _regs.addSignalListener(this.touchBegan, function (touch :Touch) :void {
+        this.regs.addSignalListener(this.touchBegan, function (touch :Touch) :void {
             if (self.enabled && _captureReg == null) {
                 var l :PointerListener = PointerAdapter.withTouchId(touch.id)
                     .onPointerMove(self.onPointerMove)
                     .onPointerEnd(self.onPointerEnd)
                     .create();
-                _captureReg = _regs.add(self.mode.touchInput.registerListener(l));
+                _captureReg = self.regs.add(self.mode.touchInput.registerListener(l));
                 setState(DOWN);
             }
         });

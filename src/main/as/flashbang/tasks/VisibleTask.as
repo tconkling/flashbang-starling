@@ -3,23 +3,32 @@
 
 package flashbang.tasks {
 
-import starling.display.DisplayObject;
+import aspire.util.Preconditions;
 
-import flashbang.core.GameObject;
+import flashbang.components.DisplayComponent;
 import flashbang.core.ObjectTask;
 
-public class VisibleTask extends DisplayObjectTask
+import starling.display.DisplayObject;
+
+public class VisibleTask extends ObjectTask
 {
     public function VisibleTask (visible :Boolean, disp :DisplayObject = null) {
-        super(0, null, disp);
         _visible = visible;
+        _target = disp;
     }
 
-    override public function update (dt :Number, obj :GameObject) :Boolean  {
-        getTarget(obj).visible = _visible;
-        return true;
+    override protected function added () :void {
+        // If we weren't given a target, operate on our parent object
+        if (_target == null) {
+            var dc :DisplayComponent = this.parent as DisplayComponent;
+            Preconditions.checkState(dc != null, "parent does not implement DisplayComponent");
+            _target = dc.display;
+        }
+        _target.visible = _visible;
+        destroySelf();
     }
 
+    protected var _target :DisplayObject;
     protected var _visible :Boolean;
 }
 

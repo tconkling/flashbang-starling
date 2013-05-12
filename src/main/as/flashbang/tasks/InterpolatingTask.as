@@ -3,12 +3,12 @@
 
 package flashbang.tasks {
 
-import flashbang.util.Easing;
-import flashbang.core.GameObject;
 import flashbang.core.ObjectTask;
+import flashbang.core.Updatable;
+import flashbang.util.Easing;
 
-public class InterpolatingTask
-    implements ObjectTask
+public class InterpolatingTask extends ObjectTask
+    implements Updatable
 {
     public function InterpolatingTask (time :Number = 0, easingFn :Function = null) {
         _totalTime = Math.max(time, 0);
@@ -16,9 +16,16 @@ public class InterpolatingTask
         _easingFn = (easingFn != null ? easingFn : Easing.linear);
     }
 
-    public function update (dt :Number, obj :GameObject) :Boolean  {
-        _elapsedTime += dt;
-        return (_elapsedTime >= _totalTime);
+    public function update (dt :Number) :void {
+        _elapsedTime = Math.min(_elapsedTime + dt, _totalTime);
+        updateValues();
+        if (_elapsedTime >= _totalTime) {
+            destroySelf();
+        }
+    }
+
+    protected function updateValues () :void {
+        // subclasses do processing here
     }
 
     protected function interpolate (from :Number, to :Number) :Number {

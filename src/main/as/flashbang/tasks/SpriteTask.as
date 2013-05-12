@@ -17,14 +17,14 @@ public class SpriteTask extends InterpolatingTask
         _target = sprite;
     }
 
-    protected function getTarget (obj :GameObject) :Sprite  {
-        var target :Sprite = _target;
-        if (target == null) {
-            const dc :DisplayComponent = obj as DisplayComponent;
-            Preconditions.checkState(dc != null, "obj does not implement DisplayComponent");
-            target = Sprite(dc.display);
+    override protected function added () :void {
+        super.added();
+        // If we weren't given a target, operate on our parent object
+        if (_target == null) {
+            var dc :DisplayComponent = this.parent as DisplayComponent;
+            Preconditions.checkState(dc != null, "parent does not implement DisplayComponent");
+            _target = Sprite(dc.display);
         }
-        return target;
     }
 
     protected var _target :Sprite;

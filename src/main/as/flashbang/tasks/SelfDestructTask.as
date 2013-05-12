@@ -6,12 +6,13 @@ package flashbang.tasks {
 import flashbang.core.GameObject;
 import flashbang.core.ObjectTask;
 
-public class SelfDestructTask
-    implements ObjectTask
+/**
+ * A Task that destroys its parent.
+ */
+public class SelfDestructTask extends ObjectTask
 {
-    public function update (dt :Number, obj :GameObject) :Boolean {
-        obj.destroySelf();
-        return true;
+    override protected function added() :void {
+        GameObject(this.parent).destroySelf();
     }
 }
 

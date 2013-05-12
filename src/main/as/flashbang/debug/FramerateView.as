@@ -4,6 +4,7 @@
 package flashbang.debug {
 
 import flashbang.components.DisplayComponent;
+import flashbang.core.Updatable;
 import flashbang.util.TextFieldBuilder;
 
 import starling.display.DisplayObject;
@@ -45,7 +46,7 @@ public class FramerateView extends Framerate
         return _tf;
     }
 
-    override protected function update (dt :Number) :void {
+    override public function update (dt :Number) :void {
         super.update(dt);
 
         var text :String;

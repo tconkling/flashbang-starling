@@ -36,9 +36,9 @@ public class Dragger extends GameObject
         stopDrag(false);
     }
 
-    override protected function removedFromMode () :void {
+    override protected function removed () :void {
         cancelDrag();
-        super.removedFromMode();
+        super.removed();
     }
 
     protected function stopDrag (dragCompleted :Boolean) :void {

@@ -6,14 +6,14 @@ package flashbang.tasks {
 import aspire.util.Preconditions;
 
 import flashbang.components.DisplayComponent;
-import flashbang.core.GameObject;
 import flashbang.core.ObjectTask;
+import flashbang.core.Updatable;
 
 import flump.display.Movie;
 
 /** Plays a Flump movie once. Completes when the movie has ended. */
-public class PlayMovieTask
-    implements ObjectTask
+public class PlayMovieTask extends ObjectTask
+    implements Updatable
 {
     /**
      * Creates a PlayMovieTask
@@ -28,10 +28,10 @@ public class PlayMovieTask
         _to = (to || Movie.LAST_FRAME);
     }
 
-    public function update (dt :Number, obj :GameObject) :Boolean  {
+    public function update (dt :Number) :void  {
         if (!_started) {
             if (_movie == null) {
-                var disp :DisplayComponent = obj as DisplayComponent;
+                var disp :DisplayComponent = this.parent as DisplayComponent;
                 Preconditions.checkState(disp != null,
                     "PlayMovieTask: object doesn't implement DisplayComponent");
                 _movie = disp.display as Movie;
@@ -44,7 +44,9 @@ public class PlayMovieTask
             _movie.playTo(_to);
         }
 
-        return !(_movie.isPlaying);
+        if (!_movie.isPlaying) {
+            destroySelf();
+        }
     }
 
     protected var _movie :Movie;

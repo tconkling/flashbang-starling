@@ -3,13 +3,19 @@
 
 package flashbang.core {
 
-public interface ObjectTask
+public class ObjectTask extends GameObjectBase
 {
-    /**
-     * Updates the ObjectTask.
-     * Returns true if the task has completed, otherwise false.
-     */
-    function update (dt :Number, obj :GameObject) :Boolean;
+    override public final function get isSingleton () :Boolean {
+        return false;
+    }
+
+    override public final function get groups () :Array {
+        return EMPTY_ARRAY;
+    }
+
+    override public final function get ids () :Array {
+        return EMPTY_ARRAY;
+    }
 }
 
 }
