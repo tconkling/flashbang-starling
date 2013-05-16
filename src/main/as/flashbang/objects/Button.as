@@ -63,12 +63,12 @@ public class Button extends SpriteObject
         var self :Button = this;
         this.regs.addSignalListener(this.hoverBegan, function (t :Touch) :void {
             if (_state != DISABLED) {
-                setState(OVER);
+                self.pointerOver = true;
             }
         });
         this.regs.addSignalListener(this.hoverEnded, function () :void {
             if (_state != DISABLED) {
-                setState(UP);
+                self.pointerOver = false;
             }
         });
 
@@ -79,9 +79,57 @@ public class Button extends SpriteObject
                     .onPointerEnd(self.onPointerEnd)
                     .create();
                 _captureReg = self.regs.add(self.mode.touchInput.registerListener(l));
-                setState(DOWN);
+                self.pointerDown = true;
             }
         });
+    }
+
+    protected function cancelCapture () :void {
+        if (_captureReg != null) {
+            _captureReg.cancel();
+            _captureReg = null;
+        }
+    }
+
+    protected function onPointerMove (touch :Touch) :void {
+        this.pointerOver = hitTest(touch);
+    }
+
+    protected function onPointerEnd (touch :Touch) :void {
+        this.pointerDown = false;
+        this.pointerOver = hitTest(touch);
+        cancelCapture();
+        // emit the signal after doing everything else, because a signal handler could change
+        // our state
+        if (_pointerOver) {
+            this.clicked.dispatch();
+        }
+    }
+
+    protected function set pointerDown (val :Boolean) :void {
+        if (_pointerDown != val) {
+            _pointerDown = val;
+            updateState();
+        }
+    }
+
+    protected function set pointerOver (val :Boolean) :void {
+        if (_pointerOver != val) {
+            _pointerOver = val;
+            updateState();
+        }
+    }
+
+    protected function updateState () :void {
+        if (_state == DISABLED) {
+            return;
+        }
+
+        if (_pointerDown) {
+            setState(_pointerOver ? DOWN : UP);
+        } else {
+            setState(_pointerOver ? OVER : UP);
+        }
     }
 
     protected function setState (val :int) :void {
@@ -94,28 +142,6 @@ public class Button extends SpriteObject
         }
     }
 
-    protected function cancelCapture () :void {
-        if (_captureReg != null) {
-            _captureReg.cancel();
-            _captureReg = null;
-        }
-    }
-
-    protected function onPointerMove (touch :Touch) :void {
-        _pointerOver = hitTest(touch);
-        setState(_pointerOver ? DOWN : UP);
-    }
-
-    protected function onPointerEnd (touch :Touch) :void {
-        setState(UP);
-        cancelCapture();
-        // emit the signal after doing everything else, because a signal handler could change
-        // our state
-        if (hitTest(touch)) {
-            this.clicked.dispatch();
-        }
-    }
-
     protected function hitTest (touch :Touch) :Boolean {
         P.setTo(touch.globalX, touch.globalY);
         return (_sprite.hitTest(_sprite.globalToLocal(P, P), true) != null);
@@ -123,6 +149,7 @@ public class Button extends SpriteObject
 
     protected var _state :int = 0;
     protected var _pointerOver :Boolean;
+    protected var _pointerDown :Boolean;
     protected var _captureReg :Registration;
 
     protected static const UP :int = 0;
