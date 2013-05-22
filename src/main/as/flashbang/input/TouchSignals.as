@@ -132,8 +132,7 @@ class FilteredTouchSignal extends Signal {
 
         super(Touch);
         touchEventSignal.add(function (e :TouchEvent) :void {
-            var touch :Touch = e.getTouch(disp, phase);
-            if (touch != null) {
+            for each (var touch :Touch in e.getTouches(disp, phase)) {
                 dispatch(touch);
             }
         });
