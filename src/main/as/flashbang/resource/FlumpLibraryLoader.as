@@ -25,6 +25,12 @@ public class FlumpLibraryLoader extends ResourceLoader
      */
     public static const DATA :String = "data";
 
+    /**
+     * A Boolean indicating if mipmaps should be generated for the flump textures loaded with
+     * this loader. The default is false.
+     */
+    public static const MIPMAPS :String = "mipmaps";
+
     public function FlumpLibraryLoader (params :Object) {
         super(params);
     }
@@ -36,6 +42,7 @@ public class FlumpLibraryLoader extends ResourceLoader
             var clazz :Class = Class(data);
             data = ByteArray(new clazz());
         }
+        _mipmaps = getLoadParam(MIPMAPS, false);
 
         _exec = new Executor();
         _exec.succeeded.add(function (f :Future) :void {
@@ -46,10 +53,10 @@ public class FlumpLibraryLoader extends ResourceLoader
         });
 
         if (data is ByteArray) {
-            LibraryLoader.loadBytes(ByteArray(data), _exec);
+            LibraryLoader.loadBytes(ByteArray(data), _exec, -1, _mipmaps);
 
         } else if (data is String) {
-            LibraryLoader.loadURL(data as String, _exec);
+            LibraryLoader.loadURL(data as String, _exec, -1, _mipmaps);
 
         } else {
             throw new Error("Unrecognized Flump Library data source: '" +
@@ -82,6 +89,7 @@ public class FlumpLibraryLoader extends ResourceLoader
     }
 
     protected var _name :String;
+    protected var _mipmaps :Boolean;
     protected var _exec :Executor;
 }
 }
