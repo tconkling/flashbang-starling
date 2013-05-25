@@ -53,10 +53,12 @@ public class FlumpLibraryLoader extends ResourceLoader
         });
 
         if (data is ByteArray) {
-            LibraryLoader.loadBytes(ByteArray(data), _exec, -1, _mipmaps);
+            new LibraryLoader().setExecutor(_exec).setGenerateMipMaps(_mipmaps)
+                .loadBytes(ByteArray(data));
 
         } else if (data is String) {
-            LibraryLoader.loadURL(data as String, _exec, -1, _mipmaps);
+            new LibraryLoader().setExecutor(_exec).setGenerateMipMaps(_mipmaps)
+                .loadURL(data as String);
 
         } else {
             throw new Error("Unrecognized Flump Library data source: '" +
