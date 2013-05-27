@@ -53,15 +53,19 @@ public class FlumpLibraryLoader extends ResourceLoader
         });
 
         if (data is ByteArray) {
-            LibraryLoader.loadBytes(ByteArray(data), _exec, -1, _mipmaps);
+            createLibraryLoader().loadBytes(ByteArray(data));
 
         } else if (data is String) {
-            LibraryLoader.loadURL(data as String, _exec, -1, _mipmaps);
+            createLibraryLoader().loadURL(data as String);
 
         } else {
             throw new Error("Unrecognized Flump Library data source: '" +
                 ClassUtil.tinyClassName(data) + "'");
         }
+    }
+
+    protected function createLibraryLoader () :LibraryLoader {
+        return new LibraryLoader().setExecutor(_exec).setGenerateMipMaps(_mipmaps);
     }
 
     protected function libraryLoaded (library :Library) :void {
