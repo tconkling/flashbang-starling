@@ -3,7 +3,6 @@
 
 package flashbang.util {
 
-import aspire.util.OneShotRegistration;
 import aspire.util.RegistrationList;
 
 import flash.events.IEventDispatcher;
@@ -17,12 +16,10 @@ public class Listeners extends RegistrationList
 {
     /**
      * Adds a listener to the specified signal.
-     * @return a OneShotRegistration object that will disconnect the listener from the signal.
+     * @return an EventRegistration object that will disconnect the listener from the signal.
      */
-    public function addSignalListener (signal :ISignal, l :Function) :OneShotRegistration {
-        var reg :OneShotRegistration = new SignalRegistration(signal, l);
-        add(reg);
-        return reg;
+    public function addSignalListener (signal :ISignal, l :Function) :EventRegistration {
+        return add(new SignalRegistration(signal, l)) as EventRegistration;
     }
 
     /**
@@ -30,23 +27,20 @@ public class Listeners extends RegistrationList
      * Note: this works with both Starling and Flash EventDispatchers.
      * @return a Registration object that will disconnect the listener from the EventDispatcher.
      */
-    public function addEventListener (dispatcher :Object, type :String, l :Function) :OneShotRegistration {
-        var reg :OneShotRegistration = null;
+    public function addEventListener (dispatcher :Object, type :String, l :Function) :EventRegistration {
         if (dispatcher is IEventDispatcher) {
-            reg = new FlashEventRegistration(IEventDispatcher(dispatcher), type, l);
+            return add(new FlashEventRegistration(IEventDispatcher(dispatcher), type, l)) as EventRegistration;
         } else {
-            reg = new StarlingEventRegistration(EventDispatcher(dispatcher), type, l);
+            return add(new StarlingEventRegistration(EventDispatcher(dispatcher), type, l)) as EventRegistration;
         }
-        add(reg);
-        return reg;
     }
 }
 }
 
-import aspire.util.OneShotRegistration;
-
 import flash.events.Event;
 import flash.events.IEventDispatcher;
+
+import flashbang.util.EventRegistration;
 
 import org.osflash.signals.ISignal;
 import org.osflash.signals.ISlot;
@@ -55,7 +49,7 @@ import starling.events.Event;
 import starling.events.EventDispatcher;
 
 class StarlingEventRegistration
-    implements OneShotRegistration
+    implements EventRegistration
 {
     public function StarlingEventRegistration (dispatcher :EventDispatcher, type :String,
         f :Function) {
@@ -73,7 +67,7 @@ class StarlingEventRegistration
         }
     }
 
-    public function once () :OneShotRegistration {
+    public function once () :EventRegistration {
         _once = true;
         return this;
     }
@@ -93,7 +87,7 @@ class StarlingEventRegistration
 }
 
 class FlashEventRegistration
-    implements OneShotRegistration
+    implements EventRegistration
 {
     public function FlashEventRegistration (dispatcher :IEventDispatcher, type :String,
         f :Function) {
@@ -111,7 +105,7 @@ class FlashEventRegistration
         }
     }
 
-    public function once () :OneShotRegistration {
+    public function once () :EventRegistration {
         _once = true;
         return this;
     }
@@ -131,7 +125,7 @@ class FlashEventRegistration
 }
 
 class SignalRegistration
-    implements OneShotRegistration
+    implements EventRegistration
 {
     public function SignalRegistration (signal :ISignal, f :Function) {
         _slot = signal.add(onSignalDispatch);
@@ -145,7 +139,7 @@ class SignalRegistration
         }
     }
 
-    public function once () :OneShotRegistration {
+    public function once () :EventRegistration {
         _once = true;
         return this;
     }
