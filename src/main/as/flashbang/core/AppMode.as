@@ -220,7 +220,7 @@ public class AppMode
         _idObjects = null;
         _groupedObjects = null;
 
-        _regs.cancel();
+        _regs.close();
         _regs = null;
 
         _viewport = null;

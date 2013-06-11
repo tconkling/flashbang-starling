@@ -123,7 +123,7 @@ class CachedMovieImpl
         }
     }
 
-    public function cancel () :void {
+    public function close () :void {
         release();
     }
 

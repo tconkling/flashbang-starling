@@ -192,7 +192,7 @@ public class GameObjectBase
         _ref._obj = null;
         dispose();
         if (_regs != null) {
-            _regs.cancel();
+            _regs.close();
             _regs = null;
         }
     }

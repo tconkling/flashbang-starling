@@ -63,7 +63,7 @@ public class FontResourceLoader extends ResourceLoader
 
     override protected function onCanceled () :void {
         if (_batch != null) {
-            _batch.cancel();
+            _batch.close();
             _batch = null;
         }
     }

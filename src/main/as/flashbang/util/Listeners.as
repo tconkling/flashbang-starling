@@ -46,7 +46,7 @@ class StarlingEventRegistration
         _dispatcher.addEventListener(type, onEvent);
     }
 
-    public function cancel () :void {
+    public function close () :void {
         if (_dispatcher != null) {
             _dispatcher.removeEventListener(_type, onEvent);
             _dispatcher = null;
@@ -62,7 +62,7 @@ class StarlingEventRegistration
     protected function onEvent (e :starling.events.Event) :void {
         var f :Function = _f;
         if (_once) {
-            cancel();
+            close();
         }
         f(e);
     }
@@ -84,7 +84,7 @@ class FlashEventRegistration
         _dispatcher.addEventListener(type, onEvent);
     }
 
-    public function cancel () :void {
+    public function close () :void {
         if (_dispatcher != null) {
             _dispatcher.removeEventListener(_type, onEvent);
             _dispatcher = null;
@@ -100,7 +100,7 @@ class FlashEventRegistration
     protected function onEvent (e :flash.events.Event) :void {
         var f :Function = _f;
         if (_once) {
-            cancel();
+            close();
         }
         f(e);
     }

@@ -30,7 +30,7 @@ public class Timers
     public static function delayFrames (numFrames :int, callback :Function) :TimerRegistration {
         var timer :TimerRegistration = create(1, function (..._) :void {
             if (--numFrames <= 0) {
-                timer.cancel();
+                timer.close();
                 callback();
             }
         }).start();
@@ -68,7 +68,7 @@ class TimerImpl
         return this;
     }
 
-    public function cancel () :void {
+    public function close () :void {
         if (_timer != null) {
             _timer.stop();
             _timer.removeEventListener(TimerEvent.TIMER, onTimerEvent);
@@ -85,7 +85,7 @@ class TimerImpl
     protected function onTimerEvent (e :TimerEvent) :void {
         var callback :Function = _callback;
         if (_once) {
-            cancel();
+            close();
         }
         callback();
     }

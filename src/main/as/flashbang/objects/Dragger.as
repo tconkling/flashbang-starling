@@ -44,7 +44,7 @@ public class Dragger extends GameObject
 
     protected function stopDrag (dragCompleted :Boolean) :void {
         if (_dragReg != null) {
-            _dragReg.cancel();
+            _dragReg.close();
             _dragReg = null;
             if (!dragCompleted) {
                 var start :Point = _listener.start;

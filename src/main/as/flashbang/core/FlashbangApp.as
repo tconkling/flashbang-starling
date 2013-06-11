@@ -237,7 +237,7 @@ public class FlashbangApp extends flash.display.Sprite
 
         // should the MainLoop be stopped?
         if (_disposePending) {
-            _regs.cancel();
+            _regs.close();
             disposeNow();
         }
 
@@ -253,7 +253,7 @@ public class FlashbangApp extends flash.display.Sprite
         _mainSprite = null;
         _updatables = null;
 
-        _regs.cancel();
+        _regs.close();
         _regs = null;
 
         _audio.dispose();

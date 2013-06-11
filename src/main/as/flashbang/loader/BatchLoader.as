@@ -69,7 +69,7 @@ public class BatchLoader extends DataLoader
 
     override protected function onCanceled () :void {
         for each (var loader :DataLoader in _pending.concat(_loading)) {
-            loader.cancel();
+            loader.close();
         }
 
         cleanup();

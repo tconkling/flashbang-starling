@@ -85,7 +85,7 @@ public class Button extends SpriteObject
 
     protected function cancelCapture () :void {
         if (_captureReg != null) {
-            _captureReg.cancel();
+            _captureReg.close();
             _captureReg = null;
         }
     }

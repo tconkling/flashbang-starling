@@ -85,7 +85,7 @@ public class DataLoader
     }
 
     /** Cancels an in-progress load */
-    public final function cancel () :void {
+    public final function close () :void {
         if (this.wasCanceled) {
             return;
         }
