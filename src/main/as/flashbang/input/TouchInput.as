@@ -3,12 +3,12 @@
 
 package flashbang.input {
 
+import react.Registration;
+import react.Registrations;
+
 import starling.display.DisplayObjectContainer;
 import starling.events.Touch;
 import starling.events.TouchDispatcher;
-
-import aspire.util.Registration;
-import aspire.util.Registrations;
 
 public class TouchInput
 {

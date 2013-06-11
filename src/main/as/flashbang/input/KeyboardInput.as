@@ -3,8 +3,8 @@
 
 package flashbang.input {
 
-import aspire.util.Registration;
-import aspire.util.Registrations;
+import react.Registration;
+import react.Registrations;
 
 import starling.events.KeyboardEvent;
 

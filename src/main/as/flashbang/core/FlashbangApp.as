@@ -3,11 +3,21 @@
 
 package flashbang.core {
 
+import aspire.util.F;
+
 import flash.display.Sprite;
 import flash.events.Event;
 import flash.geom.Rectangle;
 import flash.system.Capabilities;
 import flash.system.TouchscreenType;
+
+import flashbang.audio.AudioManager;
+import flashbang.resource.ResourceManager;
+import flashbang.util.Listeners;
+
+import react.Registration;
+import react.Registrations;
+import react.UnitSignal;
 
 import starling.core.Starling;
 import starling.display.Sprite;
@@ -16,19 +26,9 @@ import starling.events.KeyboardEvent;
 import starling.events.Touch;
 import starling.utils.RectangleUtil;
 
-import aspire.util.F;
-import aspire.util.Registration;
-import aspire.util.Registrations;
-
-import flashbang.audio.AudioManager;
-import flashbang.resource.ResourceManager;
-import flashbang.util.Listeners;
-
-import org.osflash.signals.Signal;
-
 public class FlashbangApp extends flash.display.Sprite
 {
-    public const disposed :Signal = new Signal();
+    public const disposed :UnitSignal = new UnitSignal();
 
     public function FlashbangApp () {
         // Start starling when we're added to the stage
@@ -265,7 +265,7 @@ public class FlashbangApp extends flash.display.Sprite
         _starling.dispose();
         _starling = null;
 
-        disposed.dispatch();
+        disposed.emit();
     }
 
     internal var _rsrcs :ResourceManager = new ResourceManager();

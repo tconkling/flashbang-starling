@@ -39,7 +39,7 @@ public class RepeatingTask extends ObjectTask
             destroySelf();
             return;
         }
-        this.regs.addSignalListener(_curTask.destroyed, restart);
+        this.regs.add(_curTask.destroyed.connect(restart));
         this.parent.addObject(_curTask);
     }
 

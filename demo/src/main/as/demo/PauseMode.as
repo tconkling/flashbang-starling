@@ -22,9 +22,7 @@ public class PauseMode extends flashbang.core.AppMode
         resume.display.x = (Demo.WIDTH - resume.display.width) * 0.5;
         resume.display.y = Demo.HEIGHT - resume.display.height - 20;
         addObject(resume, this.modeSprite);
-        _regs.addSignalListener(resume.clicked, function () :void {
-            viewport.popMode();
-        });
+        _regs.add(resume.clicked.connect(viewport.popMode));
     }
 }
 }

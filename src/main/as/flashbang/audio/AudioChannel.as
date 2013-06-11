@@ -7,7 +7,7 @@ import flash.media.SoundChannel;
 
 import flashbang.resource.SoundResource;
 
-import org.osflash.signals.Signal;
+import react.UnitSignal;
 
 public class AudioChannel
 {
@@ -16,7 +16,7 @@ public class AudioChannel
      * dispatch after it has completed looping.
      * The signal will not dispatch if the channel is manually stopped.
      */
-    public const completed :Signal = new Signal();
+    public const completed :UnitSignal = new UnitSignal();
 
     public function get isPlaying () :Boolean  {
         return (null != sound);

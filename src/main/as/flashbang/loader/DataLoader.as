@@ -7,12 +7,12 @@ import aspire.util.ClassUtil;
 import aspire.util.Joiner;
 import aspire.util.Log;
 import aspire.util.Preconditions;
-import aspire.util.Registration;
 
 import flash.events.ErrorEvent;
 
-import org.osflash.signals.ISignal;
-import org.osflash.signals.Signal;
+import react.Registration;
+import react.Signal;
+import react.SignalView;
 
 public class DataLoader
     implements Registration
@@ -22,7 +22,7 @@ public class DataLoader
     }
 
     /** @return a Signal(result:*) that fires if and when the load succeeds */
-    public final function get loaded () :ISignal {
+    public final function get loaded () :SignalView {
         if (_loaded == null) {
             _loaded = new Signal(Object);
         }
@@ -30,7 +30,7 @@ public class DataLoader
     }
 
     /** @return a Signal(err:Error) that fires if and when the load fails */
-    public final function get failed () :ISignal {
+    public final function get failed () :SignalView {
         if (_failed == null) {
             _failed = new Signal(Error);
         }
@@ -38,7 +38,7 @@ public class DataLoader
     }
 
     /** @return a Signal(LoadState) that fires when the loader's state changes */
-    public final function get stateChanged () :ISignal {
+    public final function get stateChanged () :SignalView {
         if (_stateChanged == null) {
             _stateChanged = new Signal(LoadState);
         }
@@ -117,7 +117,7 @@ public class DataLoader
             }
 
             if (_loaded != null) {
-                _loaded.dispatch(_result);
+                _loaded.emit(_result);
             }
         } catch (e :Error) {
             log.error("Error thrown in DataLoader.succeed callback", e);
@@ -150,7 +150,7 @@ public class DataLoader
             }
 
             if (_failed != null) {
-                _failed.dispatch(_result);
+                _failed.emit(_result);
             }
         } catch (ee :Error) {
             log.error("Error thrown in DataLoader.fail callback", ee);
@@ -192,7 +192,7 @@ public class DataLoader
         }
         _state = state;
         if (_stateChanged != null) {
-            _stateChanged.dispatch(_state);
+            _stateChanged.emit(_state);
         }
     }
 

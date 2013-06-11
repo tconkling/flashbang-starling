@@ -23,7 +23,7 @@ public class GameMode extends AppMode
         obj.display.y = Demo.HEIGHT / 2;
         addObject(obj, this.modeSprite);
 
-        obj.addTask(new RepeatingTask(function () :ObjectTask {
+        obj.addObject(new RepeatingTask(function () :ObjectTask {
             return new SerialTask(
                 new ScaleTask(1, 1),
                 new LocationTask(0, obj.display.y, 5),
@@ -35,9 +35,9 @@ public class GameMode extends AppMode
         pause.display.x = (Demo.WIDTH - pause.display.width) * 0.5;
         pause.display.y = Demo.HEIGHT - pause.display.height - 20;
         addObject(pause, this.modeSprite);
-        _regs.addSignalListener(pause.clicked, function () :void {
+        _regs.add(pause.clicked.connect(function () :void {
             viewport.pushMode(new PauseMode());
-        });
+        }));
     }
 }
 }

@@ -10,17 +10,17 @@ import aspire.util.StringUtil;
 import flashbang.components.DisplayComponent;
 import flashbang.util.Listeners;
 
-import org.osflash.signals.ISignal;
-import org.osflash.signals.Signal;
+import react.SignalView;
+import react.UnitSignal;
 
 import starling.display.DisplayObject;
 import starling.display.DisplayObjectContainer;
 
 public class GameObjectBase
 {
-    public function get destroyed () :ISignal {
+    public function get destroyed () :SignalView {
         if (_destroyed == null) {
-            _destroyed = new Signal();
+            _destroyed = new UnitSignal();
         }
         return _destroyed;
     }
@@ -183,7 +183,7 @@ public class GameObjectBase
 
         removed();
         if (_destroyed != null) {
-            _destroyed.dispatch();
+            _destroyed.emit();
         }
         disposeInternal();
     }
@@ -203,7 +203,7 @@ public class GameObjectBase
 
     // lazily instantiated
     private var _regs :Listeners;
-    private var _destroyed :Signal;
+    private var _destroyed :UnitSignal;
 
     internal var _name :String;
     internal var _ref :GameObjectRef;

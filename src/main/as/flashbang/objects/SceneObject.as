@@ -8,7 +8,7 @@ import flashbang.core.GameObject;
 import flashbang.input.TouchSignals;
 import flashbang.input.Touchable;
 
-import org.osflash.signals.ISignal;
+import react.SignalView;
 
 import starling.display.DisplayObject;
 
@@ -27,31 +27,31 @@ public class SceneObject extends GameObject
         return _displayObject;
     }
 
-    public function get touchEvent () :ISignal { // Signal<TouchEvent>
+    public function get touchEvent () :SignalView { // Signal<TouchEvent>
         return getTouchable().touchEvent;
     }
 
-    public function get hoverBegan () :ISignal { // Signal<Touch>
+    public function get hoverBegan () :SignalView { // Signal<Touch>
         return getTouchable().hoverBegan;
     }
 
-    public function get hoverEnded () :ISignal { // Signal<>
+    public function get hoverEnded () :SignalView { // UnitSignal<>
         return getTouchable().hoverEnded;
     }
 
-    public function get touchBegan () :ISignal { // Signal<Touch>
+    public function get touchBegan () :SignalView { // Signal<Touch>
         return getTouchable().touchBegan;
     }
 
-    public function get touchMoved () :ISignal { // Signal<Touch>
+    public function get touchMoved () :SignalView { // Signal<Touch>
         return getTouchable().touchMoved;
     }
 
-    public function get touchStationary () :ISignal { // Signal<Touch>
+    public function get touchStationary () :SignalView { // Signal<Touch>
         return getTouchable().touchStationary;
     }
 
-    public function get touchEnded () :ISignal { // Signal<Touch>
+    public function get touchEnded () :SignalView { // Signal<Touch>
         return getTouchable().touchEnded;
     }
 

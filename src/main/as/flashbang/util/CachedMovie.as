@@ -3,9 +3,9 @@
 
 package flashbang.util {
 
-import aspire.util.Registration;
-
 import flump.display.Movie;
+
+import react.Registration;
 
 /**
  * A movie taken from a MovieCache.

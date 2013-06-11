@@ -3,8 +3,6 @@
 
 package flashbang.objects {
 
-import aspire.util.Registration;
-
 import flash.geom.Point;
 
 import flashbang.input.PointerAdapter;
@@ -13,7 +11,8 @@ import flashbang.tasks.FunctionTask;
 import flashbang.tasks.SerialTask;
 import flashbang.tasks.TimedTask;
 
-import org.osflash.signals.Signal;
+import react.Registration;
+import react.UnitSignal;
 
 import starling.events.Touch;
 
@@ -23,7 +22,7 @@ import starling.events.Touch;
 public class Button extends SpriteObject
 {
     /** Fired when the button is clicked */
-    public const clicked :Signal = new Signal();
+    public const clicked :UnitSignal = new UnitSignal();
 
     public function get enabled () :Boolean {
         return (_state != DISABLED);
@@ -41,7 +40,7 @@ public class Button extends SpriteObject
      */
     public function click () :void {
         if (this.enabled) {
-            this.clicked.dispatch();
+            this.clicked.emit();
 
             if (_state != DOWN) {
                 addObject(new SerialTask(
@@ -61,18 +60,18 @@ public class Button extends SpriteObject
         showState(_state);
 
         var self :Button = this;
-        this.regs.addSignalListener(this.hoverBegan, function (t :Touch) :void {
+        this.regs.add(this.hoverBegan.connect(function (t :Touch) :void {
             if (_state != DISABLED) {
                 self.pointerOver = true;
             }
-        });
-        this.regs.addSignalListener(this.hoverEnded, function () :void {
+        }));
+        this.regs.add(this.hoverEnded.connect(function () :void {
             if (_state != DISABLED) {
                 self.pointerOver = false;
             }
-        });
+        }));
 
-        this.regs.addSignalListener(this.touchBegan, function (touch :Touch) :void {
+        this.regs.add(this.touchBegan.connect(function (touch :Touch) :void {
             if (self.enabled && _captureReg == null) {
                 var l :PointerListener = PointerAdapter.withTouchId(touch.id)
                     .onPointerMove(self.onPointerMove)
@@ -81,7 +80,7 @@ public class Button extends SpriteObject
                 _captureReg = self.regs.add(self.mode.touchInput.registerListener(l));
                 self.pointerDown = true;
             }
-        });
+        }));
     }
 
     protected function cancelCapture () :void {
@@ -102,7 +101,7 @@ public class Button extends SpriteObject
         // emit the signal after doing everything else, because a signal handler could change
         // our state
         if (_pointerOver) {
-            this.clicked.dispatch();
+            this.clicked.emit();
         }
     }
 

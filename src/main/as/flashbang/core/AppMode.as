@@ -15,7 +15,8 @@ import flashbang.util.Listeners;
 
 import flump.display.MoviePlayer;
 
-import org.osflash.signals.Signal;
+import react.Signal;
+import react.UnitSignal;
 
 import starling.display.DisplayObjectContainer;
 import starling.display.Sprite;
@@ -174,7 +175,7 @@ public class AppMode
     protected function update (dt :Number) :void {
         _runningTime += dt;
         // update all Updatable objects
-        _update.dispatch(dt);
+        _update.emit(dt);
         // update Movies
         _moviePlayer.advanceTime(dt);
     }
@@ -248,18 +249,18 @@ public class AppMode
 
     internal function updateInternal (dt :Number) :void {
         update(dt);
-        _updateComplete.dispatch();
+        _updateComplete.emit();
     }
 
     internal function registerObjectInternal (obj :GameObjectBase) :void {
         // Handle IDs
         var ids :Array = obj.ids;
         if (ids.length > 0) {
-            _regs.addSignalListener(obj.destroyed, function () :void {
+            _regs.add(obj.destroyed.connect(function () :void {
                 for each (var id :Object in ids) {
                     _idObjects.remove(id);
                 }
-            });
+            }));
             for each (var id :Object in ids) {
                 var existing :GameObject = _idObjects.put(id, obj);
                 Preconditions.checkState(null == existing,
@@ -271,16 +272,16 @@ public class AppMode
         // Handle groups
         var groups :Array = obj.groups;
         if (groups.length > 0) {
-            _regs.addSignalListener(obj.destroyed, function () :void {
+            _regs.add(obj.destroyed.connect(function () :void {
                 // perform group removal at the end of an update, so that
                 // group iteration is safe during the update
-                _updateComplete.addOnce(function () :void {
+                _updateComplete.connect(function () :void {
                     for each (var group :Object in groups) {
                         Arrays.removeFirst(_groupedObjects.get(group), obj.ref);
                     }
-                });
+                }).once();
 
-            });
+            }));
             for each (var group :Object in groups) {
                 (_groupedObjects.get(group) as Array).push(obj.ref);
             }
@@ -288,14 +289,14 @@ public class AppMode
 
         // If the object is updateable, wire up its update function to our signal
         if (obj is Updatable) {
-            obj.regs.addSignalListener(_update, Updatable(obj).update);
+            obj.regs.add(_update.connect(Updatable(obj).update));
         }
 
         registerObject(obj);
     }
 
     protected const _update :Signal = new Signal(Number);
-    protected const _updateComplete :Signal = new Signal();
+    protected const _updateComplete :UnitSignal = new UnitSignal();
 
     protected var _modeSprite :Sprite = new Sprite();
     protected var _viewport :Viewport;

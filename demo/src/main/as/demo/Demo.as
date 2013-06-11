@@ -3,8 +3,8 @@
 
 package demo {
 
-import flashbang.core.Config;
 import flashbang.core.FlashbangApp;
+import flashbang.core.FlashbangConfig;
 
 [SWF(width="480", height="320", frameRate="60", backgroundColor="#222222")]
 public class Demo extends flashbang.core.FlashbangApp
@@ -17,8 +17,8 @@ public class Demo extends flashbang.core.FlashbangApp
         this.defaultViewport.pushMode(new LoadingMode());
     }
 
-    override protected function createConfig () :Config {
-        var config :Config = new Config();
+    override protected function createConfig () :FlashbangConfig {
+        var config :FlashbangConfig = new FlashbangConfig();
         config.stageWidth = WIDTH;
         config.stageHeight = HEIGHT;
         config.windowWidth = WIDTH;

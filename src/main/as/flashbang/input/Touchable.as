@@ -3,7 +3,7 @@
 
 package flashbang.input {
 
-import org.osflash.signals.ISignal;
+import react.SignalView;
 
 /** Exposes touch signals for an object that can be touched */
 public interface Touchable
@@ -13,24 +13,24 @@ public interface Touchable
      * If you're only interested in a single touch phase, you can use one of the phase-specific
      * signals instead.
      */
-    function get touchEvent () :ISignal; // Signal<TouchEvent>
+    function get touchEvent () :SignalView; // Signal<TouchEvent>
 
     /** Fired when a Touch in the HOVER phase is dispatched on the object */
-    function get hoverBegan () :ISignal; // Signal<Touch>
+    function get hoverBegan () :SignalView; // Signal<Touch>
 
     /** Fired when a hovered object loses its hovered status */
-    function get hoverEnded () :ISignal; // Signal<>
+    function get hoverEnded () :SignalView; // UnitSignal<>
 
     /** Fired when a Touch in the BEGAN phase is dispatched on the object */
-    function get touchBegan () :ISignal; // Signal<Touch>
+    function get touchBegan () :SignalView; // Signal<Touch>
 
     /** Fired when a Touch in the MOVED phase is dispatched on the object */
-    function get touchMoved () :ISignal; // Signal<Touch>
+    function get touchMoved () :SignalView; // Signal<Touch>
 
     /** Fired when a Touch in the STATIONARY phase is dispatched on the object */
-    function get touchStationary () :ISignal; // Signal<Touch>
+    function get touchStationary () :SignalView; // Signal<Touch>
 
     /** Fired when a Touch in the ENDED phase is dispatched on the object */
-    function get touchEnded () :ISignal; // Signal<Touch>
+    function get touchEnded () :SignalView; // Signal<Touch>
 }
 }

@@ -17,8 +17,9 @@ public class TouchSignals
 import flashbang.input.Touchable;
 import flashbang.util.EventSignal;
 
-import org.osflash.signals.ISignal;
-import org.osflash.signals.Signal;
+import react.Signal;
+import react.SignalView;
+import react.UnitSignal;
 
 import starling.display.DisplayObject;
 import starling.events.Touch;
@@ -32,34 +33,34 @@ class TouchableDisplayObject
         _displayObject = disp;
     }
 
-    public function get touchEvent () :ISignal {
+    public function get touchEvent () :SignalView {
         if (_touchEvent == null) {
             _touchEvent = new EventSignal(_displayObject, TouchEvent.TOUCH);
         }
         return _touchEvent;
     }
 
-    public function get hoverBegan () :ISignal {
+    public function get hoverBegan () :SignalView {
         return getHoverSignals().began;
     }
 
-    public function get hoverEnded () :ISignal {
+    public function get hoverEnded () :SignalView {
         return getHoverSignals().ended;
     }
 
-    public function get touchBegan () :ISignal {
+    public function get touchBegan () :SignalView {
         return getFilteredTouchSignal(TouchPhase.BEGAN);
     }
 
-    public function get touchMoved () :ISignal {
+    public function get touchMoved () :SignalView {
         return getFilteredTouchSignal(TouchPhase.MOVED);
     }
 
-    public function get touchStationary () :ISignal {
+    public function get touchStationary () :SignalView {
         return getFilteredTouchSignal(TouchPhase.STATIONARY);
     }
 
-    public function get touchEnded () :ISignal {
+    public function get touchEnded () :SignalView {
         return getFilteredTouchSignal(TouchPhase.ENDED);
     }
 
@@ -70,7 +71,7 @@ class TouchableDisplayObject
         return _hoverSignals;
     }
 
-    protected function getFilteredTouchSignal (phase :String) :ISignal {
+    protected function getFilteredTouchSignal (phase :String) :SignalView {
         if (_filteredTouchSignals == null) {
             _filteredTouchSignals = new Vector.<FilteredTouchSignal>(NUM_PHASES, true);
         }
@@ -107,19 +108,19 @@ class TouchableDisplayObject
 
 class HoverSignals {
     public const began :Signal = new Signal(Touch);
-    public const ended :Signal = new Signal();
+    public const ended :UnitSignal = new UnitSignal();
 
     public function HoverSignals (disp :DisplayObject, touchEventSignal :EventSignal) {
         var hovered :Boolean = false;
-        touchEventSignal.add(function (e :TouchEvent) :void {
+        touchEventSignal.connect(function (e :TouchEvent) :void {
             var touch :Touch = null;
             if (!hovered && (touch = e.getTouch(disp, TouchPhase.HOVER)) != null) {
                 hovered = true;
-                began.dispatch(touch);
+                began.emit(touch);
             } else if (hovered) {// && !e.interactsWith(disp)) {
                 if (!e.interactsWith(disp)) {
                     hovered = false;
-                    ended.dispatch();
+                    ended.emit();
                 }
             }
         });
@@ -131,9 +132,9 @@ class FilteredTouchSignal extends Signal {
         phase :String) {
 
         super(Touch);
-        touchEventSignal.add(function (e :TouchEvent) :void {
+        touchEventSignal.connect(function (e :TouchEvent) :void {
             for each (var touch :Touch in e.getTouches(disp, phase)) {
-                dispatch(touch);
+                emit(touch);
             }
         });
     }

@@ -3,14 +3,15 @@
 
 package flashbang.objects {
 
+import aspire.util.Preconditions;
+
 import flash.geom.Point;
 
-import starling.events.Touch;
-
-import aspire.util.Preconditions;
-import aspire.util.Registration;
-
 import flashbang.core.GameObject;
+
+import react.Registration;
+
+import starling.events.Touch;
 
 public class Dragger extends GameObject
 {
@@ -66,9 +67,9 @@ public class Dragger extends GameObject
 
 import flash.geom.Point;
 
-import starling.events.Touch;
-
 import flashbang.input.PointerAdapter;
+
+import starling.events.Touch;
 
 class DragListener extends PointerAdapter
 {

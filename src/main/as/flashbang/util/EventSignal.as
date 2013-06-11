@@ -3,80 +3,51 @@
 
 package flashbang.util {
 
+import react.AbstractSignal;
+
 import starling.events.Event;
 import starling.events.EventDispatcher;
 
-import org.osflash.signals.ISignal;
-import org.osflash.signals.ISlot;
-import org.osflash.signals.Signal;
-
-/** Redispatches an Event as a Signal */
-public class EventSignal
-    implements ISignal
+/** Redispatches a Starling Event as a Signal */
+public class EventSignal extends AbstractSignal
 {
     public function EventSignal (dispatcher :EventDispatcher, eventType :String) {
         _dispatcher = dispatcher;
         _eventType = eventType;
     }
 
-    public function add (listener :Function) :ISlot {
-        connect();
-        return _signal.add(listener);
+    public function emit (e :Event) :void {
+        notifyEmit(e);
     }
 
-    public function addOnce (listener :Function) :ISlot {
-        connect();
-        return _signal.addOnce(listener);
-    }
-
-    public function get valueClasses () :Array {
-        return _signal.valueClasses;
-    }
-
-    public function set valueClasses (value :Array) :void {
-        _signal.valueClasses = value;
-    }
-
-    public function get numListeners () :uint {
-        return _signal.numListeners;
-    }
-
-    public function dispatch (...valueObjects) :void {
-        _signal.dispatch.apply(_signal, valueObjects);
-    }
-
-    public function remove (listener :Function) :ISlot {
-        var toReturn :ISlot = _signal.remove(listener);
-        if (_signal.numListeners == 0) {
-            disconnect();
+    override protected function connectionAdded () :void {
+        super.connectionAdded();
+        if (!_connected) {
+            connectToSource();
         }
-        return toReturn;
     }
 
-    public function removeAll () :void {
-        _signal.removeAll();
-        disconnect();
+    override protected function connectionRemoved () :void {
+        super.connectionRemoved();
+        if (!this.hasConnections && _connected) {
+            disconnectFromSource();
+        }
     }
 
-    protected function connect () :void {
+    protected function connectToSource () :void {
         if (!_connected) {
             _connected = true;
-            _dispatcher.addEventListener(_eventType, listener);
+            _dispatcher.addEventListener(_eventType, emit);
         }
     }
 
-    protected function disconnect () :void {
+    protected function disconnectFromSource () :void {
         if (_connected) {
             _connected = false;
-            _dispatcher.removeEventListener(_eventType, listener);
+            _dispatcher.removeEventListener(_eventType, emit);
         }
     }
 
-    protected function listener (e :Event) :void {
-        _signal.dispatch(e);
-    }
-
-    protected const _signal :Signal = new Signal(Event);
 
     protected var _dispatcher :EventDispatcher;
     protected var _eventType :String;

@@ -29,7 +29,7 @@ public class ParallelTask extends ObjectTask
         }
 
         for each (var task :ObjectTask in _subtasks) {
-            this.regs.addSignalListener(task.destroyed, taskComplete);
+            this.regs.add(task.destroyed.connect(taskComplete));
             this.parent.addObject(task);
         }
     }

@@ -31,7 +31,7 @@ public class SerialTask extends ObjectTask
 
         if (_nextIdx < _subtasks.length) {
             var newTask :ObjectTask = _subtasks[_nextIdx++];
-            this.regs.addSignalListener(newTask.destroyed, nextTask);
+            this.regs.add(newTask.destroyed.connect(nextTask));
             this.parent.addObject(newTask);
         } else {
             destroySelf();

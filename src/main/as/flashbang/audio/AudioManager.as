@@ -234,7 +234,7 @@ public class AudioManager
         // does the sound need to loop?
         if (channel.loopCount == 0) {
             stop(channel);
-            channel.completed.dispatch();
+            channel.completed.emit();
 
         } else if (playChannel(channel, channel.controls.state, 0)) {
             channel.loopCount--;

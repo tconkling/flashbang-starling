@@ -3,13 +3,13 @@
 
 package flashbang.core {
 
+import aspire.util.Preconditions;
+
+import react.UnitSignal;
+
 import starling.display.Sprite;
 import starling.events.KeyboardEvent;
 import starling.events.Touch;
-
-import aspire.util.Preconditions;
-
-import org.osflash.signals.Signal;
 
 /**
  * Viewport contains the AppMode stack. The topmost AppMode in the stack gets ticked on every
@@ -19,8 +19,8 @@ public class Viewport
 {
     public static const DEFAULT :String = "DefaultViewport";
 
-    public const topModeChanged :Signal = new Signal();
-    public const disposed :Signal = new Signal();
+    public const topModeChanged :UnitSignal = new UnitSignal();
+    public const disposed :UnitSignal = new UnitSignal();
 
     public function Viewport (app :FlashbangApp, name :String, parentSprite :Sprite) {
         _app = app;
@@ -277,7 +277,7 @@ public class Viewport
             if (null != topMode) {
                 topMode.enterInternal();
             }
-            topModeChanged.dispatch();
+            topModeChanged.emit();
         }
     }
 
@@ -299,7 +299,7 @@ public class Viewport
         _pendingModeTransitionQueue = null;
         _topSprite.removeFromParent(/*dispose=*/true);
         _topSprite = null;
-        this.disposed.dispatch();
+        this.disposed.emit();
     }
 
 

@@ -45,10 +45,10 @@ public class FlumpLibraryLoader extends ResourceLoader
         _mipmaps = getLoadParam(MIPMAPS, false);
 
         _exec = new Executor();
-        _exec.succeeded.add(function (f :Future) :void {
+        _exec.succeeded.connect(function (f :Future) :void {
             libraryLoaded(f.result);
         });
-        _exec.failed.add(function (f :Future) :void {
+        _exec.failed.connect(function (f :Future) :void {
             fail(f.result);
         });
 

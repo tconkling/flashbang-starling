@@ -3,7 +3,7 @@
 
 package flashbang.util {
 
-import aspire.util.Registration;
+import react.Registration;
 
 public interface EventRegistration extends Registration
 {
