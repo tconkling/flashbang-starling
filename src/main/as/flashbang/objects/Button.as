@@ -5,6 +5,7 @@ package flashbang.objects {
 
 import flash.geom.Point;
 
+import flashbang.components.Disableable;
 import flashbang.input.PointerAdapter;
 import flashbang.input.PointerListener;
 import flashbang.tasks.FunctionTask;
@@ -20,6 +21,7 @@ import starling.events.Touch;
  * A button base class. Abstract.
  */
 public class Button extends SpriteObject
+    implements Disableable
 {
     /** Fired when the button is clicked */
     public const clicked :UnitSignal = new UnitSignal();
