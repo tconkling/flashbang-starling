@@ -130,7 +130,7 @@ public class FlashbangApp extends flash.display.Sprite
      * Cheat Engine speed hacks:
      * http://www.gaminggutter.com/forum/f16/how-use-cheat-engine-speedhack-games-2785.html
      */
-    public function getAppTime () :Number {
+    public function get time () :Number {
         return (new Date().time * 0.001); // convert millis to seconds
     }
 
@@ -199,7 +199,7 @@ public class FlashbangApp extends flash.display.Sprite
         _regs.addEventListener(_mainSprite.stage, KeyboardEvent.KEY_DOWN, handleKeyboardEvent);
         _regs.addEventListener(_mainSprite.stage, KeyboardEvent.KEY_UP, handleKeyboardEvent);
         _regs.addEventListener(_mainSprite.stage, starling.events.Event.ENTER_FRAME, update);
-        _lastTime = getAppTime();
+        _lastTime = this.time;
 
         run();
 
@@ -210,7 +210,7 @@ public class FlashbangApp extends flash.display.Sprite
 
     protected function update (e :starling.events.Event) :void {
         // how much time has elapsed since last frame?
-        var newTime :Number = getAppTime();
+        var newTime :Number = this.time;
         var dt :Number = newTime - _lastTime;
 
         if (_config.maxUpdateDelta > 0) {
