@@ -4,7 +4,6 @@
 package flashbang.debug {
 
 import flashbang.components.DisplayComponent;
-import flashbang.core.Updatable;
 import flashbang.util.TextFieldBuilder;
 
 import starling.display.DisplayObject;
