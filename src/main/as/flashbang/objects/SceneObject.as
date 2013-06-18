@@ -56,11 +56,11 @@ public class SceneObject extends GameObject
     }
 
     override public function get ids () :Array {
-        return (_id != null ? [ _id ] : []);
+        return (_id != null ? [ _id ].concat(super.ids) : super.ids);
     }
 
     override public function get groups () :Array {
-        return (_group != null ? [ _group ] : []);
+        return (_group != null ? [ _group ].concat(super.groups) : super.groups);
     }
 
     override protected function dispose () :void {
