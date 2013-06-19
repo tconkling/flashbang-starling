@@ -29,6 +29,11 @@ public class ImageResource extends Resource
         return Flashbang.rsrcs.getResource(name);
     }
 
+    /** Returns the ImageResource with the given name. Throws an Error if it doesn't exist. */
+    public static function require (name :String) :ImageResource {
+        return Flashbang.rsrcs.requireResource(name);
+    }
+
     public function ImageResource (library :Library, libraryName :String, imageName :String) {
         super(libraryName + "/" + imageName);
         _library = library;
