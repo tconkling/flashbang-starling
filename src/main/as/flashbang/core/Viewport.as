@@ -137,7 +137,11 @@ public class Viewport
     }
 
     public function update (dt :Number) :void {
-        handleModeTransitions();
+        if (_pendingModeTransitionQueue.length > 0) {
+            // handleModeTransition generates a lot of garbage in memory, avoid calling it on
+            // updates where it will NOOP anyway.
+            handleModeTransitions();
+        }
 
         // update the top mode
         if (_modeStack.length > 0) {
