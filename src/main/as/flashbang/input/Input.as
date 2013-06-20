@@ -8,13 +8,24 @@ public class Input
     public static function newPointerListener (touchId :int) :PointerListenerBuilder {
         return new PointerListenerBuilderImpl(touchId);
     }
+
+    public static function newTouchListener (onTouchesUpdated :Function) :TouchListener {
+        return new CallbackTouchListener(onTouchesUpdated);
+    }
+
+    public static function newKeyboardListener (onKeyboardEvent :Function) :KeyboardListener {
+        return new CallbackKeyboardListener(onKeyboardEvent);
+    }
 }
 }
 
+import flashbang.input.KeyboardListener;
 import flashbang.input.PointerAdapter;
 import flashbang.input.PointerListener;
 import flashbang.input.PointerListenerBuilder;
+import flashbang.input.TouchListener;
 
+import starling.events.KeyboardEvent;
 import starling.events.Touch;
 
 class PointerListenerBuilderImpl
@@ -26,7 +37,7 @@ class PointerListenerBuilderImpl
     public function onPointerEnd (f :Function) :PointerListenerBuilder { _onPointerEnd = f; return this; }
     public function onPointerHover (f :Function) :PointerListenerBuilder { _onPointerHover = f; return this; }
     public function build () :PointerListener {
-        return new CallbackPointerAdapter(_touchId, _onPointerStart, _onPointerMove, _onPointerEnd,
+        return new CallbackPointerListener(_touchId, _onPointerStart, _onPointerMove, _onPointerEnd,
             _onPointerHover, _consumeAllTouches);
     }
 
@@ -38,9 +49,9 @@ class PointerListenerBuilderImpl
     protected var _consumeAllTouches :Boolean = true;
 }
 
-class CallbackPointerAdapter extends PointerAdapter
+class CallbackPointerListener extends PointerAdapter
 {
-    public function CallbackPointerAdapter (touchId :int, onPointerStart :Function,
+    public function CallbackPointerListener (touchId :int, onPointerStart :Function,
         onPointerMove :Function, onPointerEnd :Function, onPointerHover :Function,
         consumeAllTouches :Boolean)
     {
@@ -83,4 +94,34 @@ class CallbackPointerAdapter extends PointerAdapter
     protected var _onPointerMove :Function;
     protected var _onPointerEnd :Function;
     protected var _onPointerHover :Function;
+}
+
+class CallbackTouchListener
+    implements TouchListener
+{
+    public function CallbackTouchListener (f :Function) {
+        _f = f;
+    }
+
+    public function onTouchesUpdated (touches :Vector.<Touch>) :Boolean {
+        var result :* = _f(touches);
+        return (result === undefined ? true : result as Boolean);
+    }
+
+    protected var _f :Function;
+}
+
+class CallbackKeyboardListener
+    implements KeyboardListener
+{
+    public function CallbackKeyboardListener (f :Function) {
+        _f = f;
+    }
+
+    public function onKeyboardEvent (k :KeyboardEvent) :Boolean {
+        var result :* = _f(k);
+        return (result === undefined ? true : result as Boolean);
+    }
+
+    protected var _f :Function;
 }
