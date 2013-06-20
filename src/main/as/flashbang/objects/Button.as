@@ -6,7 +6,7 @@ package flashbang.objects {
 import flash.geom.Point;
 
 import flashbang.components.Disableable;
-import flashbang.input.PointerAdapter;
+import flashbang.input.Input;
 import flashbang.input.PointerListener;
 import flashbang.tasks.FunctionTask;
 import flashbang.tasks.SerialTask;
@@ -75,10 +75,10 @@ public class Button extends SpriteObject
 
         this.regs.add(this.touchBegan.connect(function (touch :Touch) :void {
             if (self.enabled && _captureReg == null) {
-                var l :PointerListener = PointerAdapter.withTouchId(touch.id)
+                var l :PointerListener = Input.newPointerListener(touch.id)
                     .onPointerMove(self.onPointerMove)
                     .onPointerEnd(self.onPointerEnd)
-                    .create();
+                    .build();
                 _captureReg = self.regs.add(self.mode.touchInput.registerListener(l));
                 self.pointerDown = true;
             }
