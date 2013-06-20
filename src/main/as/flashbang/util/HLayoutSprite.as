@@ -79,7 +79,7 @@ public class HLayoutSprite extends Sprite
             if (_vAlign == VAlign.CENTER) {
                 child.y += (maxHeight - child.height) * 0.5;
             } else if (_vAlign == VAlign.BOTTOM) {
-                child.y = maxHeight - child.height;
+                child.y += maxHeight - child.height;
             }
 
             x += bounds.width + _hOffset;
