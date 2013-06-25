@@ -13,6 +13,12 @@ public class PointerAdapter
     implements PointerListener
 {
     /**
+     * If true, the PointerAdapter will report all touches as handled, instead of just touches
+     * with the supplied touchId.
+     */
+    public var consumeAllTouches :Boolean;
+
+    /**
      * Constructs a new PointerAdapter
      *
      * @param touchId the touchId to operate on. All onPointer methods will receive
@@ -23,7 +29,7 @@ public class PointerAdapter
      */
     public function PointerAdapter (touchId :int = 0, consumeAllTouches :Boolean = true) {
         _touchId = touchId;
-        _consumeAllTouches = consumeAllTouches;
+        this.consumeAllTouches = consumeAllTouches;
     }
 
     public function onTouchesUpdated (touches :Vector.<Touch>) :Boolean {
@@ -43,7 +49,7 @@ public class PointerAdapter
             }
         }
 
-        return handled || _consumeAllTouches;
+        return handled || this.consumeAllTouches;
     }
 
     public function onPointerStart (touch :Touch) :Boolean { return true; }
@@ -52,6 +58,5 @@ public class PointerAdapter
     public function onPointerHover (touch :Touch) :Boolean { return true; }
 
     protected var _touchId :int;
-    protected var _consumeAllTouches :Boolean;
 }
 }
