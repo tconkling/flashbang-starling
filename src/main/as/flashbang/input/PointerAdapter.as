@@ -16,7 +16,7 @@ public class PointerAdapter
      * If true, the PointerAdapter will report all touches as handled, instead of just touches
      * with the supplied touchId.
      */
-    public var consumeAllTouches :Boolean;
+    public var consumeOtherTouches :Boolean;
 
     /**
      * Constructs a new PointerAdapter
@@ -27,9 +27,9 @@ public class PointerAdapter
      * @param consumeAllTouches if true, all touch events are reported as "handled"
      * by the adapter, rather than just those related to the specified touchId.
      */
-    public function PointerAdapter (touchId :int = 0, consumeAllTouches :Boolean = true) {
+    public function PointerAdapter (touchId :int = 0, consumeOtherTouches :Boolean = true) {
         _touchId = touchId;
-        this.consumeAllTouches = consumeAllTouches;
+        this.consumeOtherTouches = consumeOtherTouches;
     }
 
     public function onTouchesUpdated (touches :Vector.<Touch>) :Boolean {
@@ -49,7 +49,7 @@ public class PointerAdapter
             }
         }
 
-        return handled || this.consumeAllTouches;
+        return handled || this.consumeOtherTouches;
     }
 
     public function onPointerStart (touch :Touch) :Boolean { return true; }

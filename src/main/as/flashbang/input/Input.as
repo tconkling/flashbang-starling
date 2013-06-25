@@ -11,8 +11,13 @@ public class Input
         return new DragHandlerBuilderImpl(touch);
     }
 
-    public static function newPointerListener (touchId :int) :PointerListenerBuilder {
-        return new PointerListenerBuilderImpl(touchId);
+    /**
+     * Constructs a new PointerListener.
+     * @property defaultHandledValue the default value to return when a function is not specified
+     * for a given touch phase.
+     */
+    public static function newPointerListener (touchId :int, defaultHandledValue :Boolean = true) :PointerListenerBuilder {
+        return new PointerListenerBuilderImpl(touchId, defaultHandledValue);
     }
 
     public static function newTouchListener (onTouchesUpdated :Function) :TouchListener {
@@ -41,14 +46,15 @@ import starling.events.Touch;
 class PointerListenerBuilderImpl
     implements PointerListenerBuilder
 {
-    public function PointerListenerBuilderImpl (touchId :int) { _touchId = touchId; }
+    public function PointerListenerBuilderImpl (touchId :int, defaultHandledValue :Boolean) { _touchId = touchId; _defaultHandledValue = defaultHandledValue; }
     public function onPointerStart (f :Function) :PointerListenerBuilder { _onPointerStart = f; return this; }
     public function onPointerMove (f :Function) :PointerListenerBuilder { _onPointerMove = f; return this; }
     public function onPointerEnd (f :Function) :PointerListenerBuilder { _onPointerEnd = f; return this; }
     public function onPointerHover (f :Function) :PointerListenerBuilder { _onPointerHover = f; return this; }
+    public function consumeOtherTouches (val :Boolean) :PointerListenerBuilder { _consumeOtherTouches = val; return this; }
     public function build () :PointerListener {
         return new CallbackPointerListener(_touchId, _onPointerStart, _onPointerMove, _onPointerEnd,
-            _onPointerHover, _consumeAllTouches);
+            _onPointerHover, _consumeOtherTouches, _defaultHandledValue);
     }
 
     protected var _touchId :int;
@@ -56,54 +62,61 @@ class PointerListenerBuilderImpl
     protected var _onPointerMove :Function;
     protected var _onPointerEnd :Function;
     protected var _onPointerHover :Function;
-    protected var _consumeAllTouches :Boolean = true;
+    protected var _consumeOtherTouches :Boolean = true;
+    protected var _defaultHandledValue :Boolean;
 }
 
 class CallbackPointerListener extends PointerAdapter
 {
     public function CallbackPointerListener (touchId :int, onPointerStart :Function,
         onPointerMove :Function, onPointerEnd :Function, onPointerHover :Function,
-        consumeAllTouches :Boolean)
+        consumeAllTouches :Boolean, defaultHandledValue :Boolean)
     {
         super(touchId, consumeAllTouches);
         _onPointerStart = onPointerStart;
         _onPointerMove = onPointerMove;
         _onPointerEnd = onPointerEnd;
         _onPointerHover = onPointerHover;
+        _defaultHandledValue = defaultHandledValue;
     }
 
     override public function onPointerStart (touch :Touch) :Boolean {
         if (_onPointerStart != null) {
-            _onPointerStart(touch);
+            var result :* = _onPointerStart(touch);
+            return (result === undefined ? true : result as Boolean);
         }
-        return true;
+        return _defaultHandledValue;
     }
 
     override public function onPointerMove (touch :Touch) :Boolean {
         if (_onPointerMove != null) {
-            _onPointerMove(touch);
+            var result :* = _onPointerMove(touch);
+            return (result === undefined ? true : result as Boolean);
         }
-        return true;
+        return _defaultHandledValue;
     }
 
     override public function onPointerEnd (touch :Touch) :Boolean {
         if (_onPointerEnd != null) {
-            _onPointerEnd(touch);
+            var result :* = _onPointerEnd(touch);
+            return (result === undefined ? true : result as Boolean);
         }
-        return true;
+        return _defaultHandledValue;
     }
 
     override public function onPointerHover (touch :Touch) :Boolean {
         if (_onPointerHover != null) {
-            _onPointerHover(touch);
+            var result :* = _onPointerHover(touch);
+            return (result === undefined ? true : result as Boolean);
         }
-        return true;
+        return _defaultHandledValue;
     }
 
     protected var _onPointerStart :Function;
     protected var _onPointerMove :Function;
     protected var _onPointerEnd :Function;
     protected var _onPointerHover :Function;
+    protected var _defaultHandledValue :Boolean;
 }
 
 class DragHandlerBuilderImpl
