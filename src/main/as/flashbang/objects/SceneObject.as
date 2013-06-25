@@ -5,7 +5,7 @@ package flashbang.objects {
 
 import flashbang.components.DisplayComponent;
 import flashbang.core.GameObject;
-import flashbang.input.TouchSignals;
+import flashbang.input.Input;
 import flashbang.input.Touchable;
 
 import react.SignalView;
@@ -73,7 +73,7 @@ public class SceneObject extends GameObject
 
     protected function getTouchable () :Touchable {
         if (_touchable == null) {
-            _touchable = TouchSignals.forDisp(_displayObject);
+            _touchable = Input.newTouchable(_displayObject);
         }
         return _touchable;
     }

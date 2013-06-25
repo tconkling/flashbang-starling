@@ -3,30 +3,15 @@
 
 package flashbang.input {
 
-import starling.display.DisplayObject;
-
-public class TouchSignals
-{
-    /** Creates a Touchable interface for the given DisplayObject */
-    public static function forDisp (disp :DisplayObject) :Touchable {
-        return new TouchableDisplayObject(disp);
-    }
-}
-}
-
-import flashbang.input.Touchable;
 import flashbang.util.EventSignal;
 
-import react.Signal;
 import react.SignalView;
-import react.UnitSignal;
 
 import starling.display.DisplayObject;
-import starling.events.Touch;
 import starling.events.TouchEvent;
 import starling.events.TouchPhase;
 
-class TouchableDisplayObject
+internal class TouchableDisplayObject
     implements Touchable
 {
     public function TouchableDisplayObject (disp :DisplayObject) {
@@ -106,6 +91,18 @@ class TouchableDisplayObject
     protected var _hoverSignals :HoverSignals; // lazily instantiated
 }
 
+}
+
+import flashbang.util.EventSignal;
+
+import react.Signal;
+import react.UnitSignal;
+
+import starling.display.DisplayObject;
+import starling.events.Touch;
+import starling.events.TouchEvent;
+import starling.events.TouchPhase;
+
 class HoverSignals {
     public const began :Signal = new Signal(Touch);
     public const ended :UnitSignal = new UnitSignal();
@@ -139,4 +136,3 @@ class FilteredTouchSignal extends Signal {
         });
     }
 }
-

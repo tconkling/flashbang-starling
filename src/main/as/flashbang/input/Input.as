@@ -3,10 +3,17 @@
 
 package flashbang.input {
 
+import starling.display.DisplayObject;
 import starling.events.Touch;
 
 public class Input
 {
+    /** Returns a Touchable object for the given DisplayObject */
+    public static function newTouchable (disp :DisplayObject) :Touchable {
+        return new TouchableDisplayObject(disp);
+    }
+
+    /** Constructs a new DragHandler */
     public static function newDragHandler (touch :Touch) :DragHandlerBuilder {
         return new DragHandlerBuilderImpl(touch);
     }
@@ -20,10 +27,12 @@ public class Input
         return new PointerListenerBuilderImpl(touchId, defaultHandledValue);
     }
 
+    /** Constructs a new TouchListener */
     public static function newTouchListener (onTouchesUpdated :Function) :TouchListener {
         return new CallbackTouchListener(onTouchesUpdated);
     }
 
+    /** Constructs a new KeyboardListener */
     public static function newKeyboardListener (onKeyboardEvent :Function) :KeyboardListener {
         return new CallbackKeyboardListener(onKeyboardEvent);
     }
