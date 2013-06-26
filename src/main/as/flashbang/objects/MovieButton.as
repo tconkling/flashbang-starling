@@ -9,8 +9,7 @@ import flump.display.Movie;
 public class MovieButton extends Button
 {
     public function MovieButton (movie :Movie) {
-        _movie = movie;
-        _sprite.addChild(_movie);
+        super(_movie = movie);
         _movie.stop();
     }
 

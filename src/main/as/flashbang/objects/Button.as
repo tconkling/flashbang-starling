@@ -15,6 +15,7 @@ import flashbang.tasks.TimedTask;
 import react.Registration;
 import react.UnitSignal;
 
+import starling.display.Sprite;
 import starling.events.Touch;
 
 /**
@@ -25,6 +26,10 @@ public class Button extends SpriteObject
 {
     /** Fired when the button is clicked */
     public const clicked :UnitSignal = new UnitSignal();
+
+    public function Button (sprite :Sprite = null) {
+        super(sprite);
+    }
 
     public function get enabled () :Boolean {
         return (_state != DISABLED);
