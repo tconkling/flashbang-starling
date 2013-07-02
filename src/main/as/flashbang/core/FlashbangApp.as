@@ -52,6 +52,9 @@ public class FlashbangApp extends flash.display.Sprite
     public function handleTouches (touches :Vector.<Touch>) :void {
         for (var ii :int = _viewports.length - 1; ii >= 0; --ii) {
             _viewports[ii].handleTouches(touches);
+            if (touches.length == 0) {
+                break;
+            }
         }
     }
 

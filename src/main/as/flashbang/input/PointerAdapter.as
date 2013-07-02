@@ -12,10 +12,7 @@ import starling.events.TouchPhase;
 public class PointerAdapter
     implements PointerListener
 {
-    /**
-     * If true, the PointerAdapter will report all touches as handled, instead of just touches
-     * with the supplied touchId.
-     */
+    /** If true, the PointerAdapter will consume unrelated touches. */
     public var consumeOtherTouches :Boolean;
 
     /**
@@ -24,32 +21,41 @@ public class PointerAdapter
      * @param touchId the touchId to operate on. All onPointer methods will receive
      * only touches with this ID.
      *
-     * @param consumeAllTouches if true, all touch events are reported as "handled"
-     * by the adapter, rather than just those related to the specified touchId.
+     * @param consumeAllTouches if true, unrelated touches are consumed by the PointerAdapter,
+     * so that they will not be passed to other listeners for further processing.
      */
     public function PointerAdapter (touchId :int = 0, consumeOtherTouches :Boolean = true) {
         _touchId = touchId;
         this.consumeOtherTouches = consumeOtherTouches;
     }
 
-    public function onTouchesUpdated (touches :Vector.<Touch>) :Boolean {
-        var handled :Boolean;
-        for each (var touch :Touch in touches) {
-            if (touch.updated && touch.id == _touchId) {
-                switch (touch.phase) {
-                case TouchPhase.BEGAN: handled = onPointerStart(touch); break;
-                case TouchPhase.MOVED: handled = onPointerMove(touch); break;
-                case TouchPhase.ENDED: handled = onPointerEnd(touch); break;
-                case TouchPhase.HOVER: handled = onPointerHover(touch); break;
-                default: break;
+    public function onTouchesUpdated (touches :Vector.<Touch>) :void {
+        for (var ii :int = 0; ii < touches.length; ++ii) {
+            var touch :Touch = touches[ii];
+            if (touch.updated) {
+                var handled :Boolean = false;
+                if (touch.id == _touchId) {
+                    switch (touch.phase) {
+                    case TouchPhase.BEGAN: handled = onPointerStart(touch); break;
+                    case TouchPhase.MOVED: handled = onPointerMove(touch); break;
+                    case TouchPhase.ENDED: handled = onPointerEnd(touch); break;
+                    case TouchPhase.HOVER: handled = onPointerHover(touch); break;
+                    default: break;
+                    }
+                } else {
+                    handled = this.consumeOtherTouches;
+                }
+
+                if (handled) {
+                    if (ii == touches.length - 1) {
+                        touches.pop();
+                    } else {
+                        touches.splice(ii, 1);
+                    }
+                    --ii;
                 }
             }
-            if (handled) {
-                break;
-            }
         }
-
-        return handled || this.consumeOtherTouches;
     }
 
     public function onPointerStart (touch :Touch) :Boolean { return true; }

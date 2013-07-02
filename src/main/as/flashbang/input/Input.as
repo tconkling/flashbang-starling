@@ -203,9 +203,8 @@ class CallbackTouchListener
         _f = f;
     }
 
-    public function onTouchesUpdated (touches :Vector.<Touch>) :Boolean {
-        var result :* = _f(touches);
-        return (result === undefined ? true : result as Boolean);
+    public function onTouchesUpdated (touches :Vector.<Touch>) :void {
+        _f(touches);
     }
 
     protected var _f :Function;

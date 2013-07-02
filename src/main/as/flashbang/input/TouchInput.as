@@ -47,15 +47,15 @@ public class TouchInput
         var handled :Boolean = false;
 
         if (_listeners.length > 0) {
-            for each (var l :TouchListener in _listeners.concat()) {// Iterate over a copy
-                handled = l.onTouchesUpdated(touches);
-                if (handled) {
+            for each (var l :TouchListener in _listeners.concat()) { // Iterate over a copy
+                l.onTouchesUpdated(touches);
+                if (touches.length == 0) {
                     break;
                 }
             }
         }
 
-        if (!handled) {
+        if (touches.length > 0) {
             _dispatcher.handleTouches(touches);
         }
     }
