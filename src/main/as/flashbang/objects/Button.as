@@ -85,7 +85,9 @@ public class Button extends SpriteObject
                     .onPointerEnd(self.onPointerEnd)
                     .build();
                 _captureReg = self.regs.add(self.mode.touchInput.registerListener(l));
-                self.pointerDown = true;
+                _pointerDown = true;
+                _pointerOver = true;
+                updateState();
             }
         }));
     }
@@ -102,8 +104,9 @@ public class Button extends SpriteObject
     }
 
     protected function onPointerEnd (touch :Touch) :void {
-        this.pointerDown = false;
-        this.pointerOver = hitTest(touch);
+        _pointerDown = false;
+        _pointerOver = hitTest(touch);
+        updateState();
         cancelCapture();
         // emit the signal after doing everything else, because a signal handler could change
         // our state
