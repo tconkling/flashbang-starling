@@ -6,15 +6,14 @@ package flashbang.tasks {
 import aspire.util.Preconditions;
 
 import flashbang.components.DisplayComponent;
-import flashbang.core.GameObject;
 
 import starling.display.Sprite;
 
 public class SpriteTask extends InterpolatingTask
 {
-    public function SpriteTask (time :Number, easing :Function, sprite :Sprite)  {
+    public function SpriteTask (time :Number, easing :Function, target :Sprite)  {
         super(time, easing);
-        _target = sprite;
+        _target = target;
     }
 
     override protected function added () :void {

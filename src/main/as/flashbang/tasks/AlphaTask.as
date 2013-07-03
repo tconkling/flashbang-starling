@@ -3,15 +3,13 @@
 
 package flashbang.tasks {
 
-import flashbang.core.GameObject;
-
 import starling.display.DisplayObject;
 
 public class AlphaTask extends DisplayObjectTask
 {
     public function AlphaTask (alpha :Number, time :Number = 0, easingFn :Function = null,
-        disp :DisplayObject = null) {
-        super(time, easingFn, disp);
+        target :DisplayObject = null) {
+        super(time, easingFn, target);
         _to = alpha;
     }
 

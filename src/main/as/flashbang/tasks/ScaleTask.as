@@ -8,8 +8,8 @@ import starling.display.DisplayObject;
 public class ScaleTask extends DisplayObjectTask
 {
     public function ScaleTask (x :Number, y :Number, time :Number = 0,
-        easingFn :Function = null, disp :DisplayObject = null) {
-        super(time, easingFn, disp);
+        easingFn :Function = null, target :DisplayObject = null) {
+        super(time, easingFn, target);
         _toX = x;
         _toY = y;
     }

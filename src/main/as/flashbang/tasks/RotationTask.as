@@ -8,8 +8,8 @@ import starling.display.DisplayObject;
 public class RotationTask extends DisplayObjectTask
 {
     public function RotationTask (radians :Number, time :Number = 0,
-        easingFn :Function = null, disp :DisplayObject = null)  {
-        super(time, easingFn, disp);
+        easingFn :Function = null, target :DisplayObject = null)  {
+        super(time, easingFn, target);
         _to = radians;
     }
 

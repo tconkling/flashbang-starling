@@ -11,9 +11,9 @@ import starling.display.DisplayObject;
 
 public class DisplayObjectTask extends InterpolatingTask
 {
-    public function DisplayObjectTask (time :Number, easing :Function, display :DisplayObject)  {
+    public function DisplayObjectTask (time :Number, easing :Function, target :DisplayObject)  {
         super(time, easing);
-        _target = display;
+        _target = target;
     }
 
     override protected function added () :void {

@@ -9,8 +9,8 @@ import starling.display.Sprite;
 
 public class ClipRectTask extends SpriteTask
 {
-    public function ClipRectTask (rect :Rectangle, time :Number = 0, easing :Function = null, sprite :Sprite = null) {
-        super(time, easing, sprite);
+    public function ClipRectTask (rect :Rectangle, time :Number = 0, easing :Function = null, target :Sprite = null) {
+        super(time, easing, target);
         _endClip = rect.clone();
     }
 

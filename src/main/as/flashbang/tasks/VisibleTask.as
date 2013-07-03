@@ -12,9 +12,9 @@ import starling.display.DisplayObject;
 
 public class VisibleTask extends ObjectTask
 {
-    public function VisibleTask (visible :Boolean, disp :DisplayObject = null) {
+    public function VisibleTask (visible :Boolean, target :DisplayObject = null) {
         _visible = visible;
-        _target = disp;
+        _target = target;
     }
 
     override protected function added () :void {

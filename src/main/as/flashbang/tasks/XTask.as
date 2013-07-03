@@ -7,8 +7,8 @@ import starling.display.DisplayObject;
 
 public class XTask extends LocationTask
 {
-    public function XTask (x :Number, time :Number = 0, easingFn :Function = null, disp :DisplayObject = null) {
-        super(x, 0, time, easingFn, disp);
+    public function XTask (x :Number, time :Number = 0, easingFn :Function = null, target :DisplayObject = null) {
+        super(x, 0, time, easingFn, target);
     }
 
     override protected function updateValues () :void {

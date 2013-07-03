@@ -13,12 +13,12 @@ import starling.display.DisplayObject;
 public class LocationTask extends InterpolatingTask
 {
     public function LocationTask (x :Number, y :Number, time :Number = 0,
-        easingFn :Function = null, disp :DisplayObject = null) {
+        easingFn :Function = null, target :DisplayObject = null) {
         super(time, easingFn);
         _toX = x;
         _toY = y;
-        if (disp != null) {
-            _target = new DisplayObjectWrapper(disp);
+        if (target != null) {
+            _target = new DisplayObjectWrapper(target);
         }
     }
 
