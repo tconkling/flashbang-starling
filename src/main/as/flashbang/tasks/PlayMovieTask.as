@@ -18,12 +18,12 @@ public class PlayMovieTask extends ObjectTask
     /**
      * Creates a PlayMovieTask
      *
-     * @param movie The movie to play (or null if this is a SceneObject that contains a movie)
      * @param from The frame label or index to start playing from (or null to start on frame 0)
      * @param to The frame label or indext to play to (or null to end on the last frame)
+     * @param target The movie to play (or null if this is a SceneObject that contains a movie)
      */
-    public function PlayMovieTask (movie :Movie = null, from :Object = null, to :Object = null) {
-        _movie = movie;
+    public function PlayMovieTask (from :Object = null, to :Object = null, target :Movie = null) {
+        _movie = target;
         _from = (from || Movie.FIRST_FRAME);
         _to = (to || Movie.LAST_FRAME);
     }
