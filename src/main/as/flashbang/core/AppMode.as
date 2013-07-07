@@ -15,6 +15,8 @@ import flashbang.util.Listeners;
 
 import flump.display.MoviePlayer;
 
+import react.Registration;
+import react.Registrations;
 import react.Signal;
 import react.UnitSignal;
 
@@ -171,6 +173,20 @@ public class AppMode
         return !_disposed;
     }
 
+    /**
+     * Schedules the given function to execute when the mode is active. If the mode is currently
+     * active, the function will be executed immediately. This can be useful for asynchronous
+     * logic that must execute within the mode.
+     */
+    public function whenActive (f :Function) :Registration {
+        if (_active) {
+            f();
+            return Registrations.Null();
+        } else {
+            return _entered.connect(f).once();
+        }
+    }
+
     /** Called once per update tick. Updates all objects in the mode. */
     protected function update (dt :Number) :void {
         _runningTime += dt;
@@ -239,11 +255,14 @@ public class AppMode
 
     internal function enterInternal () :void {
         _modeSprite.touchable = true;
+        _active = true;
         enter();
+        _entered.emit();
     }
 
     internal function exitInternal () :void {
         _modeSprite.touchable = false;
+        _active = false;
         exit();
     }
 
@@ -297,6 +316,7 @@ public class AppMode
 
     protected const _update :Signal = new Signal(Number);
     protected const _updateComplete :UnitSignal = new UnitSignal();
+    protected const _entered :UnitSignal = new UnitSignal();
 
     protected var _modeSprite :Sprite = new Sprite();
     protected var _viewport :Viewport;
@@ -314,6 +334,7 @@ public class AppMode
 
     protected var _regs :Listeners = new Listeners();
 
+    protected var _active :Boolean;
     protected var _disposed :Boolean;
 }
 
