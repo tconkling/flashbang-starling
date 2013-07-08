@@ -64,7 +64,7 @@ public class VLayoutSprite extends Sprite
         var maxWidth :Number = 0;
         if (_hAlign != HAlign.LEFT) {
             for (ii = 0; ii < this.numChildren; ++ii) {
-                maxWidth = Math.max(getChildAt(ii).width);
+                maxWidth = Math.max(getChildAt(ii).width, maxWidth);
             }
         }
 

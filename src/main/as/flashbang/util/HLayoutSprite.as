@@ -64,7 +64,7 @@ public class HLayoutSprite extends Sprite
         var maxHeight :Number = 0;
         if (_vAlign != VAlign.TOP) {
             for (ii = 0; ii < this.numChildren; ++ii) {
-                maxHeight = Math.max(getChildAt(ii).height);
+                maxHeight = Math.max(getChildAt(ii).height, maxHeight);
             }
         }
 
