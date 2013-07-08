@@ -84,16 +84,12 @@ public class DataLoader
         }
     }
 
-    /** Cancels an in-progress load */
+    /** Cancels an in-progress load. */
     public final function close () :void {
-        if (this.wasCanceled) {
-            return;
+        if (_state == LoadState.INIT || _state == LoadState.LOADING) {
+            setState(LoadState.CANCELED);
+            onCanceled();
         }
-
-        Preconditions.checkState(_state == LoadState.INIT || _state == LoadState.LOADING,
-            "can't cancel", "state", _state);
-        setState(LoadState.CANCELED);
-        onCanceled();
     }
 
     /** Subclasses must call this when they've successfully loaded */
