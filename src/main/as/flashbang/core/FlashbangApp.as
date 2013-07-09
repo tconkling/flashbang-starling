@@ -50,6 +50,7 @@ public class FlashbangApp extends flash.display.Sprite
 
     /** Called when the app receives touches. By default it forwards them to each viewport */
     public function handleTouches (touches :Vector.<Touch>) :void {
+        touches = touches.concat();
         for (var ii :int = _viewports.length - 1; ii >= 0; --ii) {
             _viewports[ii].handleTouches(touches);
             if (touches.length == 0) {
