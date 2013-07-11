@@ -54,8 +54,8 @@ public class VLayoutSprite extends Sprite
         return child;
     }
 
-    public function layout () :void {
-        if (!_needsLayout) {
+    public function layout (force :Boolean = false) :void {
+        if (!_needsLayout && !force) {
             return;
         }
         _needsLayout = false;
