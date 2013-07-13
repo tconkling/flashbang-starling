@@ -5,9 +5,7 @@ package flashbang.input {
 
 import starling.events.Touch;
 
-/**
- * A TouchListener that acts on a single touch ID
- */
+/** A TouchListener that acts only on the "primary" touch */
 public interface PointerListener extends TouchListener
 {
     function onPointerStart (touch :Touch) :Boolean;

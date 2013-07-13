@@ -80,7 +80,7 @@ public class Button extends SpriteObject
 
         this.regs.add(this.touchBegan.connect(function (touch :Touch) :void {
             if (self.enabled && _captureReg == null) {
-                var l :PointerListener = Input.newPointerListener(touch.id)
+                var l :PointerListener = Input.newPointerListener()
                     .onPointerMove(self.onPointerMove)
                     .onPointerEnd(self.onPointerEnd)
                     .build();

@@ -23,8 +23,8 @@ public class Input
      * @property defaultHandledValue the default value to return when a function is not specified
      * for a given touch phase.
      */
-    public static function newPointerListener (touchId :int, defaultHandledValue :Boolean = true) :PointerListenerBuilder {
-        return new PointerListenerBuilderImpl(touchId, defaultHandledValue);
+    public static function newPointerListener (defaultHandledValue :Boolean = true) :PointerListenerBuilder {
+        return new PointerListenerBuilderImpl(defaultHandledValue);
     }
 
     /** Constructs a new TouchListener */
@@ -55,33 +55,32 @@ import starling.events.Touch;
 class PointerListenerBuilderImpl
     implements PointerListenerBuilder
 {
-    public function PointerListenerBuilderImpl (touchId :int, defaultHandledValue :Boolean) { _touchId = touchId; _defaultHandledValue = defaultHandledValue; }
+    public function PointerListenerBuilderImpl (defaultHandledValue :Boolean) { _defaultHandledValue = defaultHandledValue; }
     public function onPointerStart (f :Function) :PointerListenerBuilder { _onPointerStart = f; return this; }
     public function onPointerMove (f :Function) :PointerListenerBuilder { _onPointerMove = f; return this; }
     public function onPointerEnd (f :Function) :PointerListenerBuilder { _onPointerEnd = f; return this; }
     public function onPointerHover (f :Function) :PointerListenerBuilder { _onPointerHover = f; return this; }
-    public function consumeOtherTouches (val :Boolean) :PointerListenerBuilder { _consumeOtherTouches = val; return this; }
+    public function consumeAllTouches (val :Boolean) :PointerListenerBuilder { _consumeAllTouches = val; return this; }
     public function build () :PointerListener {
-        return new CallbackPointerListener(_touchId, _onPointerStart, _onPointerMove, _onPointerEnd,
-            _onPointerHover, _consumeOtherTouches, _defaultHandledValue);
+        return new CallbackPointerListener(_onPointerStart, _onPointerMove, _onPointerEnd,
+            _onPointerHover, _consumeAllTouches, _defaultHandledValue);
     }
 
-    protected var _touchId :int;
     protected var _onPointerStart :Function;
     protected var _onPointerMove :Function;
     protected var _onPointerEnd :Function;
     protected var _onPointerHover :Function;
-    protected var _consumeOtherTouches :Boolean = true;
+    protected var _consumeAllTouches :Boolean = true;
     protected var _defaultHandledValue :Boolean;
 }
 
 class CallbackPointerListener extends PointerAdapter
 {
-    public function CallbackPointerListener (touchId :int, onPointerStart :Function,
+    public function CallbackPointerListener (onPointerStart :Function,
         onPointerMove :Function, onPointerEnd :Function, onPointerHover :Function,
         consumeAllTouches :Boolean, defaultHandledValue :Boolean)
     {
-        super(touchId, consumeAllTouches);
+        super(consumeAllTouches);
         _onPointerStart = onPointerStart;
         _onPointerMove = onPointerMove;
         _onPointerEnd = onPointerEnd;
@@ -158,7 +157,7 @@ class CallbackDragHandler extends PointerAdapter
     implements DragHandler
 {
     public function CallbackDragHandler (touch :Touch, onDragged :Function, onDragEnd :Function) {
-        super(touch.id, true);
+        super(true);
         _start = new Point(touch.globalX, touch.globalY);
         _current = new Point(touch.globalX, touch.globalY);
         _onDragged = onDragged;
