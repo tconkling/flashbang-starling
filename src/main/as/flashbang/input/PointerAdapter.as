@@ -13,7 +13,7 @@ public class PointerAdapter
     implements PointerListener
 {
     /** If true, the PointerAdapter will consume unrelated touches. */
-    public var consumeAllTouches :Boolean;
+    public var consumeOtherTouches :Boolean;
 
     /**
      * Constructs a new PointerAdapter
@@ -21,8 +21,8 @@ public class PointerAdapter
      * @param consumeAllTouches if true, unrelated touches are consumed by the PointerAdapter,
      * so that they will not be passed to other listeners for further processing.
      */
-    public function PointerAdapter (consumeAllTouches :Boolean = true) {
-        this.consumeAllTouches = consumeAllTouches;
+    public function PointerAdapter (consumeOtherTouches :Boolean = true) {
+        this.consumeOtherTouches = consumeOtherTouches;
     }
 
     public function onTouchesUpdated (touches :Vector.<Touch>) :void {
@@ -33,36 +33,32 @@ public class PointerAdapter
         var foundTouch :Boolean;
         for (var ii :int = 0; ii < touches.length; ++ii) {
             var touch :Touch = touches[ii];
-            if (touch.id != _curTouchId) {
-                continue;
-            }
-
-            foundTouch = true;
-            if (touch.updated) {
-                var handled :Boolean = false;
-                switch (touch.phase) {
-                case TouchPhase.BEGAN: handled = onPointerStart(touch); break;
-                case TouchPhase.MOVED: handled = onPointerMove(touch); break;
-                // reset our touchID
-                case TouchPhase.ENDED: handled = onPointerEnd(touch); _curTouchId = -1; break;
-                case TouchPhase.HOVER: handled = onPointerHover(touch); break;
-                case TouchPhase.STATIONARY: break;
-                }
-
-                if (handled && !consumeAllTouches) {
-                    if (ii == touches.length - 1) {
-                        touches.pop();
-                    } else {
-                        touches.splice(ii, 1);
+            var handled :Boolean = (touch.id != _curTouchId && this.consumeOtherTouches);
+            if (touch.id == _curTouchId) {
+                foundTouch = true;
+                if (touch.updated) {
+                    switch (touch.phase) {
+                    case TouchPhase.BEGAN: handled = onPointerStart(touch); break;
+                    case TouchPhase.MOVED: handled = onPointerMove(touch); break;
+                    // reset our touchID
+                    case TouchPhase.ENDED: handled = onPointerEnd(touch); _curTouchId = -1; break;
+                    case TouchPhase.HOVER: handled = onPointerHover(touch); break;
+                    case TouchPhase.STATIONARY: break;
                     }
                 }
             }
 
-            break;
+            if (handled) {
+                if (ii == touches.length - 1) {
+                    touches.pop();
+                } else {
+                    touches.splice(ii, 1);
+                }
+            }
         }
 
-        if (this.consumeAllTouches) {
-            touches.length = 0;
+        if (!foundTouch) {
+            _curTouchId = -1;
         }
     }
 

@@ -9,7 +9,7 @@ public interface PointerListenerBuilder
     function onPointerMove (f :Function) :PointerListenerBuilder;
     function onPointerEnd (f :Function) :PointerListenerBuilder;
     function onPointerHover (f :Function) :PointerListenerBuilder;
-    function consumeAllTouches (val :Boolean) :PointerListenerBuilder;
+    function consumeOtherTouches (val :Boolean) :PointerListenerBuilder;
     function build () :PointerListener;
 }
 

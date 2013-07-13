@@ -60,17 +60,17 @@ class PointerListenerBuilderImpl
     public function onPointerMove (f :Function) :PointerListenerBuilder { _onPointerMove = f; return this; }
     public function onPointerEnd (f :Function) :PointerListenerBuilder { _onPointerEnd = f; return this; }
     public function onPointerHover (f :Function) :PointerListenerBuilder { _onPointerHover = f; return this; }
-    public function consumeAllTouches (val :Boolean) :PointerListenerBuilder { _consumeAllTouches = val; return this; }
+    public function consumeOtherTouches (val :Boolean) :PointerListenerBuilder { _consumeOtherTouches = val; return this; }
     public function build () :PointerListener {
         return new CallbackPointerListener(_onPointerStart, _onPointerMove, _onPointerEnd,
-            _onPointerHover, _consumeAllTouches, _defaultHandledValue);
+            _onPointerHover, _consumeOtherTouches, _defaultHandledValue);
     }
 
     protected var _onPointerStart :Function;
     protected var _onPointerMove :Function;
     protected var _onPointerEnd :Function;
     protected var _onPointerHover :Function;
-    protected var _consumeAllTouches :Boolean = true;
+    protected var _consumeOtherTouches :Boolean = true;
     protected var _defaultHandledValue :Boolean;
 }
 
@@ -78,9 +78,9 @@ class CallbackPointerListener extends PointerAdapter
 {
     public function CallbackPointerListener (onPointerStart :Function,
         onPointerMove :Function, onPointerEnd :Function, onPointerHover :Function,
-        consumeAllTouches :Boolean, defaultHandledValue :Boolean)
+        consumeOtherTouches :Boolean, defaultHandledValue :Boolean)
     {
-        super(consumeAllTouches);
+        super(consumeOtherTouches);
         _onPointerStart = onPointerStart;
         _onPointerMove = onPointerMove;
         _onPointerEnd = onPointerEnd;
