@@ -5,6 +5,8 @@ package flashbang.resource {
 
 import aspire.util.ClassUtil;
 
+import flash.events.ErrorEvent;
+
 import flashbang.loader.DataLoader;
 
 public class ResourceLoader extends DataLoader
@@ -32,15 +34,26 @@ public class ResourceLoader extends DataLoader
         return param;
     }
 
-    override protected function fail (result :* = undefined) :void {
-        var e :Error = resultToError(result);
+    override public function fail (cause :Object) :void {
         // add some context
         var msg :String = ClassUtil.tinyClassName(this) + " load error\n";
         for (var key :String in _params) {
             msg += "\t" + key + ": " + _params[key] + "\n";
         }
-        e.message = msg + e.message;
-        super.fail(e);
+
+        if (cause is Error) {
+            Error(cause).message = msg + Error(cause).message;
+        } else if (cause is ErrorEvent) {
+            var ee :ErrorEvent = cause as ErrorEvent;
+            cause = new Error(msg + "An ErrorEvent occurred [type=" +
+                ClassUtil.tinyClassName(cause) + ", message=" + ee.text + "]");
+        } else if (cause is String) {
+            cause = msg + (cause as String);
+        } else {
+            cause = new Error(msg + "An unknown failure occurred" +
+                (cause != null ? " (" + cause + ")" : ""));
+        }
+        super.fail(cause);
     }
 
     protected var _params :Object;

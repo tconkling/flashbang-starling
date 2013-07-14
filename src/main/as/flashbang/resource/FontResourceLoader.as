@@ -46,19 +46,16 @@ public class FontResourceLoader extends ResourceLoader
         _batch = new BatchLoader();
         _batch.addLoader(xmlLoader);
         _batch.addLoader(textureLoader);
-
-        _batch.load(
-            function () :void {
-                try {
-                    var texture :LoadedTexture = textureLoader.result;
-                    var xml :XML = xmlLoader.result;
-                    var font :BitmapFont = new BitmapFont(texture.texture, xml);
-                    succeed(new FontResource(name, font));
-                } catch (e :Error) {
-                    fail(e);
-                }
-            },
-            fail);
+        _batch.load().onSuccess(function () :void {
+            try {
+                var texture :LoadedTexture = textureLoader.result;
+                var xml :XML = xmlLoader.result;
+                var font :BitmapFont = new BitmapFont(texture.texture, xml);
+                succeed(new FontResource(name, font));
+            } catch (e :Error) {
+                fail(e);
+            }
+        });
     }
 
     override protected function onCanceled () :void {

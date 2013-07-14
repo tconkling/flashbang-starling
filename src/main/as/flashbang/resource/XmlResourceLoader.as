@@ -29,11 +29,9 @@ public class XmlResourceLoader extends ResourceLoader
         var name :String = requireLoadParam(NAME, String);
 
         _loader = new XmlLoader(requireLoadParam(DATA, Object));
-        _loader.load(
-            function (result :XML) :void {
-                succeed(new XmlResource(name, result));
-            },
-            fail);
+        _loader.load().onSuccess(function (result :XML) :void {
+            succeed(new XmlResource(name, result));
+        });
     }
 
     override protected function onCanceled () :void {

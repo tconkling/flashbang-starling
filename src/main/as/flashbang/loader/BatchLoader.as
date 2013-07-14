@@ -19,8 +19,8 @@ public class BatchLoader extends DataLoader
 
     /** Adds a loader to the batch */
     public function addLoader (loader :DataLoader) :void {
-        Preconditions.checkState(this.state == LoadState.INIT,
-            "Batch is loading or loaded", "state", this.state);
+        Preconditions.checkState(_state == LoadState.INIT,
+            "Batch is loading or loaded", "state", _state);
         Preconditions.checkArgument(loader.state == LoadState.INIT,
             "Loader has already been loaded", "state", loader.state);
         _pending.push(loader);
@@ -48,23 +48,21 @@ public class BatchLoader extends DataLoader
     protected function loadOne (loader :DataLoader) :void {
         var self :BatchLoader = this;
         _loading.push(loader);
-        loader.load(
-            function () :void {
-                // we may have gotten canceled
-                if (self.state == LoadState.LOADING) {
-                    removeFirst(_loading, loader);
-                    _loaded.push(loader);
-                    loadMore();
-                }
-            },
-            function (e :Error) :void {
-                // we may have gotten canceled
-                if (self.state == LoadState.LOADING) {
-                    removeFirst(_loading, loader);
-                    onCanceled();
-                    fail(e);
-                }
-            });
+        loader.load().onSuccess(function () :void {
+            // we may have gotten canceled
+            if (self.state == LoadState.LOADING) {
+                removeFirst(_loading, loader);
+                _loaded.push(loader);
+                loadMore();
+            }
+        }).onFailure(function (e :Error) :void {
+            // we may have gotten canceled
+            if (self.state == LoadState.LOADING) {
+                removeFirst(_loading, loader);
+                onCanceled();
+                fail(e);
+            }
+        });
     }
 
     override protected function onCanceled () :void {

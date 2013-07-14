@@ -4,8 +4,8 @@
 package flashbang.resource {
 
 import flashbang.core.Flashbang;
-import flashbang.loader.DataLoader;
 import flashbang.loader.BatchLoader;
+import flashbang.loader.DataLoader;
 
 public class ResourceSet extends BatchLoader
 {
@@ -21,9 +21,9 @@ public class ResourceSet extends BatchLoader
         Flashbang.rsrcs.unloadSet(this);
     }
 
-    override protected function succeed (result :* = undefined) :void {
+    override public function succeed (value :Object = null) :void {
         // get all our resources
-        var loaded :Vector.<DataLoader> = result;
+        var loaded :Vector.<DataLoader> = Vector.<DataLoader>(value);
         var resources :Vector.<Resource> = new <Resource>[];
         for each (var l :DataLoader in loaded) {
             if (l is ResourceLoader) {
