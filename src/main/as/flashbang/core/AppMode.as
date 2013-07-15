@@ -244,6 +244,7 @@ public class AppMode
         _touchInput.dispose();
         _touchInput = null;
 
+        _keyboardInput.dispose();
         _keyboardInput = null;
 
         _moviePlayer.dispose();

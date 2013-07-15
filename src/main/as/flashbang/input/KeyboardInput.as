@@ -3,23 +3,31 @@
 
 package flashbang.input {
 
+import flashbang.util.LinkedElement;
+import flashbang.util.LinkedList;
+
 import react.Registration;
-import react.Registrations;
 
 import starling.events.KeyboardEvent;
 
 public class KeyboardInput
 {
-    public function handleKeyboardEvent (e :KeyboardEvent) :Boolean {
-        var handled :Boolean = false;
+    public function dispose () :void {
+        _listeners.dispose();
+        _listeners = null;
+    }
 
-        if (_listeners.length > 0) {
-            for each (var l :KeyboardListener in _listeners.concat()) { // Iterate over a copy
-                handled = l.onKeyboardEvent(e);
+    public function handleKeyboardEvent (k :KeyboardEvent) :Boolean {
+        var handled :Boolean = false;
+        try {
+            for (var e :LinkedElement = _listeners.beginIteration(); e != null; e = e.next) {
+                handled = KeyboardListener(e.data).onKeyboardEvent(k);
                 if (handled) {
                     break;
                 }
             }
+        } finally {
+            _listeners.endIteration();
         }
 
         return handled;
@@ -30,23 +38,15 @@ public class KeyboardInput
      * so the most recently-added listener gets the first chance at each event.
      */
     public function registerListener (l :KeyboardListener) :Registration {
-        _listeners.unshift(l);
-        return Registrations.createWithFunction(function () :void {
-            for (var ii :int = _listeners.length - 1; ii >= 0; --ii) {
-                if (_listeners[ii] == l) {
-                    _listeners.splice(ii, 1);
-                    break;
-                }
-            }
-        });
+        return _listeners.pushFront(l);
     }
 
     /** Removes all listeners from the KeyboardInput */
     public function removeAllListeners () :void {
-        _listeners.length = 0;
+        _listeners.clear();
     }
 
-    protected var _listeners :Vector.<KeyboardListener> = new <KeyboardListener>[];
+    protected var _listeners :LinkedList = new LinkedList();
 }
 }
 

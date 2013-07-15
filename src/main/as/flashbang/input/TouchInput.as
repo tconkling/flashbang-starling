@@ -3,8 +3,10 @@
 
 package flashbang.input {
 
+import flashbang.util.LinkedElement;
+import flashbang.util.LinkedList;
+
 import react.Registration;
-import react.Registrations;
 
 import starling.display.DisplayObjectContainer;
 import starling.events.Touch;
@@ -14,10 +16,12 @@ public class TouchInput
 {
     public function TouchInput (root :DisplayObjectContainer) {
         _dispatcher = new TouchDispatcher(root);
+        _listeners = new LinkedList();
     }
 
     public function dispose () :void {
         _dispatcher.dispose();
+        _listeners.dispose();
         _dispatcher = null;
         _listeners = null;
     }
@@ -27,32 +31,24 @@ public class TouchInput
      * so the most recently-added listener gets the first chance at each touch event.
      */
     public function registerListener (l :TouchListener) :Registration {
-        _listeners.unshift(l);
-        return Registrations.createWithFunction(function () :void {
-            for (var ii :int = _listeners.length - 1; ii >= 0; --ii) {
-                if (_listeners[ii] == l) {
-                    _listeners.splice(ii, 1);
-                    break;
-                }
-            }
-        });
+        return _listeners.pushFront(l);
     }
 
     /** Removes all listeners from the TouchInput */
     public function removeAllListeners () :void {
-        _listeners.length = 0;
+        _listeners.clear();
     }
 
     public function handleTouches (touches :Vector.<Touch>) :void {
-        var handled :Boolean = false;
-
-        if (_listeners.length > 0) {
-            for each (var l :TouchListener in _listeners.concat()) { // Iterate over a copy
-                l.onTouchesUpdated(touches);
+        try {
+            for (var e :LinkedElement = _listeners.beginIteration(); e != null; e = e.next) {
+                TouchListener(e.data).onTouchesUpdated(touches);
                 if (touches.length == 0) {
                     break;
                 }
             }
+        } finally {
+            _listeners.endIteration();
         }
 
         if (touches.length > 0) {
@@ -61,6 +57,6 @@ public class TouchInput
     }
 
     protected var _dispatcher :TouchDispatcher;
-    protected var _listeners :Vector.<TouchListener> = new <TouchListener>[];
+    protected var _listeners :LinkedList;
 }
 }
