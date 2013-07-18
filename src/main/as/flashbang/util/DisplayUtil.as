@@ -7,6 +7,7 @@ import aspire.geom.Vector2;
 import aspire.util.F;
 
 import flash.geom.Point;
+import flash.geom.Rectangle;
 
 import flashbang.core.Flashbang;
 
@@ -14,9 +15,56 @@ import starling.display.DisplayObject;
 import starling.display.DisplayObjectContainer;
 import starling.display.Quad;
 import starling.display.Sprite;
+import starling.utils.HAlign;
+import starling.utils.VAlign;
 
 public class DisplayUtil
 {
+    /** Positions a DisplayObject so that it is centered on another DisplayObject */
+    public static function center (disp :DisplayObject, relativeTo :DisplayObject) :void {
+        DisplayUtil.positionRelative(disp, HAlign.CENTER, VAlign.CENTER,
+            relativeTo, HAlign.CENTER, VAlign.CENTER);
+    }
+
+    /** Positions a DisplayObject in relation to another DisplayObject */
+    public static function positionRelative (
+        disp :DisplayObject,
+        dispHAlign :String, dispVAlign :String,
+        relativeTo :DisplayObject,
+        targetHAlign :String, targetVAlign :String,
+        xOffset :Number = 0, yOffset :Number = 0) :void {
+
+        var x :Number = xOffset;
+        var y :Number = yOffset;
+
+        var bounds :Rectangle = relativeTo.getBounds(disp.parent || relativeTo, R);
+        switch (targetHAlign) {
+        case HAlign.LEFT: x += bounds.left; break;
+        case HAlign.RIGHT: x += bounds.right; break;
+        case HAlign.CENTER: x += bounds.left + (bounds.width * 0.5); break;
+        }
+        switch (targetVAlign) {
+        case VAlign.TOP: y += bounds.top; break;
+        case VAlign.BOTTOM: y += bounds.bottom; break;
+        case VAlign.CENTER: y += bounds.top + (bounds.width * 0.5); break;
+        }
+
+        bounds = disp.getBounds(disp.parent || disp, R);
+        switch (dispHAlign) {
+        case HAlign.LEFT: x -= bounds.left; break;
+        case HAlign.RIGHT: x -= bounds.right; break;
+        case HAlign.CENTER: x -= bounds.left + (bounds.width * 0.5); break;
+        }
+        switch (dispVAlign) {
+        case VAlign.TOP: y -= bounds.top; break;
+        case VAlign.BOTTOM: y -= bounds.bottom; break;
+        case VAlign.CENTER: y -= bounds.top + (bounds.width * 0.5); break;
+        }
+
+        disp.x = x;
+        disp.y = y;
+    }
+
     /** Returns a stage-sized rectangle filled with the given color */
     public static function fillStageRect (color :uint = 0, alpha :Number = 1) :Quad {
         var r :Quad = fillRect(Flashbang.stageWidth, Flashbang.stageHeight, color);
@@ -173,5 +221,6 @@ public class DisplayUtil
     }
 
     protected static const P :Point = new Point();
+    protected static const R :Rectangle = new Rectangle();
 }
 }
