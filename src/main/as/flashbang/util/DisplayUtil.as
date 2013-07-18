@@ -46,7 +46,7 @@ public class DisplayUtil
         switch (targetVAlign) {
         case VAlign.TOP: y += bounds.top; break;
         case VAlign.BOTTOM: y += bounds.bottom; break;
-        case VAlign.CENTER: y += bounds.top + (bounds.width * 0.5); break;
+        case VAlign.CENTER: y += bounds.top + (bounds.height * 0.5); break;
         }
 
         bounds = disp.getBounds(disp.parent || disp, R);
@@ -58,7 +58,7 @@ public class DisplayUtil
         switch (dispVAlign) {
         case VAlign.TOP: y -= bounds.top; break;
         case VAlign.BOTTOM: y -= bounds.bottom; break;
-        case VAlign.CENTER: y -= bounds.top + (bounds.width * 0.5); break;
+        case VAlign.CENTER: y -= bounds.top + (bounds.height * 0.5); break;
         }
 
         disp.x = x;
