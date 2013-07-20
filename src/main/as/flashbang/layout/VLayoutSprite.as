@@ -1,19 +1,18 @@
 //
 // flashbang
 
-package flashbang.util {
+package flashbang.layout {
 
 import flash.geom.Rectangle;
 
 import starling.display.DisplayObject;
-import starling.display.Sprite;
 import starling.utils.HAlign;
 
 /**
  * A Sprite that arranges its children vertically.
  * Call layout() after adding or removing children to update the sprite's layout.
  */
-public class VLayoutSprite extends Sprite
+public class VLayoutSprite extends AbstractLayoutSprite
 {
     public function VLayoutSprite (vOffset :Number = 2, hAlign :String = "center") {
         _vOffset = vOffset;
@@ -42,24 +41,7 @@ public class VLayoutSprite extends Sprite
         }
     }
 
-    override public function addChildAt (child :DisplayObject, index :int) :DisplayObject {
-        super.addChildAt(child, index);
-        _needsLayout = true;
-        return child;
-    }
-
-    override public function removeChildAt (index :int, dispose :Boolean = false) :DisplayObject {
-        var child :DisplayObject = super.removeChildAt(index, dispose);
-        _needsLayout = true;
-        return child;
-    }
-
-    public function layout (force :Boolean = false) :void {
-        if (!_needsLayout && !force) {
-            return;
-        }
-        _needsLayout = false;
-
+    override protected function doLayout () :void {
         var ii :int;
         var maxWidth :Number = 0;
         if (_hAlign != HAlign.LEFT) {
@@ -88,7 +70,6 @@ public class VLayoutSprite extends Sprite
 
     protected var _vOffset :Number;
     protected var _hAlign :String;
-    protected var _needsLayout :Boolean;
 
     protected static const R :Rectangle = new Rectangle();
 }

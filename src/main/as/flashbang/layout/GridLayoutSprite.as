@@ -1,12 +1,11 @@
 //
 // flashbang
 
-package flashbang.util {
+package flashbang.layout {
 
 import flash.geom.Rectangle;
 
 import starling.display.DisplayObject;
-import starling.display.Sprite;
 import starling.utils.HAlign;
 import starling.utils.VAlign;
 
@@ -14,7 +13,7 @@ import starling.utils.VAlign;
  * A Sprite that arranges its children in a grid.
  * Call layout() after adding or removing children to update the sprite's layout.
  */
-public class GridLayoutSprite extends Sprite
+public class GridLayoutSprite extends AbstractLayoutSprite
 {
     public function GridLayoutSprite (hOffset :Number = 2, vOffset :Number = 2,
         maxWidth :Number = 200, maxHeight :Number = 0) {
@@ -96,24 +95,7 @@ public class GridLayoutSprite extends Sprite
         }
     }
 
-    override public function addChildAt (child :DisplayObject, index :int) :DisplayObject {
-        super.addChildAt(child, index);
-        _needsLayout = true;
-        return child;
-    }
-
-    override public function removeChildAt (index :int, dispose :Boolean = false) :DisplayObject {
-        var child :DisplayObject = super.removeChildAt(index, dispose);
-        _needsLayout = true;
-        return child;
-    }
-
-    public function layout (force :Boolean = false) :void {
-        if (!_needsLayout && !force) {
-            return;
-        }
-        _needsLayout = false;
-
+    override protected function doLayout () :void {
         var info :LayoutInfo = INFO;
         info.endIdx = 0;
         info.size = 0;
@@ -210,8 +192,6 @@ public class GridLayoutSprite extends Sprite
         info.size = maxChildWidth;
         info.endIdx = endIdx;
     }
-
-    protected var _needsLayout :Boolean;
 
     protected var _hOffset :Number;
     protected var _vOffset :Number;
