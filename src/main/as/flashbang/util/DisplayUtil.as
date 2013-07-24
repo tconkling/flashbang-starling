@@ -79,32 +79,13 @@ public class DisplayUtil
 
     /** Returns a rectangle outlined with the given color */
     public static function lineRect (width :Number, height :Number, color :uint, lineSize :Number) :Sprite {
-        return outlineFillRect(width, height, 0, lineSize, color);
+        return outlineFillRectImpl(width, height, 0, lineSize, color, false);
     }
 
     /** Returns a rectangle filled and outlined with the given colors */
     public static function outlineFillRect (width :Number, height :Number, fillColor :uint,
         outlineSize :Number, outlineColor :uint) :Sprite {
-
-        var sprite :Sprite = new Sprite();
-        if (fillColor != 0) {
-            sprite.addChild(fillRect(width, height, fillColor));
-        }
-
-        var top :Quad = fillRect(width, outlineSize, outlineColor);
-        var bottom :Quad = fillRect(width, outlineSize, outlineColor);
-        var left :Quad = fillRect(outlineSize, height, outlineColor);
-        var right :Quad = fillRect(outlineSize, height, outlineColor);
-
-        bottom.y = height - outlineSize;
-        right.x = width - outlineSize;
-
-        sprite.addChild(top);
-        sprite.addChild(bottom);
-        sprite.addChild(left);
-        sprite.addChild(right);
-
-        return sprite;
+        return outlineFillRectImpl(width, height, fillColor, outlineSize, outlineColor, true);
     }
 
     /** Transforms a point from one DisplayObject's coordinate space to another's. */
@@ -197,7 +178,32 @@ public class DisplayUtil
         return walkDisplayObjectsImpl(root, maxDepth, F.adapt(callback), 0);
     }
 
-    /** Helper for applyToHierarchy */
+    /** Returns a rectangle filled and outlined with the given colors */
+    protected static function outlineFillRectImpl (width :Number, height :Number, fillColor :uint,
+        outlineSize :Number, outlineColor :uint, fill :Boolean) :Sprite {
+
+        var sprite :Sprite = new Sprite();
+        if (fill) {
+            sprite.addChild(fillRect(width, height, fillColor));
+        }
+
+        var top :Quad = fillRect(width, outlineSize, outlineColor);
+        var bottom :Quad = fillRect(width, outlineSize, outlineColor);
+        var left :Quad = fillRect(outlineSize, height, outlineColor);
+        var right :Quad = fillRect(outlineSize, height, outlineColor);
+
+        bottom.y = height - outlineSize;
+        right.x = width - outlineSize;
+
+        sprite.addChild(top);
+        sprite.addChild(bottom);
+        sprite.addChild(left);
+        sprite.addChild(right);
+
+        return sprite;
+    }
+
+    /** Helper for walkDisplayObjects */
     protected static function walkDisplayObjectsImpl (root :DisplayObject, maxDepth :int,
         callback :Function, depth :int) :Boolean {
         // halt traversal if callbackFunction returns true
