@@ -15,11 +15,18 @@ import starling.display.DisplayObject;
 import starling.display.DisplayObjectContainer;
 import starling.display.Quad;
 import starling.display.Sprite;
+import starling.events.Touch;
 import starling.utils.HAlign;
 import starling.utils.VAlign;
 
 public class DisplayUtil
 {
+    /** Performs a hit test on the given DisplayObject for the given Touch */
+    public static function hitTestTouch (d :DisplayObject, t :Touch) :DisplayObject {
+        P.setTo(t.globalX, t.globalY);
+        return d.hitTest(d.globalToLocal(P, P), true);
+    }
+
     /** Positions a DisplayObject so that it is centered on another DisplayObject */
     public static function center (disp :DisplayObject, relativeTo :DisplayObject) :void {
         DisplayUtil.positionRelative(disp, HAlign.CENTER, VAlign.CENTER,
