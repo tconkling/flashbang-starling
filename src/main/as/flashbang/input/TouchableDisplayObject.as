@@ -125,14 +125,19 @@ class HoverSignals {
 }
 
 class FilteredTouchSignal extends Signal {
-    public function FilteredTouchSignal (disp :DisplayObject, touchEventSignal :EventSignal,
-        phase :String) {
-
+    public function FilteredTouchSignal (disp :DisplayObject, touchEventSignal :EventSignal, phase :String) {
         super(Touch);
-        touchEventSignal.connect(function (e :TouchEvent) :void {
-            for each (var touch :Touch in e.getTouches(disp, phase)) {
-                emit(touch);
-            }
-        });
+        _disp = disp;
+        _phase = phase;
+        touchEventSignal.connect(onTouchEvent);
     }
+
+    protected function onTouchEvent (e :TouchEvent) :void {
+        for each (var touch :Touch in e.getTouches(_disp, _phase)) {
+            emit(touch);
+        }
+    }
+
+    protected var _disp :DisplayObject;
+    protected var _phase :String;
 }
