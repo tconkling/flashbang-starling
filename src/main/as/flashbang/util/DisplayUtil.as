@@ -21,6 +21,17 @@ import starling.utils.VAlign;
 
 public class DisplayUtil
 {
+    /** Returns true if potentialAncestor is an ancestor of the given DisplayObect on the display list */
+    public static function isAncestor (d :DisplayObject, potentialAncestor :DisplayObject) :Boolean {
+        while (d.parent != null) {
+            if (d.parent == potentialAncestor) {
+                return true;
+            }
+            d = d.parent;
+        }
+        return false;
+    }
+
     /** Performs a hit test on the given DisplayObject for the given Touch */
     public static function hitTestTouch (d :DisplayObject, t :Touch) :DisplayObject {
         P.setTo(t.globalX, t.globalY);
