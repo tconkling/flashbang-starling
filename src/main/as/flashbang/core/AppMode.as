@@ -20,7 +20,6 @@ import react.Registrations;
 import react.Signal;
 import react.UnitSignal;
 
-import starling.display.DisplayObjectContainer;
 import starling.display.Sprite;
 import starling.events.KeyboardEvent;
 import starling.events.Touch;
@@ -138,19 +137,16 @@ public class AppMode
         _keyboardInput.handleKeyboardEvent(e);
     }
 
-    public function addObject (obj :GameObjectBase,
-        displayParent :DisplayObjectContainer = null, displayIdx :int = -1) :GameObjectRef {
-        return _rootObject.addObject(obj, displayParent, displayIdx);
+    public function addObject (obj :GameObjectBase) :GameObjectRef {
+        return _rootObject.addObject(obj);
     }
 
-    public function addNamedObject (name :String, obj :GameObjectBase,
-        displayParent :DisplayObjectContainer = null, displayIdx :int = -1) :GameObjectRef {
-        return _rootObject.addNamedObject(name, obj, displayParent, displayIdx);
+    public function addNamedObject (name :String, obj :GameObjectBase) :GameObjectRef {
+        return _rootObject.addNamedObject(name, obj);
     }
 
-    public function replaceNamedObject (name :String, obj :GameObjectBase,
-        displayParent :DisplayObjectContainer = null, displayIdx :int = -1) :GameObjectRef {
-        return _rootObject.replaceNamedObject(name, obj, displayParent, displayIdx);
+    public function replaceNamedObject (name :String, obj :GameObjectBase) :GameObjectRef {
+        return _rootObject.replaceNamedObject(name, obj);
     }
 
     public function getNamedObject (name :String) :GameObjectBase {

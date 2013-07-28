@@ -4,7 +4,6 @@
 package flashbang.core {
 
 import aspire.util.ClassUtil;
-import aspire.util.Preconditions;
 import aspire.util.StringUtil;
 
 import flashbang.components.DisplayComponent;
@@ -14,7 +13,6 @@ import react.SignalView;
 import react.UnitSignal;
 
 import starling.display.DisplayObject;
-import starling.display.DisplayObjectContainer;
 
 public class GameObjectBase
 {
@@ -143,23 +141,6 @@ public class GameObjectBase
      * (Subclasses can override this to do something useful.)
      */
     protected function dispose () :void {
-    }
-
-    internal function attachToDisplayList (displayParent :DisplayObjectContainer,
-        displayIdx :int) :void {
-        Preconditions.checkState(this is DisplayComponent, "obj must implement DisplayComponent");
-
-        // Attach the object to a display parent.
-        // (This is purely a convenience - the client is free to do the attaching themselves)
-        var disp :DisplayObject = (this as DisplayComponent).display;
-        Preconditions.checkState(null != disp,
-            "obj must return a non-null displayObject to be attached to a display parent");
-
-        if (displayIdx < 0 || displayIdx >= displayParent.numChildren) {
-            displayParent.addChild(disp);
-        } else {
-            displayParent.addChildAt(disp, displayIdx);
-        }
     }
 
     internal function addedInternal () :void {
