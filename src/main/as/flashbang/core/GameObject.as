@@ -5,19 +5,24 @@ package flashbang.core {
 
 import aspire.util.Preconditions;
 
+import starling.display.DisplayObjectContainer;
+
 public class GameObject extends GameObjectBase
     implements GameObjectContainer
 {
-    public function addObject (obj :GameObjectBase) :GameObjectRef {
-        return addObjectInternal(obj, null, false);
+    public function addObject (obj :GameObjectBase,
+        displayParent :DisplayObjectContainer = null, displayIdx :int = -1) :GameObjectRef {
+        return addObjectInternal(obj, null, false, displayParent, displayIdx);
     }
 
-    public function addNamedObject (name :String, obj :GameObjectBase) :GameObjectRef {
-        return addObjectInternal(obj, name, false);
+    public function addNamedObject (name :String, obj :GameObjectBase,
+        displayParent :DisplayObjectContainer = null, displayIdx :int = -1) :GameObjectRef {
+        return addObjectInternal(obj, name, false, displayParent, displayIdx);
     }
 
-    public function replaceNamedObject (name :String, obj :GameObjectBase) :GameObjectRef {
-        return addObjectInternal(obj, name, true);
+    public function replaceNamedObject (name :String, obj :GameObjectBase,
+        displayParent :DisplayObjectContainer = null, displayIdx :int = -1) :GameObjectRef {
+        return addObjectInternal(obj, name, true, displayParent, displayIdx);
     }
 
     public function getNamedObject (name :String) :GameObjectBase {
@@ -84,7 +89,8 @@ public class GameObject extends GameObjectBase
     }
 
     internal function addObjectInternal (obj :GameObjectBase,
-        name :String, replaceExisting :Boolean) :GameObjectRef {
+        name :String, replaceExisting :Boolean,
+        displayParent :DisplayObjectContainer, displayIdx :int = -1) :GameObjectRef {
 
         // Object initialization happens here.
         // Uninitialization happens in GameObjectBase.removedInternal
@@ -94,6 +100,10 @@ public class GameObject extends GameObjectBase
 
         if (name != null && replaceExisting) {
             removeNamedObjects(name);
+        }
+
+        if (displayParent != null) {
+            obj.attachToDisplayList(displayParent, displayIdx);
         }
 
         // create a new GameObjectRef

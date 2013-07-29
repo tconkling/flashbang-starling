@@ -21,7 +21,7 @@ public class PauseMode extends flashbang.core.AppMode
         var resume :Button = new SimpleTextButton("Resume", 18);
         resume.display.x = (Demo.WIDTH - resume.display.width) * 0.5;
         resume.display.y = Demo.HEIGHT - resume.display.height - 20;
-        addObject(resume).displayOn(this.modeSprite);
+        addObject(resume, this.modeSprite);
         _regs.add(resume.clicked.connect(viewport.popMode));
     }
 }

@@ -21,7 +21,7 @@ public class GameMode extends AppMode
         var obj :MovieObject = MovieObject.create("flump/walk");
         obj.display.x = Demo.WIDTH;
         obj.display.y = Demo.HEIGHT / 2;
-        addObject(obj).displayOn(this.modeSprite);
+        addObject(obj, this.modeSprite);
 
         obj.addObject(new RepeatingTask(function () :ObjectTask {
             return new SerialTask(
@@ -34,7 +34,7 @@ public class GameMode extends AppMode
         var pause :Button = new SimpleTextButton("Pause", 18);
         pause.display.x = (Demo.WIDTH - pause.display.width) * 0.5;
         pause.display.y = Demo.HEIGHT - pause.display.height - 20;
-        addObject(pause).displayOn(this.modeSprite);
+        addObject(pause, this.modeSprite);
         _regs.add(pause.clicked.connect(function () :void {
             viewport.pushMode(new PauseMode());
         }));
