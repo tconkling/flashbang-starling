@@ -41,6 +41,14 @@ public class Viewport
     }
 
     /**
+     * Returns the number of modes currently on the mode stack. Be aware that this value might be
+     * about to change if mode transitions have been queued that have not yet been processed.
+     */
+    public function get modeStackLength () :int {
+        return _modeStack.length;
+    }
+
+    /**
      * Returns the top mode on the mode stack, or null
      * if the stack is empty.
      */
