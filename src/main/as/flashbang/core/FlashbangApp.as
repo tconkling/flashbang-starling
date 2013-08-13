@@ -3,6 +3,7 @@
 
 package flashbang.core {
 
+import aspire.ui.KeyboardCodes;
 import aspire.util.F;
 
 import flash.display.Sprite;
@@ -12,6 +13,7 @@ import flash.system.Capabilities;
 import flash.system.TouchscreenType;
 
 import flashbang.audio.AudioManager;
+import flashbang.input.TouchInput;
 import flashbang.resource.ResourceManager;
 import flashbang.util.Listeners;
 
@@ -25,6 +27,8 @@ import starling.events.Event;
 import starling.events.KeyboardEvent;
 import starling.events.Touch;
 import starling.utils.RectangleUtil;
+
+use namespace flashbang_internal;
 
 public class FlashbangApp extends flash.display.Sprite
 {
@@ -64,6 +68,13 @@ public class FlashbangApp extends flash.display.Sprite
      * By default it forwards the event each viewport
      */
     public function handleKeyboardEvent (e :KeyboardEvent) :void {
+        // TouchInput needs to know whether ctrl or shift is down for TouchEvent dispatching
+        if (e.keyCode == KeyboardCodes.CONTROL || e.keyCode == KeyboardCodes.COMMAND) {
+            TouchInput._ctrlDown = (e.type == KeyboardEvent.KEY_DOWN);
+        } else if (e.keyCode == KeyboardCodes.SHIFT) {
+            TouchInput._shiftDown = (e.type == KeyboardEvent.KEY_DOWN);
+        }
+
         for (var ii :int = _viewports.length - 1; ii >= 0; --ii) {
             _viewports[ii].handleKeyboardEvent(e);
         }
@@ -186,7 +197,7 @@ public class FlashbangApp extends flash.display.Sprite
 
         _starling = initStarling();
         // install our custom touch handler
-        _starling.touchHandler = new AppTouchHandler(handleTouches);
+        _starling.touchProcessor = new CallbackTouchProcessor(_starling.stage, handleTouches);
         _regs.addEventListener(_starling, starling.events.Event.ROOT_CREATED, rootCreated).once();
         _starling.start();
     }
@@ -288,15 +299,20 @@ public class FlashbangApp extends flash.display.Sprite
 
 }
 
+import starling.core.TouchProcessor;
+import starling.display.Stage;
 import starling.events.Touch;
-import starling.events.TouchHandler;
 
-class AppTouchHandler
-    implements TouchHandler
+class CallbackTouchProcessor extends TouchProcessor
 {
-    public function AppTouchHandler (f :Function) { _f = f; }
-    public function handleTouches (touches :Vector.<Touch>) :void { _f(touches); }
-    public function dispose () :void {}
+    public function CallbackTouchProcessor (stage :Stage, f :Function) {
+        super(stage);
+        _f = f;
+    }
+
+    override protected function processTouches (touches :Vector.<Touch>, shiftDown :Boolean, ctrlDown :Boolean) :void {
+        _f(touches);
+    }
 
     protected var _f :Function;
 }
