@@ -10,10 +10,10 @@ import starling.text.TextField;
 
 public class SimpleTextButton extends Button
 {
-    public function SimpleTextButton (text :String, fontSize :Number = 12) {
+    public function SimpleTextButton (text :String, fontSize :Number = 12, fontName :String = "_sans") {
         _tf = new TextFieldBuilder()
             .text(text)
-            .font("_sans")
+            .font(fontName)
             .fontSize(fontSize)
             .autoSize()
             .build();
