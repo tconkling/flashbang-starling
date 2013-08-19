@@ -299,9 +299,9 @@ public class FlashbangApp extends flash.display.Sprite
 
 }
 
-import starling.core.TouchProcessor;
 import starling.display.Stage;
 import starling.events.Touch;
+import starling.events.TouchProcessor;
 
 class CallbackTouchProcessor extends TouchProcessor
 {

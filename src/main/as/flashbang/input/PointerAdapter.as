@@ -36,15 +36,13 @@ public class PointerAdapter
             var handled :Boolean = (touch.id != _curTouchId && this.consumeOtherTouches);
             if (touch.id == _curTouchId) {
                 foundTouch = true;
-                if (touch.updated) {
-                    switch (touch.phase) {
-                    case TouchPhase.BEGAN: handled = onPointerStart(touch); break;
-                    case TouchPhase.MOVED: handled = onPointerMove(touch); break;
-                    // reset our touchID
-                    case TouchPhase.ENDED: handled = onPointerEnd(touch); _curTouchId = -1; break;
-                    case TouchPhase.HOVER: handled = onPointerHover(touch); break;
-                    case TouchPhase.STATIONARY: break;
-                    }
+                switch (touch.phase) {
+                case TouchPhase.BEGAN: handled = onPointerStart(touch); break;
+                case TouchPhase.MOVED: handled = onPointerMove(touch); break;
+                // reset our touchID
+                case TouchPhase.ENDED: handled = onPointerEnd(touch); _curTouchId = -1; break;
+                case TouchPhase.HOVER: handled = onPointerHover(touch); break;
+                case TouchPhase.STATIONARY: break;
                 }
             }
 
