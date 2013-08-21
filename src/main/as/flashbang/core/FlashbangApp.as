@@ -8,11 +8,13 @@ import aspire.util.F;
 
 import flash.display.Sprite;
 import flash.events.Event;
+import flash.events.MouseEvent;
 import flash.geom.Rectangle;
 import flash.system.Capabilities;
 import flash.system.TouchscreenType;
 
 import flashbang.audio.AudioManager;
+import flashbang.input.MouseWheelEvent;
 import flashbang.input.TouchInput;
 import flashbang.resource.ResourceManager;
 import flashbang.util.Listeners;
@@ -77,6 +79,16 @@ public class FlashbangApp extends flash.display.Sprite
 
         for (var ii :int = _viewports.length - 1; ii >= 0; --ii) {
             _viewports[ii].handleKeyboardEvent(e);
+        }
+    }
+
+    /**
+     * Called when the app receives a MouseWheelEvent.
+     * By default it forwards the event each viewport.
+     */
+    public function handleMouseWheelEvent (e :MouseWheelEvent) :void {
+        for (var ii :int = _viewports.length - 1; ii >= 0; --ii) {
+            _viewports[ii].handleMouseWheelEvent(e);
         }
     }
 
@@ -214,6 +226,9 @@ public class FlashbangApp extends flash.display.Sprite
         _regs.addEventListener(_mainSprite.stage, KeyboardEvent.KEY_DOWN, handleKeyboardEvent);
         _regs.addEventListener(_mainSprite.stage, KeyboardEvent.KEY_UP, handleKeyboardEvent);
         _regs.addEventListener(_mainSprite.stage, starling.events.Event.ENTER_FRAME, update);
+        _regs.addEventListener(_starling.nativeStage, MouseEvent.MOUSE_WHEEL, function (e :MouseEvent) :void {
+             handleMouseWheelEvent(createMouseWheelEvent(e));
+        });
         _lastTime = this.time;
 
         run();
@@ -221,6 +236,15 @@ public class FlashbangApp extends flash.display.Sprite
         for (var ii :int = _viewports.length - 1; ii >= 0; --ii) {
             _viewports[ii].handleModeTransitions();
         }
+    }
+
+    protected function createMouseWheelEvent (e :MouseEvent) :MouseWheelEvent {
+        // convert Flash stage coordinates to Starling stage coordinates
+        var stageX :Number = _starling.stage.stageWidth  * (e.stageX - _starling.viewPort.x) / _starling.viewPort.width;
+        var stageY :Number = _starling.stage.stageHeight * (e.stageY - _starling.viewPort.y) / _starling.viewPort.height;
+        // Flash's mousewheel "down" event deltas bizarrely begin at 0, rather than -1
+        var delta :int = (e.delta > 0 ? e.delta : e.delta - 1);
+        return new MouseWheelEvent(stageX, stageY, delta);
     }
 
     protected function update (e :starling.events.Event) :void {

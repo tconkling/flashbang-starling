@@ -10,6 +10,8 @@ import aspire.util.Preconditions;
 import aspire.util.maps.ValueComputingMap;
 
 import flashbang.input.KeyboardInput;
+import flashbang.input.MouseWheelEvent;
+import flashbang.input.MouseWheelInput;
 import flashbang.input.TouchInput;
 import flashbang.util.Listeners;
 
@@ -67,6 +69,10 @@ public class AppMode
 
     public function get keyboardInput () :KeyboardInput {
         return _keyboardInput;
+    }
+
+    public function get mouseWheelInput () :MouseWheelInput {
+        return _mouseWheelInput;
     }
 
     /** Removes the singleton of the given class from the ObjectDB, if it exists. */
@@ -136,6 +142,11 @@ public class AppMode
     /** Called when the mode is active and receives a keyboard event. */
     public function handleKeyboardEvent (e :KeyboardEvent) :void {
         _keyboardInput.handleKeyboardEvent(e);
+    }
+
+    /** Called when the mode is active and receives a keyboard event. */
+    public function handleMouseWheelEvent (e :MouseWheelEvent) :void {
+        _mouseWheelInput.handleMouseWheelEvent(e);
     }
 
     public function addObject (obj :GameObjectBase,
@@ -247,6 +258,9 @@ public class AppMode
         _keyboardInput.dispose();
         _keyboardInput = null;
 
+        _mouseWheelInput.dispose();
+        _mouseWheelInput = null;
+
         _moviePlayer.dispose();
         _moviePlayer = null;
 
@@ -323,6 +337,7 @@ public class AppMode
     protected var _viewport :Viewport;
     protected var _touchInput :TouchInput;
     protected var _keyboardInput :KeyboardInput = new KeyboardInput();
+    protected var _mouseWheelInput :MouseWheelInput = new MouseWheelInput();
     protected var _moviePlayer :MoviePlayer;
 
     protected var _runningTime :Number = 0;

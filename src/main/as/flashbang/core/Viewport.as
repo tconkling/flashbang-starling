@@ -5,6 +5,8 @@ package flashbang.core {
 
 import aspire.util.Preconditions;
 
+import flashbang.input.MouseWheelEvent;
+
 import react.UnitSignal;
 
 import starling.display.Sprite;
@@ -174,6 +176,16 @@ public class Viewport
     public function handleKeyboardEvent (e :KeyboardEvent) :void {
         if (_modeStack.length > 0) {
             _modeStack[_modeStack.length - 1].handleKeyboardEvent(e);
+        }
+    }
+
+    /**
+     * Called when the viewport receives a MouseWheelEvent.
+     * By default, it forwards the event to its active mode.
+     */
+    public function handleMouseWheelEvent (e :MouseWheelEvent) :void {
+        if (_modeStack.length > 0) {
+            _modeStack[_modeStack.length - 1].handleMouseWheelEvent(e);
         }
     }
 
