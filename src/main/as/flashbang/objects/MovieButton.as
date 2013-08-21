@@ -14,14 +14,17 @@ public class MovieButton extends Button
     }
 
     override protected function showState (state :int) :void {
-        switch (state) {
-        case UP: _movie.goTo("up"); break;
-        case DOWN: _movie.goTo("down"); break;
-        case OVER: _movie.goTo("over"); break;
-        case DISABLED: _movie.goTo("disabled"); break;
+        // use UP as a fallback when we don't have a label for the given state
+        if (state != UP && !_movie.hasLabel(STATE_LABELS[state])) {
+            state = UP;
         }
+        _movie.goTo(STATE_LABELS[state]);
     }
 
     protected var _movie :Movie;
+
+    protected static const STATE_LABELS :Vector.<String> = new <String>[
+        "up", "down", "over", "disabled"
+    ];
 }
 }
