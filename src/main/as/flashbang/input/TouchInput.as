@@ -43,10 +43,11 @@ public class TouchInput
     }
 
     public function handleTouches (touches :Vector.<Touch>) :void {
+        var handled :Boolean = false;
         try {
             for (var e :LinkedElement = _listeners.beginIteration(); e != null; e = e.next) {
-                TouchListener(e.data).onTouchesUpdated(touches);
-                if (touches.length == 0) {
+                handled = TouchListener(e.data).onTouchesUpdated(touches);
+                if (handled) {
                     break;
                 }
             }
@@ -54,7 +55,7 @@ public class TouchInput
             _listeners.endIteration();
         }
 
-        if (touches.length > 0) {
+        if (!handled) {
             _dispatcher.dispatchTouches(touches, _ctrlDown, _shiftDown);
         }
     }

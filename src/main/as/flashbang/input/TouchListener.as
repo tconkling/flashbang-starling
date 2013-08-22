@@ -8,9 +8,9 @@ import starling.events.Touch;
 public interface TouchListener
 {
     /**
-     * Process touch events. Touches that are fully handled - and thus should not be passed to
-     * other listeners for further processing - should be removed from the Vector.
+     * Process touch events.
+     * Return true to indicate that the event has been fully handled and processing should stop.
      */
-    function onTouchesUpdated (touches :Vector.<Touch>) :void;
+    function onTouchesUpdated (touches :Vector.<Touch>) :Boolean;
 }
 }
