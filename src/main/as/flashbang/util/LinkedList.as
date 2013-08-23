@@ -8,6 +8,11 @@ import react.Registration;
 /** A singly-linked list. */
 public class LinkedList
 {
+    /** Return true if the list is empty. During iteration, isEmpty will always return false. */
+    public function get isEmpty () :Boolean {
+        return _head == null;
+    }
+
     public function dispose () :void {
         for (var cons :Cons = _head; cons != null; cons = cons._next) {
             cons._data = null;
@@ -25,6 +30,16 @@ public class LinkedList
 
     public function pushBack (data :*) :Registration {
         return addCons(new Cons(this, data), false);
+    }
+
+    public function remove (data :*) :void {
+        if (this.isIterating) {
+            _pendingRuns = pend(_pendingRuns, new Runs(function () :void {
+                _head = Cons.removeData(_head, data);
+            }));
+        } else {
+            _head = Cons.removeData(_head, data);
+        }
     }
 
     public function get isIterating () :Boolean {

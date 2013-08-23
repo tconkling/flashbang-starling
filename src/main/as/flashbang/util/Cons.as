@@ -64,6 +64,17 @@ internal class Cons implements Registration, LinkedElement
             return head;
         }
     }
+
+    public static function removeData (head :Cons, data :*) :Cons {
+        if (head == null) {
+            return head;
+        } else if (head.data === data) {
+            return head._next;
+        } else {
+            head._next = removeData(head._next, data);
+            return head;
+        }
+    }
 }
 }
 
