@@ -335,7 +335,8 @@ class CallbackTouchProcessor extends TouchProcessor
     }
 
     override protected function processTouches (touches :Vector.<Touch>, shiftDown :Boolean, ctrlDown :Boolean) :void {
-        _f(touches);
+        // Starling only delivers updated touches to the processTouches function. We want all touches.
+        _f(this.currentTouches);
     }
 
     protected var _f :Function;
