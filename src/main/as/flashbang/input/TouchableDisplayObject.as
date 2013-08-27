@@ -18,6 +18,10 @@ internal class TouchableDisplayObject
         _displayObject = disp;
     }
 
+    public function get target () :DisplayObject {
+        return _displayObject;
+    }
+
     public function get touchEvent () :SignalView {
         if (_touchEvent == null) {
             _touchEvent = new EventSignal(_displayObject, TouchEvent.TOUCH);

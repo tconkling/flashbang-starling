@@ -27,6 +27,10 @@ public class SceneObject extends GameObject
         return _displayObject;
     }
 
+    public function get target () :DisplayObject {
+        return _displayObject;
+    }
+
     public function get touchEvent () :SignalView { // Signal<TouchEvent>
         return getTouchable().touchEvent;
     }

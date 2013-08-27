@@ -5,9 +5,14 @@ package flashbang.input {
 
 import react.SignalView;
 
+import starling.display.DisplayObject;
+
 /** Exposes touch signals for an object that can be touched */
 public interface Touchable
 {
+    /** Returns the DisplayObject associated with this Touchable */
+    function get target () :DisplayObject;
+
     /**
      * Fired when a TouchEvent is dispatched on the object.
      * If you're only interested in a single touch phase, you can use one of the phase-specific
