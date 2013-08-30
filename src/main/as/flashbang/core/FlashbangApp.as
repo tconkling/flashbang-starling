@@ -12,6 +12,7 @@ import flash.events.MouseEvent;
 import flash.geom.Rectangle;
 import flash.system.Capabilities;
 import flash.system.TouchscreenType;
+import flash.utils.getTimer;
 
 import flashbang.audio.AudioManager;
 import flashbang.input.MouseWheelEvent;
@@ -152,13 +153,14 @@ public class FlashbangApp extends flash.display.Sprite
     /**
      * Returns the current "time" value, in seconds. This should only be used for the purposes
      * of calculating time deltas, not absolute time, as the implementation may change.
-     *
-     * We use Date().time, instead of flash.utils.getTimer(), since the latter is susceptible to
-     * Cheat Engine speed hacks:
-     * http://www.gaminggutter.com/forum/f16/how-use-cheat-engine-speedhack-games-2785.html
      */
     public function get time () :Number {
-        return (new Date().time * 0.001); // convert millis to seconds
+        return flash.utils.getTimer() * 0.001; // convert millis to seconds
+
+        // Games which are susceptible to "speed hack" exploits may want to override this function
+        // to return a value based on Date.
+        // See: http://wiki.cheatengine.org/index.php?title=Cheat_Engine:Speedhack
+        // return (new Date().time * 0.001); // convert millis to seconds
     }
 
     protected final function get starling () :Starling {
