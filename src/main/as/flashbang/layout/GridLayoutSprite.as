@@ -13,7 +13,7 @@ import starling.utils.VAlign;
  * A Sprite that arranges its children in a grid.
  * Call layout() after adding or removing children to update the sprite's layout.
  */
-public class GridLayoutSprite extends AbstractLayoutSprite
+public class GridLayoutSprite extends LayoutSprite
 {
     public function GridLayoutSprite (hOffset :Number = 2, vOffset :Number = 2,
         maxWidth :Number = 200, maxHeight :Number = 0) {

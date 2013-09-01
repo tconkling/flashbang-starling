@@ -9,7 +9,7 @@ import starling.display.Sprite;
 /**
  * A base class for Sprites that arrange their children automatically.
  */
-public class AbstractLayoutSprite extends Sprite
+public class LayoutSprite extends Sprite
 {
     override public function addChildAt (child :DisplayObject, index :int) :DisplayObject {
         super.addChildAt(child, index);
@@ -31,8 +31,8 @@ public class AbstractLayoutSprite extends Sprite
         doLayout();
 
         // If our parent is a layout sprite, tell it to layout as well.
-        if (this.parent is AbstractLayoutSprite) {
-            AbstractLayoutSprite(this.parent).layout(true);
+        if (this.parent is LayoutSprite) {
+            LayoutSprite(this.parent).layout(true);
         }
     }
 

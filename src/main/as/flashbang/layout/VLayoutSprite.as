@@ -12,7 +12,7 @@ import starling.utils.HAlign;
  * A Sprite that arranges its children vertically.
  * Call layout() after adding or removing children to update the sprite's layout.
  */
-public class VLayoutSprite extends AbstractLayoutSprite
+public class VLayoutSprite extends LayoutSprite
 {
     public function VLayoutSprite (vOffset :Number = 2, hAlign :String = "center") {
         _vOffset = vOffset;
