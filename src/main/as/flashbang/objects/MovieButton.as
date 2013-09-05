@@ -3,11 +3,17 @@
 
 package flashbang.objects {
 
+import flashbang.resource.MovieResource;
+
 import flump.display.Movie;
 
 /** A button whose states are defined by frames in a movie */
 public class MovieButton extends Button
 {
+    public static function create (movieName :String) :MovieButton {
+        return new MovieButton(MovieResource.createMovie(movieName));
+    }
+
     public function MovieButton (movie :Movie) {
         super(_movie = movie);
         _movie.stop();
