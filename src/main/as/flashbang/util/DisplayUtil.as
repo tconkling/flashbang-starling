@@ -108,31 +108,25 @@ public class DisplayUtil
 
     /** Transforms a point from one DisplayObject's coordinate space to another's. */
     public static function transformPoint (p :Point, from :DisplayObject, to :DisplayObject,
-        out :Point = null) :Point
-    {
+        out :Point = null) :Point {
         return to.globalToLocal(from.localToGlobal(p, P), out);
     }
 
     /** Transforms a Vector2 from one DisplayObject's coordinate space to another's. */
     public static function transformVector (v :Vector2, from :DisplayObject, to :DisplayObject,
-        out :Vector2 = null) :Vector2
-    {
+        out :Vector2 = null) :Vector2 {
         return Vector2.fromPoint(transformPoint(v.toPoint(P), from, to, P), out);
     }
 
     /** Adds newChild to container, directly below another child of the container. */
     public static function addChildBelow (container :DisplayObjectContainer,
-        newChild :DisplayObject,
-        below :DisplayObject) :void
-    {
+        newChild :DisplayObject, below :DisplayObject) :void {
         container.addChildAt(newChild, container.getChildIndex(below));
     }
 
     /** Adds newChild to container, directly above another child of the container. */
     public static function addChildAbove (container :DisplayObjectContainer,
-        newChild :DisplayObject,
-        above :DisplayObject) :void
-    {
+        newChild :DisplayObject, above :DisplayObject) :void {
         container.addChildAt(newChild, container.getChildIndex(above) + 1);
     }
 
