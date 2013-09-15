@@ -20,6 +20,7 @@ import flump.display.MoviePlayer;
 import react.Registration;
 import react.Registrations;
 import react.Signal;
+import react.SignalView;
 import react.UnitSignal;
 
 import starling.display.DisplayObjectContainer;
@@ -61,6 +62,10 @@ public class AppMode
     /** Returns the Viewport that this AppMode lives in */
     public final function get viewport () :Viewport {
         return _viewport;
+    }
+
+    public function get updateBegan () :SignalView {
+        return _update;
     }
 
     public function get touchInput () :TouchInput {
