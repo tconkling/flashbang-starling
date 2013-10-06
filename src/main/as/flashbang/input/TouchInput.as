@@ -56,7 +56,7 @@ public class TouchInput
         }
 
         if (!handled) {
-            _dispatcher.dispatchTouches(touches, _ctrlDown, _shiftDown);
+            _dispatcher.dispatchTouches(touches, _shiftDown, _ctrlDown);
         }
     }
 
