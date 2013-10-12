@@ -48,21 +48,11 @@ public class ErrorScreen extends Sprite
         format.color = 0x00ff00;
         tf.defaultTextFormat = format;
 
-        tf.text = getErrorMessage(_error);
+        tf.text = Errors.getMessage(_error);
 
         tf.x = MARGIN;
         tf.y = MARGIN;
         scrollSprite.addChild(tf);
-    }
-
-    protected static function getErrorMessage (error :*) :String {
-        if (error is Error) {
-            return Error(error).getStackTrace();
-        } else if (error is ErrorEvent) {
-            return ErrorEvent(error).text;
-        } else {
-            return "" + error;
-        }
     }
 
     protected static function logError (error :*) :void {
