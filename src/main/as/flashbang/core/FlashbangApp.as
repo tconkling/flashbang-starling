@@ -7,8 +7,10 @@ import aspire.ui.KeyboardCodes;
 import aspire.util.F;
 
 import flash.display.Sprite;
+import flash.display.Stage;
 import flash.events.Event;
 import flash.events.MouseEvent;
+import flash.events.UncaughtErrorEvent;
 import flash.geom.Rectangle;
 import flash.system.Capabilities;
 import flash.system.TouchscreenType;
@@ -18,11 +20,13 @@ import flashbang.audio.AudioManager;
 import flashbang.input.MouseWheelEvent;
 import flashbang.input.TouchInput;
 import flashbang.resource.ResourceManager;
+import flashbang.util.ErrorScreen;
 import flashbang.util.Listeners;
 
+import react.BoolValue;
+import react.BoolView;
 import react.Registration;
 import react.Registrations;
-import react.UnitSignal;
 
 import starling.core.Starling;
 import starling.display.Sprite;
@@ -35,12 +39,23 @@ use namespace flashbang_internal;
 
 public class FlashbangApp extends flash.display.Sprite
 {
-    public const disposed :UnitSignal = new UnitSignal();
-
     public function FlashbangApp () {
         // Start starling when we're added to the stage
         addEventListener(flash.events.Event.ADDED_TO_STAGE, addedToStage);
         Flashbang.registerApp(this);
+    }
+
+    public function get disposed () :BoolView {
+        return _disposed;
+    }
+
+    /**
+     * Provides a safe mechanism for displaying information about a fatal error and gracefully
+     * shutting down.
+     */
+    public function onFatalError (error :*) :void {
+        dispose();
+        ErrorScreen.display(_stage, error);
     }
 
     /**
@@ -52,7 +67,13 @@ public class FlashbangApp extends flash.display.Sprite
      * It's an error to continue to use a FlashbangApp that has been disposed.
      */
     public function dispose () :void {
-        _disposePending = true;
+        if (!_disposePending && !_disposed.value) {
+            if (_isUpdating) {
+                _disposePending = true;
+            } else {
+                disposeNow();
+            }
+        }
     }
 
     /** Called when the app receives touches. By default it forwards them to each viewport */
@@ -198,6 +219,12 @@ public class FlashbangApp extends flash.display.Sprite
     }
 
     protected function addedToStage (e :flash.events.Event) :void {
+        _stage = this.stage;
+
+        // install an uncaught error handler
+        this.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR,
+            onUncaughtErrorEvent);
+
         var iOS :Boolean = Capabilities.manufacturer.indexOf("iOS") != -1;
         var isMac :Boolean = Capabilities.manufacturer.indexOf("Macintosh") != -1;
         var hasTouchscreen :Boolean = (Capabilities.touchscreenType == TouchscreenType.FINGER);
@@ -214,6 +241,14 @@ public class FlashbangApp extends flash.display.Sprite
         _starling.touchProcessor = new CallbackTouchProcessor(_starling.stage, handleTouches);
         _regs.addEventListener(_starling, starling.events.Event.ROOT_CREATED, rootCreated).once();
         _starling.start();
+    }
+
+    /**
+     * Called when an UncaughtErrorEvent occurs. By default, the app's onFatalError handler is
+     * called with the event's error object.
+     */
+    protected function onUncaughtErrorEvent (e :UncaughtErrorEvent) :void {
+        onFatalError(e.error);
     }
 
     protected function rootCreated (..._) :void {
@@ -250,39 +285,46 @@ public class FlashbangApp extends flash.display.Sprite
     }
 
     protected function update (e :starling.events.Event) :void {
-        // how much time has elapsed since last frame?
-        var newTime :Number = this.time;
-        var dt :Number = newTime - _lastTime;
+        _isUpdating = true;
 
-        if (_config.maxUpdateDelta > 0) {
-            // Ensure that our time deltas don't get too large
-            dt = Math.min(_config.maxUpdateDelta, dt);
-        }
+        try {
+            // how much time has elapsed since last frame?
+            var newTime :Number = this.time;
+            var dt :Number = newTime - _lastTime;
 
-        // update all our updatables
-        for each (var updatable :Updatable in _updatables) {
-            updatable.update(dt);
-        }
-
-        // update viewports
-        for (var ii :int = _viewports.length - 1; ii >= 0; --ii) {
-            var viewport :Viewport = _viewports[ii];
-            if (!viewport.isDisposed) {
-                viewport.update(dt);
+            if (_config.maxUpdateDelta > 0) {
+                // Ensure that our time deltas don't get too large
+                dt = Math.min(_config.maxUpdateDelta, dt);
             }
-            if (viewport.isDisposed) {
-                _viewports.splice(ii, 1);
-                viewport.disposeNow();
+
+            // update all our updatables
+            for each (var updatable :Updatable in _updatables) {
+                updatable.update(dt);
+            }
+
+            // update viewports
+            for (var ii :int = _viewports.length - 1; ii >= 0; --ii) {
+                var viewport :Viewport = _viewports[ii];
+                if (!viewport.isDisposed) {
+                    viewport.update(dt);
+                }
+                if (viewport.isDisposed) {
+                    _viewports.splice(ii, 1);
+                    viewport.disposeNow();
+                }
+            }
+
+            _lastTime = newTime;
+
+        } finally {
+            _isUpdating = false;
+
+            // should the MainLoop be stopped?
+            if (_disposePending) {
+                _regs.close();
+                disposeNow();
             }
         }
-
-        // should the MainLoop be stopped?
-        if (_disposePending) {
-            _regs.close();
-            disposeNow();
-        }
-
-        _lastTime = newTime;
     }
 
     protected function disposeNow () :void {
@@ -306,7 +348,7 @@ public class FlashbangApp extends flash.display.Sprite
         _starling.dispose();
         _starling = null;
 
-        disposed.emit();
+        _disposed.value = true;
     }
 
     internal var _rsrcs :ResourceManager = new ResourceManager();
@@ -314,10 +356,13 @@ public class FlashbangApp extends flash.display.Sprite
     internal var _starling :Starling;
     internal var _config :FlashbangConfig;
 
+    protected var _stage :Stage;
     protected var _mainSprite :starling.display.Sprite;
     protected var _regs :Listeners = new Listeners();
 
+    protected var _isUpdating :Boolean;
     protected var _disposePending :Boolean;
+    protected var _disposed :BoolValue = new BoolValue();
     protected var _lastTime :Number;
     protected var _updatables :Vector.<Updatable> = new <Updatable>[];
     protected var _viewports :Vector.<Viewport> = new <Viewport>[];
