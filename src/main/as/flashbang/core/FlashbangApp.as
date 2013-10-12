@@ -54,8 +54,13 @@ public class FlashbangApp extends flash.display.Sprite
      * shutting down.
      */
     public function onFatalError (error :*) :void {
+        if (_gotFatalError) {
+            // prevent multiple error screens
+            return;
+        }
+        _gotFatalError = true;
         dispose();
-        ErrorScreen.display(_stage, error);
+        _stage.addChild(new ErrorScreen(error));
     }
 
     /**
@@ -366,6 +371,8 @@ public class FlashbangApp extends flash.display.Sprite
     protected var _lastTime :Number;
     protected var _updatables :Vector.<Updatable> = new <Updatable>[];
     protected var _viewports :Vector.<Viewport> = new <Viewport>[];
+
+    protected static var _gotFatalError :Boolean;
 }
 
 }

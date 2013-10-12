@@ -3,11 +3,12 @@
 
 package flashbang.util {
 
+import aspire.util.F;
 import aspire.util.Log;
 
 import flash.display.Sprite;
-import flash.display.Stage;
 import flash.events.ErrorEvent;
+import flash.events.Event;
 import flash.text.TextField;
 import flash.text.TextFormat;
 
@@ -15,27 +16,26 @@ import flashx.textLayout.formats.TextAlign;
 
 import react.MultiFailureError;
 
-public class ErrorScreen
+public class ErrorScreen extends Sprite
 {
-    public static function display (stage :Stage, error :*) :void {
-        logError(error);
-        // prevent multiple error screens
-        if (_displaying) {
-            return;
-        }
-        _displaying = true;
+    public function ErrorScreen (error :*) {
+        _error = error;
 
-        var screen :Sprite = new Sprite();
-        screen.graphics.beginFill(0x0, 1);
-        screen.graphics.drawRect(0, 0, stage.stageWidth, stage.stageHeight);
-        screen.graphics.endFill();
+        logError(error);
+        addEventListener(Event.ADDED_TO_STAGE, once(F.callback(drawScreen)));
+    }
+
+    protected function drawScreen () :void {
+        this.graphics.beginFill(0x0, 1);
+        this.graphics.drawRect(0, 0, this.stage.stageWidth, this.stage.stageHeight);
+        this.graphics.endFill();
 
         var scrollSprite :Sprite = new Sprite();
-        screen.addChild(scrollSprite);
+        addChild(scrollSprite);
 
         var tf :TextField = new TextField();
-        tf.width = stage.stageWidth - (MARGIN * 2);
-        tf.height = stage.stageHeight - (MARGIN * 2);
+        tf.width = this.stage.stageWidth - (MARGIN * 2);
+        tf.height = this.stage.stageHeight - (MARGIN * 2);
         tf.multiline = true;
         tf.wordWrap = true;
         tf.selectable = true;
@@ -48,13 +48,11 @@ public class ErrorScreen
         format.color = 0x00ff00;
         tf.defaultTextFormat = format;
 
-        tf.text = getErrorMessage(error);
+        tf.text = getErrorMessage(_error);
 
         tf.x = MARGIN;
         tf.y = MARGIN;
         scrollSprite.addChild(tf);
-
-        stage.addChild(screen);
     }
 
     protected static function getErrorMessage (error :*) :String {
@@ -81,7 +79,14 @@ public class ErrorScreen
         }
     }
 
-    protected static var _displaying :Boolean;
+    protected static function once (handler :Function) :Function {
+        return function listener (event :Event) :void {
+            event.currentTarget.removeEventListener(event.type, listener);
+            handler(event);
+        }
+    }
+
+    protected var _error :*;
 
     protected static const MARGIN :Number = 5;
 
