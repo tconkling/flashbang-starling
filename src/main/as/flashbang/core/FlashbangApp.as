@@ -248,7 +248,7 @@ public class FlashbangApp extends flash.display.Sprite
      * called with the event's error object.
      */
     protected function onUncaughtErrorEvent (e :UncaughtErrorEvent) :void {
-        onFatalError(e.error);
+        onFatalError(e);
     }
 
     protected function rootCreated (..._) :void {

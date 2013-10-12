@@ -59,7 +59,7 @@ public class ErrorScreen
 
     protected static function getErrorMessage (error :*) :String {
         if (error is Error) {
-            return Error(error).message;
+            return Error(error).getStackTrace();
         } else if (error is ErrorEvent) {
             return ErrorEvent(error).text;
         } else {
