@@ -40,7 +40,7 @@ public class MovieCache
             movie.clipRect = null;
         }
 
-        return new CachedMovieImpl(movie, F.callback(releaseMovie, movie, name));
+        return new CachedMovieImpl(movie, F.bind(releaseMovie, movie, name));
     }
 
     public function requireMovie (name :String) :CachedMovie {

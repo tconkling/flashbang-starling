@@ -80,7 +80,7 @@ public class SoundResourceLoader extends ResourceLoader
             if (getLoadParam(STREAM, false)) {
                 succeed(result);
             } else {
-                _sound.addEventListener(Event.COMPLETE, F.callback(succeed, result));
+                _sound.addEventListener(Event.COMPLETE, F.bind(succeed, result));
             }
 
         } else if (data is Class) {

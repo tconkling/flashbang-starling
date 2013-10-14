@@ -21,7 +21,7 @@ public class ErrorScreen extends Sprite
         _error = error;
 
         logError(error);
-        addEventListener(Event.ADDED_TO_STAGE, once(F.callback(drawScreen)));
+        addEventListener(Event.ADDED_TO_STAGE, once(F.bind(drawScreen)));
     }
 
     protected function drawScreen () :void {

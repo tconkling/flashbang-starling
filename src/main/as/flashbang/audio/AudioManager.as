@@ -164,7 +164,7 @@ public class AudioManager
 
         // Create the channel
         var channel :AudioChannel = new AudioChannel();
-        channel.completeHandler = F.callback(handleComplete, channel);
+        channel.completeHandler = F.bind(handleComplete, channel);
         channel.controls = new AudioControls(parentControls);
         channel.controls.retain();
         channel.sound = sound;

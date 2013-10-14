@@ -164,7 +164,7 @@ public class FlashbangApp extends flash.display.Sprite
 
     public function addUpdatable (obj :Updatable) :Registration {
         _updatables.push(obj);
-        return Registrations.createWithFunction(F.callback(removeUpdatable, obj));
+        return Registrations.createWithFunction(F.bind(removeUpdatable, obj));
     }
 
     public function removeUpdatable (obj :Updatable) :void {
