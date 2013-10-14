@@ -11,8 +11,7 @@ import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.text.TextField;
 import flash.text.TextFormat;
-
-import flashx.textLayout.formats.TextAlign;
+import flash.text.TextFormatAlign;
 
 import react.MultiFailureError;
 
@@ -44,7 +43,7 @@ public class ErrorScreen extends Sprite
         var format :TextFormat = new TextFormat();
         format.font = "_typewriter";
         format.size = 14;
-        format.align = TextAlign.LEFT;
+        format.align = TextFormatAlign.LEFT;
         format.color = 0x00ff00;
         tf.defaultTextFormat = format;
 
