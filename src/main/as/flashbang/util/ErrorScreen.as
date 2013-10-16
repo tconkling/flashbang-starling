@@ -7,7 +7,6 @@ import aspire.util.F;
 import aspire.util.Log;
 
 import flash.display.Sprite;
-import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.text.TextField;
 import flash.text.TextFormat;
@@ -59,12 +58,8 @@ public class ErrorScreen extends Sprite
             for each (var child :Error in MultiFailureError(error).failures) {
                 logError(child);
             }
-        } else if (error is Error) {
-            log.error("", Error(error).getStackTrace());
-        } else if (error is ErrorEvent) {
-            log.error(ErrorEvent(error).toString());
         } else {
-            log.error("An unknown error occurred", "error", error);
+            log.error(Errors.getMessage(error));
         }
     }
 
