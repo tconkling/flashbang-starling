@@ -19,16 +19,21 @@ public class Errors
     }
 
     protected static function getMessageInternal (error :*, wantStackTrace :Boolean) :String {
+        // NB: do NOT use the class-cast operator for converting to typed error objects.
+        // Error() is a top-level function that creates a new error object, rather than performing
+        // a class-cast, as expected.
+
         var msg :String;
         if (error is Error) {
+            var e :Error = (error as Error);
             if (wantStackTrace) {
-                msg = error.getStackTrace();
+                msg = e.getStackTrace();
                 if (msg != null && msg.length > 0) {
                     return msg;
                 }
             }
 
-            msg = error.message;
+            msg = e.message;
             if (msg != null && msg.length > 0) {
                 return msg;
             }
@@ -36,7 +41,8 @@ public class Errors
             return getMessageInternal(error.error, wantStackTrace);
 
         } else if (error is ErrorEvent) {
-            msg = error.text;
+            var ee :ErrorEvent = (error as ErrorEvent);
+            msg = ee.text;
             if (msg != null && msg.length > 0) {
                 return msg;
             }
