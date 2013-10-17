@@ -295,7 +295,8 @@ public class FlashbangApp extends flash.display.Sprite
         try {
             // how much time has elapsed since last frame?
             var newTime :Number = this.time;
-            var dt :Number = newTime - _lastTime;
+            // prevent negative/zero time updates
+            var dt :Number = Math.max(newTime - _lastTime, MIN_UPDATE_DELTA);
 
             if (_config.maxUpdateDelta > 0) {
                 // Ensure that our time deltas don't get too large
@@ -373,6 +374,8 @@ public class FlashbangApp extends flash.display.Sprite
     protected var _viewports :Vector.<Viewport> = new <Viewport>[];
 
     protected static var _gotFatalError :Boolean;
+
+    protected static const MIN_UPDATE_DELTA :Number = 1 / 120;
 }
 
 }
