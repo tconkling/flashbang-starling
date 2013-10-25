@@ -16,7 +16,7 @@ public class MovieButton extends Button
 
     public function MovieButton (movie :Movie) {
         super(_movie = movie);
-        _movie.stop();
+        _movie.playChildrenOnly();
     }
 
     override protected function showState (state :int) :void {
