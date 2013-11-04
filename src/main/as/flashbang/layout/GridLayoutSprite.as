@@ -149,7 +149,7 @@ public class GridLayoutSprite extends LayoutSprite
             }
         }
 
-        info.size = maxChildHeight + _vOffset;
+        info.size += maxChildHeight + _vOffset;
         info.endIdx = endIdx;
     }
 
@@ -189,7 +189,7 @@ public class GridLayoutSprite extends LayoutSprite
             }
         }
 
-        info.size = maxChildWidth + _hOffset;
+        info.size += maxChildWidth + _hOffset;
         info.endIdx = endIdx;
     }
 
