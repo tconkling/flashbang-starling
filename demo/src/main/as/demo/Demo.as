@@ -41,12 +41,12 @@ class LoadingMode extends AppMode
     public function LoadingMode () {
         var resources :ResourceSet = new ResourceSet();
         resources.add({ type: "flump", name: "flump", data: FLUMP });
-        resources.load(
-            function () :void {
+        resources.load()
+            .onSuccess(function () :void {
                 // resources loaded. kick off the game.
                 viewport.changeMode(new GameMode());
-            },
-            function (e :Error) :void {
+            })
+            .onFailure(function (e :Error) :void {
                 // there was a load error
                 log.error("Error loading resources", e);
             });
