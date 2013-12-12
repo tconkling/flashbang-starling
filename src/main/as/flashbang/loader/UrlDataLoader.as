@@ -3,7 +3,6 @@
 
 package flashbang.loader {
 
-import flash.errors.IOError;
 import flash.events.Event;
 import flash.events.IOErrorEvent;
 import flash.net.URLLoader;
@@ -20,18 +19,16 @@ public class UrlDataLoader extends DataLoader
     override protected function doLoad () :void {
         _loader = new URLLoader();
         _loader.dataFormat = _format;
-
-        _loader.addEventListener(Event.COMPLETE, function (..._) :void {
-            var data :* = _loader.data;
-            _loader = null;
-            succeed(data);
-        });
-
-        _loader.addEventListener(IOErrorEvent.IO_ERROR, function (e :IOErrorEvent) :void {
-            fail(new IOError(e.text, e.errorID));
-        });
+        _loader.addEventListener(Event.COMPLETE, onLoadComplete);
+        _loader.addEventListener(IOErrorEvent.IO_ERROR, fail);
 
         _loader.load(_request);
+    }
+
+    protected function onLoadComplete (e :Event) :void {
+        var data :* = _loader.data;
+        _loader = null;
+        succeed(data);
     }
 
     override protected function onCanceled () :void {
