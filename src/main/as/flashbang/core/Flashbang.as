@@ -16,7 +16,7 @@ public class Flashbang
     public static function get stageWidth () :int { return _app._config.stageWidth; }
     public static function get stageHeight () :int { return _app._config.stageHeight; }
 
-    public static function onFatalError (e :Error) :void { _app.onFatalError(e); }
+    public static function onFatalError (err :*) :void { _app.onFatalError(err); }
 
     internal static function registerApp (app :FlashbangApp) :void {
         Preconditions.checkState(_app == null, "A FlashbangApp has already been registered");
