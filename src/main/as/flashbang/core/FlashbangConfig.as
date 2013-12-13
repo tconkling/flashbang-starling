@@ -22,6 +22,9 @@ public class FlashbangConfig
 
     /** The MainLoop will not pass time deltas larger than this value to update() functions. */
     public var maxUpdateDelta :Number = 1.0 / 15.0;
+
+    /** The app's build ID string, if it has one. (Will be shown in the default ErrorScreen) */
+    public var buildId :String = null;
 }
 
 }

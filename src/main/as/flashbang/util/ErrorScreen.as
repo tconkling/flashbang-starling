@@ -12,12 +12,15 @@ import flash.text.TextField;
 import flash.text.TextFormat;
 import flash.text.TextFormatAlign;
 
+import flashbang.core.FlashbangConfig;
+
 import react.MultiFailureError;
 
 public class ErrorScreen extends Sprite
 {
-    public function ErrorScreen (error :*) {
+    public function ErrorScreen (config :FlashbangConfig, error :*) {
         _error = error;
+        _config = config;
 
         logError(error);
         addEventListener(Event.ADDED_TO_STAGE, once(F.bind(drawScreen)));
@@ -46,7 +49,11 @@ public class ErrorScreen extends Sprite
         format.color = 0x00ff00;
         tf.defaultTextFormat = format;
 
-        tf.text = Errors.getMessage(_error);
+        var errText :String = Errors.getMessage(_error);
+        if (_config.buildId != null) {
+            errText = "Build ID: " + _config.buildId + "\n" + errText;
+        }
+        tf.text = errText;
 
         tf.x = MARGIN;
         tf.y = MARGIN;
@@ -70,6 +77,7 @@ public class ErrorScreen extends Sprite
         }
     }
 
+    protected var _config :FlashbangConfig;
     protected var _error :*;
 
     protected static const MARGIN :Number = 5;

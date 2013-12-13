@@ -60,7 +60,7 @@ public class FlashbangApp extends flash.display.Sprite
         }
         _gotFatalError = true;
         dispose();
-        _stage.addChild(new ErrorScreen(error));
+        _stage.addChild(new ErrorScreen(_config, error));
     }
 
     /**
