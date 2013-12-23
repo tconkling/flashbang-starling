@@ -19,8 +19,8 @@ public class BatchLoader extends DataLoader
 
     /** Adds a loader to the batch */
     public function addLoader (loader :DataLoader) :void {
-        Preconditions.checkState(_state == LoadState.INIT,
-            "Batch is loading or loaded", "state", _state);
+        Preconditions.checkState(this.state == LoadState.INIT,
+            "Batch is loading or loaded", "state", this.state);
         Preconditions.checkArgument(loader.state == LoadState.INIT,
             "Loader has already been loaded", "state", loader.state);
         _pending.push(loader);
