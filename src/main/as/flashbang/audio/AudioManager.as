@@ -180,7 +180,6 @@ public class AudioManager
             if (null == channel.channel) {
                 log.info("Discarding sound '" + sound.name +
                     "' (Flash is out of channels)");
-                channel.controls.release();
                 return new AudioChannel();
             }
         }
