@@ -55,6 +55,10 @@ public class AppMode
         _rootObject = new RootObject(this);
     }
 
+    public function get regs () :Listeners {
+        return _regs;
+    }
+
     public final function get modeSprite () :Sprite {
         return _modeSprite;
     }
