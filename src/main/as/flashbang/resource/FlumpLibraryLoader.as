@@ -42,7 +42,7 @@ public class FlumpLibraryLoader extends ResourceLoader
             var clazz :Class = Class(data);
             data = ByteArray(new clazz());
         }
-        _mipmaps = getLoadParam(MIPMAPS, false);
+        _mipmaps = getLoadParam(MIPMAPS, false) as Boolean;
 
         _exec = new Executor();
         _exec.succeeded.connect(function (f :Future) :void {

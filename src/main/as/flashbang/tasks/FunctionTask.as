@@ -3,7 +3,6 @@
 
 package flashbang.tasks {
 
-import flashbang.core.GameObject;
 import flashbang.core.ObjectTask;
 import flashbang.core.Updatable;
 

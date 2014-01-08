@@ -25,7 +25,6 @@ public class XmlResourceLoader extends ResourceLoader
     }
 
     override protected function doLoad () :void {
-        var data :Object = requireLoadParam(DATA, Object);
         var name :String = requireLoadParam(NAME, String);
 
         _loader = new XmlLoader(requireLoadParam(DATA, Object));

@@ -71,10 +71,11 @@ public class ErrorScreen extends Sprite
     }
 
     protected static function once (handler :Function) :Function {
-        return function listener (event :Event) :void {
+        var listener :Function = function (event :Event) :void {
             event.currentTarget.removeEventListener(event.type, listener);
             handler(event);
-        }
+        };
+        return listener;
     }
 
     protected var _config :FlashbangConfig;

@@ -48,7 +48,7 @@ public class SpriteMeterBase extends Sprite
     }
 
     public function set value (val :Number) :void {
-        val = MathUtil.clamp(val, _minValue, _maxValue)
+        val = MathUtil.clamp(val, _minValue, _maxValue);
         if (_value != val) {
             _value = val;
             _needsDisplayUpdate = true;

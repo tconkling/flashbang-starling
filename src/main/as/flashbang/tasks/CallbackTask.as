@@ -3,9 +3,7 @@
 
 package flashbang.tasks {
 
-import flashbang.core.GameObject;
 import flashbang.core.ObjectTask;
-import flashbang.core.Updatable;
 
 /**
  * A Task that calls a function once and then completes.

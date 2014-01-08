@@ -96,7 +96,7 @@ public class SoundResourceLoader extends ResourceLoader
 
     override protected function onCanceled () :void {
         if (_sound != null) {
-            try { _sound.close() }
+            try { _sound.close(); }
             catch (e :Error) { /* swallow */ }
             _sound = null;
         }
