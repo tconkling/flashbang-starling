@@ -92,7 +92,7 @@ public class TextFieldBuilder
         return autoSize(TextFieldAutoSize.NONE);
     }
 
-    /** Equivalent to <code>autoSize(TextFieldAutoSize.SINGLE_LINE)</code> */
+    /** Equivalent to <code>autoSize(TextFieldAutoSize.HORIZONTAL)</code> */
     public function autoSizeHorizontal () :TextFieldBuilder {
         return autoSize(TextFieldAutoSize.HORIZONTAL);
     }
