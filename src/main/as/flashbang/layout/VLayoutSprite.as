@@ -6,6 +6,7 @@ package flashbang.layout {
 import flash.geom.Rectangle;
 
 import starling.display.DisplayObject;
+import starling.display.Quad;
 import starling.utils.HAlign;
 
 /**
@@ -39,6 +40,12 @@ public class VLayoutSprite extends LayoutSprite
             _hAlign = val;
             _needsLayout = true;
         }
+    }
+
+    public function addVSpacer (size :Number) :void {
+        const spacer :Quad = new Quad(1, size);
+        spacer.visible = false;
+        addChild(spacer);
     }
 
     override protected function doLayout () :void {
