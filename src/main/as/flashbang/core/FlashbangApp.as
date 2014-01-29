@@ -181,7 +181,7 @@ public class FlashbangApp extends flash.display.Sprite
      * of calculating time deltas, not absolute time, as the implementation may change.
      */
     public function get time () :Number {
-        return flash.utils.getTimer() * 0.001; // convert millis to seconds
+        return getTimer() * 0.001; // convert millis to seconds
 
         // Games which are susceptible to "speed hack" exploits may want to override this function
         // to return a value based on Date.
@@ -230,18 +230,16 @@ public class FlashbangApp extends flash.display.Sprite
         this.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR,
             onUncaughtErrorEvent);
 
-        var iOS :Boolean = Capabilities.manufacturer.indexOf("iOS") != -1;
-        var isMac :Boolean = Capabilities.manufacturer.indexOf("Macintosh") != -1;
-        var hasTouchscreen :Boolean = (Capabilities.touchscreenType == TouchscreenType.FINGER);
-
-        Starling.multitouchEnabled = hasTouchscreen;
-
-        // per Starling: Macs and iOS don't require this
-        Starling.handleLostContext = !(isMac || iOS);
-
         _config = createConfig();
 
+        // init Starling. Subclasses can override the starling init params in
+        // an initStarling() override
+        var isiOS :Boolean = Capabilities.manufacturer.indexOf("iOS") != -1;
+        var hasTouchscreen :Boolean = (Capabilities.touchscreenType == TouchscreenType.FINGER);
+        Starling.multitouchEnabled = hasTouchscreen;
+        Starling.handleLostContext = !isiOS;
         _starling = initStarling();
+
         // install our custom touch handler
         _starling.touchProcessor = new CallbackTouchProcessor(_starling.stage, handleTouches);
         _regs.addEventListener(_starling, starling.events.Event.ROOT_CREATED, rootCreated).once();
