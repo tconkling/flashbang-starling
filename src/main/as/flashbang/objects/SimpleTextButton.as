@@ -19,6 +19,7 @@ public class SimpleTextButton extends Button
             .build();
         _tf.x = PADDING;
         _tf.y = PADDING;
+        _tf.touchable = false;
 
         _bg = new Quad(_tf.width + (PADDING * 2), _tf.height + (PADDING * 2));
 
