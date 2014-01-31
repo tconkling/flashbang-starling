@@ -43,9 +43,13 @@ public class HLayoutSprite extends LayoutSprite
     }
 
     public function addHSpacer (size :Number) :void {
+        addHSpacerAt(size, this.numChildren);
+    }
+
+    public function addHSpacerAt (size :Number, index :int) :void {
         const spacer :Quad = new Quad(size, 1);
         spacer.visible = false;
-        addChild(spacer);
+        addChildAt(spacer, index);
     }
 
     override protected function doLayout () :void {

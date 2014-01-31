@@ -43,9 +43,13 @@ public class VLayoutSprite extends LayoutSprite
     }
 
     public function addVSpacer (size :Number) :void {
+        addVSpacerAt(size, this.numChildren);
+    }
+
+    public function addVSpacerAt (size :Number, index :int) :void {
         const spacer :Quad = new Quad(1, size);
         spacer.visible = false;
-        addChild(spacer);
+        addChildAt(spacer, index);
     }
 
     override protected function doLayout () :void {
