@@ -8,11 +8,14 @@ import aspire.util.Preconditions;
 import flashbang.audio.AudioManager;
 import flashbang.resource.ResourceManager;
 
+import starling.core.Starling;
+
 public class Flashbang
 {
     public static function get app () :FlashbangApp { return _app; }
     public static function get rsrcs () :ResourceManager { return _app._rsrcs; }
     public static function get audio () :AudioManager { return _app._audio; }
+    public static function get starling () :Starling { return _app.starling; }
     public static function get stageWidth () :int { return _app._config.stageWidth; }
     public static function get stageHeight () :int { return _app._config.stageHeight; }
 

@@ -189,7 +189,7 @@ public class FlashbangApp extends flash.display.Sprite
         // return (new Date().time * 0.001); // convert millis to seconds
     }
 
-    protected final function get starling () :Starling {
+    public final function get starling () :Starling {
         return _starling;
     }
 
