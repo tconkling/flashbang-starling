@@ -24,16 +24,31 @@ public class LayoutSprite extends Sprite
     }
 
     public final function layout (force :Boolean = false) :void {
-        if (!_needsLayout && !force) {
+        if (_isLayingOut || (!_needsLayout && !force)) {
             return;
         }
         _needsLayout = false;
+        _isLayingOut = true;
+
+        // Recursively lay out our children if they need it.
+        for (var ii :int = 0; ii < this.numChildren; ++ii) {
+            var layoutChild :LayoutSprite = (getChildAt(ii) as LayoutSprite);
+            if (layoutChild != null && !layoutChild._isLayingOut && layoutChild._needsLayout) {
+                layoutChild.layout(false);
+            }
+        }
+
+        // Layout ourselves.
         doLayout();
 
-        // If our parent is a layout sprite, tell it to layout as well.
-        if (this.parent is LayoutSprite) {
-            LayoutSprite(this.parent).layout(true);
+        // If our parent is a layout sprite, force it to re-layout, since our size has
+        // likely changed.
+        var layoutParent :LayoutSprite = (this.parent as LayoutSprite);
+        if (layoutParent != null && !layoutParent._isLayingOut) {
+            layoutParent.layout(true);
         }
+
+        _isLayingOut = false;
     }
 
     /** Subclasses override */
@@ -42,6 +57,7 @@ public class LayoutSprite extends Sprite
     }
 
     protected var _needsLayout :Boolean;
+    private var _isLayingOut :Boolean;
 }
 }
 
