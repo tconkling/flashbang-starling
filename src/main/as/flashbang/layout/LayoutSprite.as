@@ -12,15 +12,13 @@ import starling.display.Sprite;
 public class LayoutSprite extends Sprite
 {
     override public function addChildAt (child :DisplayObject, index :int) :DisplayObject {
-        super.addChildAt(child, index);
         _needsLayout = true;
-        return child;
+        return super.addChildAt(child, index);
     }
 
     override public function removeChildAt (index :int, dispose :Boolean = false) :DisplayObject {
-        var child :DisplayObject = super.removeChildAt(index, dispose);
         _needsLayout = true;
-        return child;
+        return super.removeChildAt(index, dispose);
     }
 
     public final function layout (force :Boolean = false) :void {
