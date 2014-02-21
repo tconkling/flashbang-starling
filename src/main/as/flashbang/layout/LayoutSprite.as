@@ -31,8 +31,8 @@ public class LayoutSprite extends Sprite
         // Recursively lay out our children if they need it.
         for (var ii :int = 0; ii < this.numChildren; ++ii) {
             var layoutChild :LayoutSprite = (getChildAt(ii) as LayoutSprite);
-            if (layoutChild != null && !layoutChild._isLayingOut && layoutChild._needsLayout) {
-                layoutChild.layout(false);
+            if (layoutChild != null) {
+                layoutChild.layout(force);
             }
         }
 
