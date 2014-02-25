@@ -13,7 +13,9 @@ import flashbang.resource.MovieResource;
 
 import flump.display.Movie;
 
-public class MovieCache
+import react.Registration;
+
+public class MovieCache implements Registration
 {
     public function getMovie (name :String) :CachedMovie {
         Preconditions.checkState(!_disposed, "disposed");
@@ -61,7 +63,7 @@ public class MovieCache
         _caches = new Dictionary();
     }
 
-    public function dispose () :void {
+    public function close () :void {
         Preconditions.checkState(!_disposed, "disposed");
         clear();
         _disposed = true;
@@ -104,8 +106,7 @@ class SingleMovieCache {
     public var movies :Vector.<Movie> = new <Movie>[];
 }
 
-class CachedMovieImpl
-    implements CachedMovie
+class CachedMovieImpl implements CachedMovie
 {
     public function CachedMovieImpl (movie :Movie, releaseFn :Function) {
         _movie = movie;
