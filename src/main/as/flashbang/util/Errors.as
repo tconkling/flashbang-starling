@@ -26,15 +26,15 @@ public class Errors
         var msg :String;
         if (error is Error) {
             var e :Error = (error as Error);
+            msg = (e.message || "");
             if (wantStackTrace) {
-                msg = e.getStackTrace();
-                if (msg != null && msg.length > 0) {
-                    return msg;
+                if (msg.length > 0) {
+                    msg += "\n";
                 }
+                msg += e.getStackTrace();
             }
 
-            msg = e.message;
-            if (msg != null && msg.length > 0) {
+            if (msg.length > 0) {
                 return msg;
             }
         } else if (error is UncaughtErrorEvent) {
@@ -49,7 +49,6 @@ public class Errors
         }
 
         return "An error occurred: " + error;
-
     }
 }
 }
