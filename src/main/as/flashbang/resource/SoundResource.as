@@ -32,8 +32,15 @@ public class SoundResource extends Resource
     }
 
     override protected function unload () :void {
-        _sound.close();
-        _sound = null;
+        if (_sound != null) {
+            try {
+                _sound.close();
+            } catch (e :Error) {
+                // The sound may or may not be currently streaming data.
+                // We'll get an error if it isn't and we try to close its stream- but we don't care.
+            }
+            _sound = null;
+        }
     }
 
     public function get sound () :Sound { return _sound; }
