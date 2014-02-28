@@ -69,21 +69,20 @@ public class FontResourceLoader extends ResourceLoader
 }
 }
 
+import aspire.util.ClassUtil;
+
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.Loader;
-import flash.errors.IOError;
 import flash.events.Event;
 import flash.events.IOErrorEvent;
 import flash.net.URLRequest;
 import flash.utils.ByteArray;
 
+import flashbang.loader.DataLoader;
+
 import starling.core.Starling;
 import starling.textures.Texture;
-
-import aspire.util.ClassUtil;
-
-import flashbang.loader.DataLoader;
 
 class LoadedTexture
 {
@@ -150,7 +149,7 @@ class TextureLoader extends DataLoader
 
         _loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR,
             function (evt :IOErrorEvent) :void {
-                fail(new IOError(evt.text, evt.errorID));
+                fail(evt);
             });
 
         if (_data is String) {

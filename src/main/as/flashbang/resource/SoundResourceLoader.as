@@ -3,14 +3,13 @@
 
 package flashbang.resource {
 
-import flash.errors.IOError;
+import aspire.util.ClassUtil;
+import aspire.util.F;
+
 import flash.events.Event;
 import flash.events.IOErrorEvent;
 import flash.media.Sound;
 import flash.net.URLRequest;
-
-import aspire.util.ClassUtil;
-import aspire.util.F;
 
 import flashbang.audio.SoundType;
 
@@ -66,7 +65,7 @@ public class SoundResourceLoader extends ResourceLoader
 
             // Immediately set up the error listener to protect against blowing up
             _sound.addEventListener(IOErrorEvent.IO_ERROR, function (e :IOErrorEvent) :void {
-                fail(new IOError(e.text, e.errorID));
+                fail(e);
             });
 
             // And THEN start it loading
