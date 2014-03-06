@@ -17,6 +17,12 @@ public class ResourceSet extends BatchLoader
         addLoader(Flashbang.rsrcs.createLoader(loadParams));
     }
 
+    public function addAll (loadParamsArray :Array) :void {
+        for each (var params :Object in loadParamsArray) {
+            add(params);
+        }
+    }
+
     public function unload () :void {
         Flashbang.rsrcs.unloadSet(this);
     }
