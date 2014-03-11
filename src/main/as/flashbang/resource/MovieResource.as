@@ -43,7 +43,7 @@ public class MovieResource extends Resource
         return create();
     }
 
-    override protected function unload () :void {
+    override protected function dispose () :void {
         _library = null;
     }
 

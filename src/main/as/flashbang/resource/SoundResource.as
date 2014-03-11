@@ -31,7 +31,7 @@ public class SoundResource extends Resource
         _pan = pan;
     }
 
-    override protected function unload () :void {
+    override protected function dispose () :void {
         if (_sound != null) {
             try {
                 _sound.close();

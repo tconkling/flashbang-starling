@@ -57,7 +57,7 @@ public class ImageResource extends Resource
         return create();
     }
 
-    override protected function unload () :void {
+    override protected function dispose () :void {
         _library = null;
         _texture = null;
     }

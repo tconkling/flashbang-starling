@@ -27,7 +27,7 @@ public class XmlResource extends Resource
         return _xml;
     }
 
-    override protected function unload () :void  {
+    override protected function dispose () :void  {
         _xml = null;
     }
 

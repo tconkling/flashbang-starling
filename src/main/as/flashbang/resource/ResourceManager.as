@@ -46,7 +46,7 @@ public class ResourceManager
 
     public function unloadAll () :void {
         _resources.forEach(function (name :String, rsrc :Resource) :void {
-            rsrc.unloadInternal();
+            rsrc.disposeInternal();
         });
         _resources = Maps.newMapOf(String);
     }
@@ -71,7 +71,7 @@ public class ResourceManager
         }
 
         for each (rsrc in resources) {
-            rsrc._set = resourceSet;
+            rsrc.addedInternal(resourceSet);
             _resources.put(rsrc.name, rsrc);
         }
     }
@@ -80,7 +80,7 @@ public class ResourceManager
         for each (var rsrc :Resource in _resources.values()) {
             if (rsrc._set == resourceSet) {
                 _resources.remove(rsrc.name);
-                rsrc.unloadInternal();
+                rsrc.disposeInternal();
             }
         }
     }

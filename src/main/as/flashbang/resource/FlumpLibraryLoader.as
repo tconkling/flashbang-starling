@@ -108,7 +108,7 @@ class LibraryResource extends Resource {
         _lib = lib;
     }
 
-    override protected function unload () :void {
+    override protected function dispose () :void {
         _lib.dispose();
         _lib = null;
     }

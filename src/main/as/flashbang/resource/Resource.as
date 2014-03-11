@@ -15,22 +15,31 @@ public class Resource
 
     /** Return true if the Resource is still loaded. It's an error to use unloaded resources. */
     public final function get isLoaded () :Boolean {
-        return !_unloaded;
+        return !_disposed;
+    }
+
+    /** Subclasses can override this perform custom registration logic when added to the ResourceManager */
+    protected function added () :void {
     }
 
     /** Subclasses can override this to implement unloading logic */
-    protected function unload () :void {
+    protected function dispose () :void {
     }
 
-    internal function unloadInternal () :void {
-        if (!_unloaded) {
-            _unloaded = true;
-            unload();
+    internal function addedInternal (parent :ResourceSet) :void {
+        _set = parent;
+        added();
+    }
+
+    internal function disposeInternal () :void {
+        if (!_disposed) {
+            _disposed = true;
+            dispose();
         }
     }
 
     protected var _name :String;
-    protected var _unloaded :Boolean;
+    protected var _disposed :Boolean;
 
     /** The set that this Resource belongs to */
     internal var _set :ResourceSet;
