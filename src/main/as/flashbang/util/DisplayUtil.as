@@ -73,6 +73,8 @@ public class DisplayUtil
         case VAlign.CENTER: y += bounds.top + (bounds.height * 0.5); break;
         }
 
+        disp.x = 0;
+        disp.y = 0;
         bounds = disp.getBounds(disp.parent || disp, R);
         switch (dispHAlign) {
         case HAlign.LEFT: x -= bounds.left; break;
