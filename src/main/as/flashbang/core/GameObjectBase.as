@@ -134,7 +134,7 @@ public class GameObjectBase
      * Called after the GameObject has been removed from the active AppMode, or if the
      * object's containing AppMode is removed from the mode stack.
      *
-     * If the GameObject is removed from the active AppMode, {@link #removedFromDB}
+     * If the GameObject is removed from the active AppMode, {@link #removed}
      * will be called before destroyed.
      *
      * {@link #dispose} should be used for logic that must be always be run when the GameObject is
