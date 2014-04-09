@@ -130,6 +130,7 @@ class LoadedTexture
         } else if (_source is Bitmap) {
             Bitmap(_source).bitmapData.dispose();
         }
+        _source = null;
     }
 
     protected var _tex :Texture;
