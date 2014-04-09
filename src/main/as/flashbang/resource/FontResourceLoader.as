@@ -55,7 +55,7 @@ public class FontResourceLoader extends ResourceLoader
             } catch (e :Error) {
                 fail(e);
             }
-        });
+        }).onFailure(fail);
     }
 
     override protected function onCanceled () :void {
@@ -86,15 +86,22 @@ import starling.textures.Texture;
 
 class LoadedTexture
 {
-    public function LoadedTexture (loader :Loader, scale :Number) {
-        _loader = loader;
+    public function LoadedTexture (source :*, scale :Number) {
+        _source = source;
 
-        var bmd :BitmapData = Bitmap(loader.content).bitmapData;
+        var bmd :BitmapData;
+        if (source is Loader) {
+            bmd = Bitmap(Loader(source.content)).bitmapData;
+        } else if (source is Bitmap) {
+            bmd = Bitmap(source).bitmapData;
+        } else {
+            throw new Error("Unknown texture source [" + ClassUtil.tinyClassName(source) + "]");
+        }
         _tex = Texture.fromBitmapData(bmd, false, false, scale);
 
         // If Starling doesn't need to handle lost contexts, we can close the loader right now.
         if (!Starling.handleLostContext) {
-            closeLoader();
+            closeSource();
         }
     }
 
@@ -105,23 +112,29 @@ class LoadedTexture
     public function unload () :void {
         _tex.dispose();
         _tex = null;
-        closeLoader();
+        closeSource();
     }
 
-    protected function closeLoader () :void {
-        // Loader may already be closed.
-        if (_loader != null) {
+    protected function closeSource () :void {
+        // source may already be closed.
+        if (_source == null) {
+            return;
+        }
+
+        if (_source is Loader) {
             try {
-                _loader.close();
+                Loader(_source).close();
             } catch (e :Error) {
                 // swallow
             }
-            _loader = null;
+        } else if (_source is Bitmap) {
+            Bitmap(_source).bitmapData.dispose();
         }
+        _source = null;
     }
 
     protected var _tex :Texture;
-    protected var _loader :Loader;
+    protected var _source :*;
 }
 
 class TextureLoader extends DataLoader
@@ -134,7 +147,12 @@ class TextureLoader extends DataLoader
     override protected function doLoad () :void {
         if (_data is Class) {
             var clazz :Class = Class(_data);
-            _data = ByteArray(new clazz());
+            _data = new clazz();
+        }
+
+        if (_data is Bitmap) {
+            succeed(new LoadedTexture(_data, _scale));
+            return;
         }
 
         _loader = new Loader();
