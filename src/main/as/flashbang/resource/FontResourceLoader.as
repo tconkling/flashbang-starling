@@ -91,7 +91,7 @@ class LoadedTexture
 
         var bmd :BitmapData;
         if (source is Loader) {
-            bmd = Bitmap(Loader(source.content)).bitmapData;
+            bmd = Bitmap(Loader(source).content).bitmapData;
         } else if (source is Bitmap) {
             bmd = Bitmap(source).bitmapData;
         } else {
