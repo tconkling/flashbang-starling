@@ -22,9 +22,9 @@ public class FontResourceLoader extends ResourceLoader
     public static const XML_DATA :String = "xmlData";
 
     /**
-     * a String containing a URL to load the XML from OR
-     * a ByteArray containing the XML OR
-     * an [Embed]ed class containing the XML
+     * a String containing a URL to load the texture BitmapData from from OR
+     * a ByteArray containing the BitmapData OR
+     * a Class that will instantiate a Bitmap
      * (required)
      */
     public static const TEXTURE_DATA :String = "textureData";
