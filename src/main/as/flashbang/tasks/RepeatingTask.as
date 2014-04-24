@@ -14,6 +14,13 @@ import flashbang.core.ObjectTask;
  */
 public class RepeatingTask extends ObjectTask
 {
+    /** Creates a RepeatingTask that will call the taskCreator function 'count' times */
+    public static function xTimes (count :int, taskCreator :Function) :RepeatingTask {
+        return new RepeatingTask(function () :ObjectTask {
+            return (count-- > 0 ? taskCreator() : null);
+        });
+    }
+
     public function RepeatingTask (taskCreator :Function) {
         _taskCreator = taskCreator;
     }
