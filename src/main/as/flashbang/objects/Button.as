@@ -66,30 +66,36 @@ public class Button extends SpriteObject
     override protected function added () :void {
         showState(_state);
 
-        var self :Button = this;
-        this.regs.add(this.hoverBegan.connect(function (t :Touch) :void {
-            if (_state != DISABLED) {
-                self.pointerOver = true;
-            }
-        }));
-        this.regs.add(this.hoverEnded.connect(function () :void {
-            if (_state != DISABLED) {
-                self.pointerOver = false;
-            }
-        }));
+        this.hoverBegan.connect(onHoverBegan);
+        this.hoverEnded.connect(onHoverEnded);
+        this.touchBegan.connect(onTouchBegan);
+    }
 
-        this.regs.add(this.touchBegan.connect(function (touch :Touch) :void {
-            if (self.enabled && _captureReg == null) {
-                var l :PointerListener = Input.newPointerListener()
-                    .onPointerMove(self.onPointerMove)
-                    .onPointerEnd(self.onPointerEnd)
+    protected function onHoverBegan () :void {
+        if (_state != DISABLED) {
+            this.pointerOver = true;
+        }
+    }
+
+    protected function onHoverEnded () :void {
+        if (_state != DISABLED) {
+            this.pointerOver = false;
+        }
+    }
+
+    protected function onTouchBegan () :void {
+        if (this.enabled && _captureReg == null) {
+            if (_pointerListener == null) {
+                _pointerListener = Input.newPointerListener()
+                    .onPointerMove(this.onPointerMove)
+                    .onPointerEnd(this.onPointerEnd)
                     .build();
-                _captureReg = self.regs.add(self.mode.touchInput.registerListener(l));
-                _pointerDown = true;
-                _pointerOver = true;
-                updateState();
             }
-        }));
+            _captureReg = this.regs.add(this.mode.touchInput.registerListener(_pointerListener));
+            _pointerDown = true;
+            _pointerOver = true;
+            updateState();
+        }
     }
 
     protected function cancelCapture () :void {
@@ -160,6 +166,7 @@ public class Button extends SpriteObject
     protected var _pointerOver :Boolean;
     protected var _pointerDown :Boolean;
     protected var _captureReg :Registration;
+    protected var _pointerListener :PointerListener;
 
     protected static const UP :int = 0;
     protected static const DOWN :int = 1;
