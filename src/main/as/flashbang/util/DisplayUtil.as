@@ -45,9 +45,10 @@ public class DisplayUtil
     }
 
     /** Positions a DisplayObject so that it is centered on another DisplayObject */
-    public static function center (disp :DisplayObject, relativeTo :DisplayObject) :void {
+    public static function center (disp :DisplayObject, relativeTo :DisplayObject,
+        xOffset :Number = 0, yOffset :Number = 0) :void {
         DisplayUtil.positionRelative(disp, HAlign.CENTER, VAlign.CENTER,
-            relativeTo, HAlign.CENTER, VAlign.CENTER);
+            relativeTo, HAlign.CENTER, VAlign.CENTER, xOffset, yOffset);
     }
 
     /** Positions a DisplayObject in relation to another DisplayObject */
