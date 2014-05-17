@@ -49,7 +49,9 @@ public class Button extends SpriteObject
         if (this.enabled) {
             this.clicked.emit();
 
-            if (_state != DOWN) {
+            // We can be destroyed as the result of the clicked signal, so ensure we're still
+            // live before proceeding
+            if (this.isLiveObject && _state != DOWN) {
                 addObject(new SerialTask(
                     new FunctionTask(function () :void { showState(DOWN); }),
                     new TimedTask(0.25),
