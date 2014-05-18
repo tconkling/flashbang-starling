@@ -54,7 +54,7 @@ public class Button extends SpriteObject
             if (this.isLiveObject && _state != DOWN) {
                 addObject(new SerialTask(
                     new FunctionTask(function () :void { showState(DOWN); }),
-                    new TimedTask(0.25),
+                    new TimedTask(0.1),
                     new FunctionTask(function () :void { showState(_state); })));
             }
         }
