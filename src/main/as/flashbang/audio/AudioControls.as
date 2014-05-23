@@ -12,10 +12,18 @@ public class AudioControls
         }
     }
 
-    public function retain () :void {
+    /**
+     * Increments the refcount on this instance. Controls that have their refcounts reduced to 0
+     * will be cleaned up (i.e. no longer updated) by the AudioManager. If you manually create
+     * an AudioControls instance, you should retain it immediately after creation and release it
+     * when it will no longer be used.
+     */
+    public function retain () :AudioControls {
         ++_refCount;
+        return this;
     }
 
+    /** Decrements the refcount on this instance */
     public function release () :void {
         if (--_refCount < 0) {
             throw new Error("Cannot release() below a refCount of 0");
