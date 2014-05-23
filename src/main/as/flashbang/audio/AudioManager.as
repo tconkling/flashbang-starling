@@ -3,13 +3,13 @@
 
 package flashbang.audio {
 
-import flash.events.Event;
-import flash.media.SoundTransform;
-import flash.utils.getTimer;
-
 import aspire.util.F;
 import aspire.util.Log;
 import aspire.util.Preconditions;
+
+import flash.events.Event;
+import flash.media.SoundTransform;
+import flash.utils.getTimer;
 
 import flashbang.core.Updatable;
 import flashbang.resource.SoundResource;
@@ -117,11 +117,11 @@ public class AudioManager
             return new AudioChannel();
         }
 
-        var timeNow :int = flash.utils.getTimer();
+        var timeNow :int = getTimer();
 
         // Iterate the active channels to determine if this sound has been played recently.
         // Also look for the lowest-priority active channel.
-        var lowestPriorityChannel :AudioChannel;
+        var lowestPriorityChannel :AudioChannel = null;
         var lowestPriorityChannelIdx :int = -1;
         for (var ii :int = 0; ii < _activeChannels.length; ++ii) {
             var activeChannel :AudioChannel = _activeChannels[ii];
