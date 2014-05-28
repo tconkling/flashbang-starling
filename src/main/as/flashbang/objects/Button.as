@@ -6,8 +6,10 @@ package flashbang.objects {
 import flash.geom.Point;
 
 import flashbang.components.Disableable;
+import flashbang.core.Flashbang;
 import flashbang.input.Input;
 import flashbang.input.PointerListener;
+import flashbang.resource.SoundResource;
 import flashbang.tasks.FunctionTask;
 import flashbang.tasks.SerialTask;
 import flashbang.tasks.TimedTask;
@@ -24,6 +26,8 @@ import starling.events.Touch;
 public class Button extends SpriteObject
     implements Disableable
 {
+    public static const DEFAULT_DOWN_SOUND :String = "sfx_button_down";
+
     /** Fired when the button is clicked */
     public const clicked :UnitSignal = new UnitSignal();
 
@@ -151,17 +155,33 @@ public class Button extends SpriteObject
 
     protected function setState (val :int) :void {
         if (_state != val) {
+            var oldState :int = _state;
             _state = val;
             if (_state == DISABLED) {
                 cancelCapture();
             }
             showState(_state);
+            playStateTransitionSound(oldState, _state);
         }
     }
 
     protected function hitTest (touch :Touch) :Boolean {
         P.setTo(touch.globalX, touch.globalY);
         return (_sprite.hitTest(_sprite.globalToLocal(P, P), true) != null);
+    }
+
+    /**
+     * Plays a sound associated with a state transition.
+     * By default, it plays the sound named "button_down", if it exists, when transitioning
+     * to the DOWN state. Subclasses can override to customize the behavior.
+     */
+    protected function playStateTransitionSound (fromState :int, toState :int) :void {
+        if (toState == DOWN) {
+            var sound :SoundResource = SoundResource.get(DEFAULT_DOWN_SOUND);
+            if (sound != null) {
+                Flashbang.audio.playSound(sound);
+            }
+        }
     }
 
     protected var _state :int = 0;
