@@ -3,7 +3,7 @@
 
 package flashbang.audio {
 
-public class AudioState
+internal class AudioState
 {
     public var volume :Number = 1;
     public var pan :Number = 0;
