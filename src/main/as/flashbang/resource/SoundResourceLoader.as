@@ -64,8 +64,13 @@ public class SoundResourceLoader extends ResourceLoader
             _sound = new Sound();
 
             // Immediately set up the error listener to protect against blowing up
+            var self :SoundResourceLoader = this;
             _sound.addEventListener(IOErrorEvent.IO_ERROR, function (e :IOErrorEvent) :void {
-                fail(e);
+                if (!self.isComplete.value) {
+                    fail(e);
+                } else {
+                    log.error("An error occurred on an already-completed sound", e);
+                }
             });
 
             // And THEN start it loading
