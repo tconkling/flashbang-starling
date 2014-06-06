@@ -13,14 +13,119 @@ import flashbang.core.Flashbang;
 
 import starling.display.DisplayObject;
 import starling.display.DisplayObjectContainer;
+import starling.display.Image;
 import starling.display.Quad;
 import starling.display.Sprite;
 import starling.events.Touch;
+import starling.textures.Texture;
 import starling.utils.HAlign;
 import starling.utils.VAlign;
 
 public class DisplayUtil
 {
+    /**
+     * Draws a "three-brush" image into a Sprite.
+     * A three-brush is composed of three textures: left, center, and middle. The center image
+     * is tiled as many times as is necessary to fill the given width.
+     */
+    public static function drawThreeBrush (
+        l :Texture, c :Texture, r :Texture, w :Number,
+        x :Number = 0, y :Number = 0, sprite :Sprite = null) :Sprite {
+
+        if (sprite == null) {
+            sprite = new Sprite();
+        }
+
+        // left
+        var left :Image = new Image(l);
+        left.x = x;
+        left.y = y;
+        sprite.addChild(left);
+
+        // right
+        var right :Image = new Image(r);
+        right.x = x + w - r.width;
+        right.y = y;
+        sprite.addChild(right);
+
+        // tile the middle
+        var remaining :Number = w - l.width - r.width;
+        x += l.width;
+        while (remaining > 0) {
+            var tileWidth :Number = Math.min(c.width, remaining);
+            var tile :Image = new Image(clampTexWidth(c, tileWidth));
+            tile.x = x;
+            tile.y = y;
+            sprite.addChild(tile);
+
+            x += tileWidth;
+            remaining -= tileWidth;
+        }
+
+        return sprite;
+    }
+
+    /**
+     * Draws a "nine-brush" image into a Sprite.
+     * A nine-brush is composed of 9 textures: 3 for the top, 3 for the middle, and 3 for the bottom.
+     * Each set of 3 textures is used to draw three-brushes for the top, middle, and bottom of
+     * the image.
+     */
+    public static function drawNineBrush (
+        tl :Texture, tc :Texture, tr :Texture,
+        ml :Texture, mc :Texture, mr :Texture,
+        bl :Texture, bc :Texture, br :Texture,
+        w :Number, h :Number,
+        x :Number = 0, y :Number = 0, sprite :Sprite = null) :Sprite {
+
+        if (sprite == null) {
+            sprite = new Sprite();
+        }
+
+        // top
+        drawThreeBrush(tl, tc, tr, w, x, y, sprite);
+
+        // bottom
+        drawThreeBrush(bl, bc, br, w, x, y + h - bl.height, sprite);
+
+        // tile the middle
+        var remaining :Number = h - tl.height - bl.height;
+        y += tl.height;
+        while (remaining > 0) {
+            var rowHeight :Number = Math.min(ml.height, remaining);
+            drawThreeBrush(
+                clampTexHeight(ml, rowHeight),
+                clampTexHeight(mc, rowHeight),
+                clampTexHeight(mr, rowHeight),
+                w, x, y, sprite);
+
+            y += rowHeight;
+            remaining -= rowHeight;
+        }
+
+        return sprite;
+    }
+
+    /** Clamps the given texture's width. */
+    public static function clampTexWidth (tex :Texture, width :Number) :Texture {
+        return clampTexSize(tex, width, tex.height);
+    }
+
+    /** Clamps the given texture's height. */
+    public static function clampTexHeight (tex :Texture, height :Number) :Texture {
+        return clampTexSize(tex, tex.width, height);
+    }
+
+    /** Clamps the given texture's width and height. */
+    public static function clampTexSize (tex :Texture, width :Number, height :Number) :Texture {
+        if (tex.width == width && tex.height == height) {
+            return tex;
+        } else {
+            R.setTo(0, 0, width, height);
+            return Texture.fromTexture(tex, R);
+        }
+    }
+
     /** Returns the global/stage location of the given displayObject */
     public static function getGlobalLoc (d :DisplayObject, out :Point = null) :Point {
         P.setTo(d.x, d.y);
