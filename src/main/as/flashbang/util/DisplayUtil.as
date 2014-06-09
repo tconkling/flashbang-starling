@@ -66,6 +66,42 @@ public class DisplayUtil
     }
 
     /**
+     * Draws a "three-brush" image into a Sprite.
+     * The center image will be stretched, rather than tiled, to fill the given width.
+     */
+    public static function drawStretchedThreeBrush (
+        l :Texture, c :Texture, r :Texture, w :Number,
+        x :Number = 0, y :Number = 0, sprite :Sprite = null) :Sprite {
+
+        if (sprite == null) {
+            sprite = new Sprite();
+        }
+
+        // left
+        var left :Image = new Image(l);
+        left.x = x;
+        left.y = y;
+        sprite.addChild(left);
+
+        // right
+        var right :Image = new Image(r);
+        right.x = x + w - r.width;
+        right.y = y;
+        sprite.addChild(right);
+
+        // center
+        var remaining :Number = w - l.width - r.width;
+        if (remaining > 0) {
+            var center :Image = new Image(c);
+            center.width = remaining;
+            center.x = l.width;
+            sprite.addChild(center);
+        }
+
+        return sprite;
+    }
+
+    /**
      * Draws a "nine-brush" image into a Sprite.
      * A nine-brush is composed of 9 textures: 3 for the top, 3 for the middle, and 3 for the bottom.
      * Each set of 3 textures is used to draw three-brushes for the top, middle, and bottom of
