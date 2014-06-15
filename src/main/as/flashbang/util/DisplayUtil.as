@@ -5,6 +5,7 @@ package flashbang.util {
 
 import aspire.geom.Vector2;
 import aspire.util.F;
+import aspire.util.MathUtil;
 
 import flash.geom.Point;
 import flash.geom.Rectangle;
@@ -266,6 +267,54 @@ public class DisplayUtil
     public static function transformVector (v :Vector2, from :DisplayObject, to :DisplayObject,
         out :Vector2 = null) :Vector2 {
         return Vector2.fromPoint(transformPoint(v.toPoint(P), from, to, P), out);
+    }
+
+    /** Transforms a Rectangle from one DisplayObject's coordinate space to another's. */
+    public static function transformRect (r :Rectangle, from :DisplayObject, to :DisplayObject,
+        out :Rectangle = null) :Rectangle {
+
+        var left :Number = Number.MAX_VALUE;
+        var top :Number = Number.MAX_VALUE;
+        var right :Number = -Number.MAX_VALUE;
+        var bottom :Number = -Number.MAX_VALUE;
+
+        // top-left
+        P.setTo(r.left, r.top);
+        transformPoint(P, from, to, P);
+        left = MathUtil.min(left, P.x);
+        right = MathUtil.max(right, P.x);
+        top = MathUtil.min(top, P.y);
+        bottom = MathUtil.max(bottom, P.y);
+
+        // top-right
+        P.setTo(r.right, r.top);
+        transformPoint(P, from, to, P);
+        left = MathUtil.min(left, P.x);
+        right = MathUtil.max(right, P.x);
+        top = MathUtil.min(top, P.y);
+        bottom = MathUtil.max(bottom, P.y);
+
+        // bottom-left
+        P.setTo(r.left, r.bottom);
+        transformPoint(P, from, to, P);
+        left = MathUtil.min(left, P.x);
+        right = MathUtil.max(right, P.x);
+        top = MathUtil.min(top, P.y);
+        bottom = MathUtil.max(bottom, P.y);
+
+        // bottom-right
+        P.setTo(r.right, r.bottom);
+        transformPoint(P, from, to, P);
+        left = MathUtil.min(left, P.x);
+        right = MathUtil.max(right, P.x);
+        top = MathUtil.min(top, P.y);
+        bottom = MathUtil.max(bottom, P.y);
+
+        if (out == null) {
+            out = new Rectangle();
+        }
+        out.setTo(left, top, right - left, bottom - top);
+        return out;
     }
 
     /** Adds newChild to container, directly below another child of the container. */
