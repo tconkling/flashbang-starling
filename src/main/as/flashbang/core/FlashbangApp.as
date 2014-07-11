@@ -41,7 +41,7 @@ public class FlashbangApp extends flash.display.Sprite
 {
     public function FlashbangApp () {
         // Start starling when we're added to the stage
-        addEventListener(flash.events.Event.ADDED_TO_STAGE, addedToStage);
+        addEventListener(flash.events.Event.ADDED_TO_STAGE, onAddedToStage);
         Flashbang.registerApp(this);
     }
 
@@ -197,33 +197,28 @@ public class FlashbangApp extends flash.display.Sprite
         return _config;
     }
 
+    /**
+     * Called at the end of the initialization process.
+     * Subclasses should override this to push their initial AppMode to the mode stack
+     */
+    protected function run () :void {
+    }
+
     /** Subclasses can override this to create a custom Config */
     protected function createConfig () :FlashbangConfig {
         return new FlashbangConfig();
     }
 
-    /** Subclasses should override this to push their initial AppMode to the mode stack */
-    protected function run () :void {
-    }
-
     /**
-     * Creates and returns a Starling instance.
-     * Subclasses can override to do custom initialization.
+     * Called when we're added to the stage. By default, we immediately begin the initialization
+     * process. Subclasses can override this to delay initialization.
      */
-    protected function initStarling () :Starling {
-        var viewPort :Rectangle = RectangleUtil.fit(
-            new Rectangle(0, 0, _config.stageWidth, _config.stageHeight),
-            new Rectangle(0, 0, _config.windowWidth, _config.windowHeight));
-
-        var starling :Starling = new Starling(starling.display.Sprite, this.stage, viewPort);
-        starling.stage.stageWidth = _config.stageWidth;
-        starling.stage.stageHeight = _config.stageHeight;
-        starling.enableErrorChecking = Capabilities.isDebugger;
-
-        return starling;
+    protected function onAddedToStage (e :flash.events.Event) :void {
+        initialize();
     }
 
-    protected function addedToStage (e :flash.events.Event) :void {
+    /** Begins the initialization process */
+    protected function initialize () :void {
         _stage = this.stage;
 
         // install an uncaught error handler
@@ -238,23 +233,33 @@ public class FlashbangApp extends flash.display.Sprite
         var hasTouchscreen :Boolean = (Capabilities.touchscreenType == TouchscreenType.FINGER);
         Starling.multitouchEnabled = hasTouchscreen;
         Starling.handleLostContext = !isiOS;
-        _starling = initStarling();
+        _starling = createStarling();
 
         // install our custom touch handler
         _starling.touchProcessor = new CallbackTouchProcessor(_starling.stage, handleTouches);
-        _regs.addEventListener(_starling, starling.events.Event.ROOT_CREATED, rootCreated).once();
+        _regs.addEventListener(_starling, starling.events.Event.ROOT_CREATED, onStarlingRootCreated).once();
         _starling.start();
     }
 
     /**
-     * Called when an UncaughtErrorEvent occurs. By default, the app's onFatalError handler is
-     * called with the event's error object.
+     * Creates and returns a Starling instance.
+     * Subclasses can override to do custom initialization.
      */
-    protected function onUncaughtErrorEvent (e :UncaughtErrorEvent) :void {
-        onFatalError(e);
+    protected function createStarling () :Starling {
+        var viewPort :Rectangle = RectangleUtil.fit(
+            new Rectangle(0, 0, _config.stageWidth, _config.stageHeight),
+            new Rectangle(0, 0, _config.windowWidth, _config.windowHeight));
+
+        var starling :Starling = new Starling(starling.display.Sprite, this.stage, viewPort);
+        starling.stage.stageWidth = _config.stageWidth;
+        starling.stage.stageHeight = _config.stageHeight;
+        starling.enableErrorChecking = Capabilities.isDebugger;
+
+        return starling;
     }
 
-    protected function rootCreated (..._) :void {
+    /** Completes the initialization process. */
+    protected function onStarlingRootCreated (..._) :void {
         _audio = new AudioManager(_config.maxAudioChannels);
         addUpdatable(_audio);
 
@@ -329,6 +334,14 @@ public class FlashbangApp extends flash.display.Sprite
                 disposeNow();
             }
         }
+    }
+
+    /**
+     * Called when an UncaughtErrorEvent occurs. By default, the app's onFatalError handler is
+     * called with the event's error object.
+     */
+    protected function onUncaughtErrorEvent (e :UncaughtErrorEvent) :void {
+        onFatalError(e);
     }
 
     protected function disposeNow () :void {
