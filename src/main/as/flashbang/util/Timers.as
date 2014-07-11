@@ -28,7 +28,7 @@ public class Timers
      * specified number of frames have elapsed, and then cancel itself.
      */
     public static function delayFrames (numFrames :int, callback :Function) :TimerRegistration {
-        var timer :TimerRegistration = create(1, function (..._) :void {
+        var timer :TimerRegistration = create(0, function (..._) :void {
             if (--numFrames <= 0) {
                 timer.close();
                 callback();
