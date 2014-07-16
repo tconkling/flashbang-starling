@@ -4,18 +4,12 @@
 package flashbang.input {
 
 import starling.display.DisplayObject;
-import starling.events.Touch;
 
 public class Input
 {
     /** Returns a Touchable object for the given DisplayObject */
     public static function newTouchable (disp :DisplayObject) :Touchable {
         return new TouchableDisplayObject(disp);
-    }
-
-    /** Constructs a new DragHandler */
-    public static function newDragHandler (touch :Touch) :DragHandlerBuilder {
-        return new DragHandlerBuilderImpl(touch);
     }
 
     /**
@@ -39,10 +33,6 @@ public class Input
 }
 }
 
-import flash.geom.Point;
-
-import flashbang.input.DragHandler;
-import flashbang.input.DragHandlerBuilder;
 import flashbang.input.KeyboardListener;
 import flashbang.input.PointerAdapter;
 import flashbang.input.PointerListener;
@@ -125,74 +115,6 @@ class CallbackPointerListener extends PointerAdapter
     protected var _onPointerEnd :Function;
     protected var _onPointerHover :Function;
     protected var _defaultHandledValue :Boolean;
-}
-
-class DragHandlerBuilderImpl
-    implements DragHandlerBuilder {
-
-    public function DragHandlerBuilderImpl (touch :Touch) {
-        _touch = touch;
-    }
-
-    public function onDragged (f :Function) :DragHandlerBuilder {
-        _onDragged = f;
-        return this;
-    }
-
-    public function onDragEnd (f :Function) :DragHandlerBuilder {
-        _onDragEnd = f;
-        return this;
-    }
-
-    public function build () :DragHandler {
-        return new CallbackDragHandler(_touch, _onDragged, _onDragEnd);
-    }
-
-    protected var _touch :Touch;
-    protected var _onDragged :Function;
-    protected var _onDragEnd :Function;
-}
-
-class CallbackDragHandler extends PointerAdapter
-    implements DragHandler
-{
-    public function CallbackDragHandler (touch :Touch, onDragged :Function, onDragEnd :Function) {
-        super(true);
-        _start = new Point(touch.globalX, touch.globalY);
-        _current = new Point(touch.globalX, touch.globalY);
-        _onDragged = onDragged;
-        _onDragEnd = onDragEnd;
-    }
-
-    public function get startLoc () :Point {
-        return _start;
-    }
-
-    public function get currentLoc () :Point {
-        return _current;
-    }
-
-    override public function onPointerMove (touch :Touch) :Boolean {
-        if (_onDragged != null) {
-            _current.setTo(touch.globalX, touch.globalY);
-            _onDragged(_current, _start);
-        }
-        return true;
-    }
-
-    override public function onPointerEnd (touch :Touch) :Boolean {
-        if (_onDragEnd != null) {
-            _current.setTo(touch.globalX, touch.globalY);
-            _onDragEnd(_current, _start);
-        }
-        return true;
-    }
-
-    protected var _start :Point;
-    protected var _current :Point;
-
-    protected var _onDragged :Function;
-    protected var _onDragEnd :Function;
 }
 
 class CallbackTouchListener
