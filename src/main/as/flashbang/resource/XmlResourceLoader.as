@@ -30,7 +30,7 @@ public class XmlResourceLoader extends ResourceLoader
         _loader = new XmlLoader(requireLoadParam(DATA, Object));
         _loader.load().onSuccess(function (result :XML) :void {
             succeed(new XmlResource(name, result));
-        });
+        }).onFailure(fail);
     }
 
     override protected function onCanceled () :void {
