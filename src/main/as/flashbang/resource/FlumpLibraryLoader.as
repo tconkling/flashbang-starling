@@ -37,7 +37,7 @@ public class FlumpLibraryLoader extends ResourceLoader
      * Will only receive updates for URL loads (when the data parameter is an URL instead of a
      * ByteArray).
      */
-    public static const PROGRESS :String = "progress";
+    public static const ON_PROGRESS :String = "onProgress";
 
     public function FlumpLibraryLoader (params :Object) {
         super(params);
@@ -64,7 +64,7 @@ public class FlumpLibraryLoader extends ResourceLoader
             createLibraryLoader().loadBytes(ByteArray(data));
 
         } else if (data is String) {
-            var progress :Function = getLoadParam(PROGRESS);
+            var progress :Function = getLoadParam(ON_PROGRESS);
             var loader :LibraryLoader = createLibraryLoader();
             if (progress != null) {
                 loader.urlLoadProgressed.connect(progress);
