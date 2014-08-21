@@ -31,6 +31,14 @@ public class FlumpLibraryLoader extends ResourceLoader
      */
     public static const MIPMAPS :String = "mipmaps";
 
+    /**
+     * An optional function parameter that will receive progress updates in the flump loading
+     * process. The signature should be function (progress :flash.events.ProgressEvent) :void {}.
+     * Will only receive updates for URL loads (when the data parameter is an URL instead of a
+     * ByteArray).
+     */
+    public static const PROGRESS :String = "progress";
+
     public function FlumpLibraryLoader (params :Object) {
         super(params);
     }
@@ -56,7 +64,12 @@ public class FlumpLibraryLoader extends ResourceLoader
             createLibraryLoader().loadBytes(ByteArray(data));
 
         } else if (data is String) {
-            createLibraryLoader().loadURL(data as String);
+            var progress :Function = getLoadParam(PROGRESS);
+            var loader :LibraryLoader = createLibraryLoader();
+            if (progress != null) {
+                loader.urlLoadProgressed.connect(progress);
+            }
+            loader.loadURL(data as String);
 
         } else {
             throw new Error("Unrecognized Flump Library data source: '" +
