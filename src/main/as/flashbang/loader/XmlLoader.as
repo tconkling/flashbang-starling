@@ -49,11 +49,7 @@ public class XmlLoader extends DataLoader
         _loader.addEventListener(Event.COMPLETE, function (..._) :void {
             var data :* = _loader.data;
             _loader.close();
-            try {
-                onDataLoaded(data);
-            } catch (e :Error) {
-                fail(e);
-            }
+            onDataLoaded(data);
         });
 
         _loader.addEventListener(IOErrorEvent.IO_ERROR, function (e :IOErrorEvent) :void {
@@ -69,11 +65,19 @@ public class XmlLoader extends DataLoader
     }
 
     protected function onDataLoaded (data :*) :void {
-        // override the default XML settings, so we get the full text content
-        var settings :Object = XML.defaultSettings();
-        settings["ignoreWhitespace"] = false;
-        settings["prettyPrinting"] = false;
-        succeed(XmlUtil.newXML(data, settings));
+        var xml :XML = null;
+        try {
+            // override the default XML settings, so we get the full text content
+            var settings :Object = XML.defaultSettings();
+            settings["ignoreWhitespace"] = false;
+            settings["prettyPrinting"] = false;
+            xml = XmlUtil.newXML(data, settings);
+        } catch (e :Error) {
+            fail(e);
+            return;
+        }
+
+        succeed(xml);
     }
 
     override protected function onCanceled () :void {

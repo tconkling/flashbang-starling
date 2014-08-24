@@ -25,6 +25,7 @@ public class FontResource extends Resource
     public function FontResource (name :String, font :BitmapFont) {
         super(name);
         _font = font;
+        throw new Error("asdf");
     }
 
     public function get font () :BitmapFont {

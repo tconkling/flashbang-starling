@@ -47,14 +47,19 @@ public class FontResourceLoader extends ResourceLoader
         _batch.addLoader(xmlLoader);
         _batch.addLoader(textureLoader);
         _batch.load().onSuccess(function () :void {
+            var rsrc :FontResource;
             try {
                 var texture :LoadedTexture = textureLoader.result;
                 var xml :XML = xmlLoader.result;
                 var font :BitmapFont = new BitmapFont(texture.texture, xml);
-                succeed(new FontResource(name, font));
+                rsrc = new FontResource(name, font);
             } catch (e :Error) {
                 fail(e);
+                return;
             }
+
+            succeed(rsrc);
+
         }).onFailure(fail);
     }
 
@@ -156,6 +161,12 @@ class TextureLoader extends DataLoader
         }
 
         _loader = new Loader();
+
+        _loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR,
+            function (evt :IOErrorEvent) :void {
+                fail(evt);
+            });
+
         _loader.contentLoaderInfo.addEventListener(Event.INIT, function (..._) :void {
             try {
                 succeed(new LoadedTexture(_loader, _scale));
@@ -164,11 +175,6 @@ class TextureLoader extends DataLoader
                 fail(e);
             }
         });
-
-        _loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR,
-            function (evt :IOErrorEvent) :void {
-                fail(evt);
-            });
 
         if (_data is String) {
             _loader.load(new URLRequest(_data as String));
