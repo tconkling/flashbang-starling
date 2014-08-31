@@ -52,15 +52,15 @@ public class FlumpLibraryLoader extends ResourceLoader
         }
         _mipmaps = getLoadParam(MIPMAPS, false) as Boolean;
 
-        _exec = new Executor();
+        var loader :LibraryLoader = createLibraryLoader();
+        loader.setExecutor(_exec = new Executor());
 
         var f :Future;
         if (data is ByteArray) {
-            f = createLibraryLoader().loadBytes(ByteArray(data));
+            f = loader.loadBytes(ByteArray(data));
 
         } else if (data is String) {
             var progress :Function = getLoadParam(ON_PROGRESS);
-            var loader :LibraryLoader = createLibraryLoader();
             if (progress != null) {
                 loader.urlLoadProgressed.connect(progress);
             }
@@ -76,7 +76,7 @@ public class FlumpLibraryLoader extends ResourceLoader
     }
 
     protected function createLibraryLoader () :LibraryLoader {
-        return new LibraryLoader().setExecutor(_exec).setGenerateMipMaps(_mipmaps);
+        return new LibraryLoader().setGenerateMipMaps(_mipmaps);
     }
 
     protected function libraryLoaded (library :Library) :void {
