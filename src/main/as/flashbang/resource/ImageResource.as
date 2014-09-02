@@ -4,16 +4,13 @@
 package flashbang.resource {
 
 import flashbang.core.Flashbang;
-import flashbang.util.DisplayObjectCreator;
 
 import flump.display.Library;
 
-import starling.display.DisplayObject;
 import starling.display.Image;
 import starling.textures.Texture;
 
 public class ImageResource extends Resource
-    implements DisplayObjectCreator
 {
     /**
      * Creates an Image from the ImageResource with the given name.
@@ -50,11 +47,6 @@ public class ImageResource extends Resource
             _texture = _library.getImageTexture(_imageName);
         }
         return _texture;
-    }
-
-    /** from DisplayObjectCreator */
-    public function createDisplayObject () :DisplayObject {
-        return create();
     }
 
     override protected function dispose () :void {
