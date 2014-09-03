@@ -7,10 +7,11 @@ import flashbang.core.Flashbang;
 
 import flump.display.Library;
 
+import starling.display.DisplayObject;
 import starling.display.Image;
 import starling.textures.Texture;
 
-public class ImageResource extends Resource
+public class ImageResource extends FlumpResource
 {
     /**
      * Creates an Image from the ImageResource with the given name.
@@ -32,30 +33,31 @@ public class ImageResource extends Resource
     }
 
     public function ImageResource (library :Library, libraryName :String, imageName :String) {
-        super(libraryName + "/" + imageName);
-        _library = library;
-        _imageName = imageName;
+        super(library, libraryName, imageName);
     }
 
     public function create () :Image {
-        return _library.createImage(_imageName);
+        return _library.createImage(_symbolName);
+    }
+
+    /** from FlumpResource */
+    override public function createDisplayObject () :DisplayObject {
+        return create();
     }
 
     /** @return the Texture associated with this ImageResource */
     public function get texture () :Texture {
         if (_texture == null) {
-            _texture = _library.getImageTexture(_imageName);
+            _texture = _library.getImageTexture(_symbolName);
         }
         return _texture;
     }
 
     override protected function dispose () :void {
-        _library = null;
+        super.dispose();
         _texture = null;
     }
 
-    protected var _library :Library;
-    protected var _imageName :String;
     protected var _texture :Texture;
 }
 }
