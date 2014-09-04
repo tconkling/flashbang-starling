@@ -32,7 +32,7 @@ public /*abstract*/ class FlumpResource extends Resource
     }
 
     public function FlumpResource (library :Library, libraryName :String, symbolName :String) {
-        super(libraryName + "/" + symbolName);
+        super(library.isNamespaced ? symbolName : libraryName + "/" + symbolName);
         _library = library;
         _symbolName = symbolName;
     }
