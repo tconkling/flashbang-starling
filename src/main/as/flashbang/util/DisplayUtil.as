@@ -20,6 +20,7 @@ import starling.display.Sprite;
 import starling.events.Touch;
 import starling.textures.Texture;
 import starling.utils.HAlign;
+import starling.utils.RectangleUtil;
 import starling.utils.VAlign;
 
 public class DisplayUtil
@@ -201,37 +202,31 @@ public class DisplayUtil
         targetHAlign :String, targetVAlign :String,
         xOffset :Number = 0, yOffset :Number = 0) :void {
 
-        var x :Number = xOffset;
-        var y :Number = yOffset;
+        positionRelativeImpl(disp,
+            dispHAlign, dispVAlign,
+            relativeTo.getBounds(disp.parent || relativeTo, R),
+            targetHAlign, targetVAlign,
+            xOffset, yOffset);
+    }
 
-        var bounds :Rectangle = relativeTo.getBounds(disp.parent || relativeTo, R);
-        switch (targetHAlign) {
-        case HAlign.LEFT: x += bounds.left; break;
-        case HAlign.RIGHT: x += bounds.right; break;
-        case HAlign.CENTER: x += bounds.left + (bounds.width * 0.5); break;
-        }
-        switch (targetVAlign) {
-        case VAlign.TOP: y += bounds.top; break;
-        case VAlign.BOTTOM: y += bounds.bottom; break;
-        case VAlign.CENTER: y += bounds.top + (bounds.height * 0.5); break;
-        }
+    /** Positions a DisplayObject relative to the screen */
+    private static const SCREEN_BOUNDS :Rectangle = new Rectangle();
+    public static function positionRelativeToStage (
+        disp :DisplayObject,
+        dispHAlign :String, dispVAlign :String,
+        targetHAlign :String, targetVAlign :String,
+        xOffset :Number = 0, yOffset :Number = 0) :void {
 
-        disp.x = 0;
-        disp.y = 0;
-        bounds = disp.getBounds(disp.parent || disp, R);
-        switch (dispHAlign) {
-        case HAlign.LEFT: x -= bounds.left; break;
-        case HAlign.RIGHT: x -= bounds.right; break;
-        case HAlign.CENTER: x -= bounds.left + (bounds.width * 0.5); break;
-        }
-        switch (dispVAlign) {
-        case VAlign.TOP: y -= bounds.top; break;
-        case VAlign.BOTTOM: y -= bounds.bottom; break;
-        case VAlign.CENTER: y -= bounds.top + (bounds.height * 0.5); break;
+        SCREEN_BOUNDS.setTo(0, 0, Flashbang.stageWidth, Flashbang.stageHeight);
+        if (disp.parent != null) {
+            RectangleUtil.getBounds(SCREEN_BOUNDS, disp.parent.transformationMatrix, SCREEN_BOUNDS);
         }
 
-        disp.x = x;
-        disp.y = y;
+        positionRelativeImpl(disp,
+            dispHAlign, dispVAlign,
+            SCREEN_BOUNDS,
+            targetHAlign, targetVAlign,
+            xOffset, yOffset);
     }
 
     /** Returns a stage-sized rectangle filled with the given color */
@@ -389,6 +384,45 @@ public class DisplayUtil
         return walkDisplayObjectsImpl(root, maxDepth, F.adapt(callback), 0);
     }
 
+    protected static function positionRelativeImpl (
+        disp :DisplayObject,
+        dispHAlign :String, dispVAlign :String,
+        relativeTo :Rectangle,
+        targetHAlign :String, targetVAlign :String,
+        xOffset :Number, yOffset :Number) :void {
+
+        var x :Number = xOffset;
+        var y :Number = yOffset;
+
+        switch (targetHAlign) {
+        case HAlign.LEFT: x += relativeTo.left; break;
+        case HAlign.RIGHT: x += relativeTo.right; break;
+        case HAlign.CENTER: x += relativeTo.left + (relativeTo.width * 0.5); break;
+        }
+        switch (targetVAlign) {
+        case VAlign.TOP: y += relativeTo.top; break;
+        case VAlign.BOTTOM: y += relativeTo.bottom; break;
+        case VAlign.CENTER: y += relativeTo.top + (relativeTo.height * 0.5); break;
+        }
+
+        disp.x = 0;
+        disp.y = 0;
+        var dispBounds :Rectangle = disp.getBounds(disp.parent || disp, R);
+        switch (dispHAlign) {
+        case HAlign.LEFT: x -= dispBounds.left; break;
+        case HAlign.RIGHT: x -= dispBounds.right; break;
+        case HAlign.CENTER: x -= dispBounds.left + (dispBounds.width * 0.5); break;
+        }
+        switch (dispVAlign) {
+        case VAlign.TOP: y -= dispBounds.top; break;
+        case VAlign.BOTTOM: y -= dispBounds.bottom; break;
+        case VAlign.CENTER: y -= dispBounds.top + (dispBounds.height * 0.5); break;
+        }
+
+        disp.x = x;
+        disp.y = y;
+    }
+
     /** Returns a rectangle filled and outlined with the given colors */
     protected static function outlineFillRectImpl (width :Number, height :Number, fillColor :uint,
         outlineSize :Number, outlineColor :uint, fill :Boolean) :Sprite {
@@ -437,7 +471,7 @@ public class DisplayUtil
         return false;
     }
 
-    protected static const P :Point = new Point();
-    protected static const R :Rectangle = new Rectangle();
+    private static const P :Point = new Point();
+    private static const R :Rectangle = new Rectangle();
 }
 }
