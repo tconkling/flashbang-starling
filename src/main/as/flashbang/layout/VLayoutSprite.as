@@ -48,7 +48,7 @@ public class VLayoutSprite extends LayoutSprite
 
     public function addVSpacerAt (size :Number, index :int) :void {
         const spacer :Quad = new Quad(1, size);
-        spacer.visible = false;
+        spacer.alpha = 0;
         addChildAt(spacer, index);
     }
 
@@ -64,18 +64,20 @@ public class VLayoutSprite extends LayoutSprite
         var y :Number = 0;
         for (ii = 0; ii < this.numChildren; ++ii) {
             var child :DisplayObject = getChildAt(ii);
-            child.x = 0;
-            child.y = 0;
-            var bounds :Rectangle = child.getBounds(this, R);
-            child.y = -bounds.top + y;
-            child.x = -bounds.left;
-            if (_hAlign == HAlign.CENTER) {
-                child.x += (maxWidth - child.width) * 0.5;
-            } else if (_hAlign == HAlign.RIGHT) {
-                child.x += maxWidth - child.width;
-            }
+            if (child.visible) {
+                child.x = 0;
+                child.y = 0;
+                var bounds :Rectangle = child.getBounds(this, R);
+                child.y = -bounds.top + y;
+                child.x = -bounds.left;
+                if (_hAlign == HAlign.CENTER) {
+                    child.x += (maxWidth - child.width) * 0.5;
+                } else if (_hAlign == HAlign.RIGHT) {
+                    child.x += maxWidth - child.width;
+                }
 
-            y += bounds.height + _vOffset;
+                y += bounds.height + _vOffset;
+            }
         }
     }
 

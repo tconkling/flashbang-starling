@@ -122,29 +122,33 @@ public class GridLayoutSprite extends LayoutSprite
         var endIdx :int = this.numChildren;
         for (ii = idx; ii < endIdx; ++ii) {
             child = getChildAt(ii);
-            child.x = 0;
-            child.y = 0;
-            bounds = child.getBounds(this, R);
-            child.x = -bounds.left + x;
-            child.y = -bounds.top + y;
-            if (_maxWidth > 0 && x > 0 && x + bounds.width > _maxWidth) {
-                // end our row here
-                endIdx = ii;
-                break;
-            }
+            if (child.visible) {
+                child.x = 0;
+                child.y = 0;
+                bounds = child.getBounds(this, R);
+                child.x = -bounds.left + x;
+                child.y = -bounds.top + y;
+                if (_maxWidth > 0 && x > 0 && x + bounds.width > _maxWidth) {
+                    // end our row here
+                    endIdx = ii;
+                    break;
+                }
 
-            maxChildHeight = Math.max(maxChildHeight, bounds.height);
-            x += bounds.width + _hOffset;
+                maxChildHeight = Math.max(maxChildHeight, bounds.height);
+                x += bounds.width + _hOffset;
+            }
         }
 
         if (_rowVAlign != VAlign.TOP) {
             for (ii = idx; ii < endIdx; ++ii) {
                 child = getChildAt(ii);
-                var height :Number = child.getBounds(this, R).height;
-                if (_rowVAlign == VAlign.CENTER) {
-                    child.y += (maxChildHeight - height) * 0.5;
-                } else {
-                    child.y += (maxChildHeight - height);
+                if (child.visible) {
+                    var height :Number = child.getBounds(this, R).height;
+                    if (_rowVAlign == VAlign.CENTER) {
+                        child.y += (maxChildHeight - height) * 0.5;
+                    } else {
+                        child.y += (maxChildHeight - height);
+                    }
                 }
             }
         }
@@ -162,29 +166,33 @@ public class GridLayoutSprite extends LayoutSprite
         var endIdx :int = this.numChildren;
         for (ii = idx; ii < endIdx; ++ii) {
             child = getChildAt(ii);
-            child.x = 0;
-            child.y = 0;
-            bounds = child.getBounds(this, R);
-            child.x = -bounds.left + x;
-            child.y = -bounds.top + y;
-            if (_maxHeight > 0 && y > 0 && y + bounds.height > _maxHeight) {
-                // end our column here
-                endIdx = ii;
-                break;
-            }
+            if (child.visible) {
+                child.x = 0;
+                child.y = 0;
+                bounds = child.getBounds(this, R);
+                child.x = -bounds.left + x;
+                child.y = -bounds.top + y;
+                if (_maxHeight > 0 && y > 0 && y + bounds.height > _maxHeight) {
+                    // end our column here
+                    endIdx = ii;
+                    break;
+                }
 
-            maxChildWidth = Math.max(maxChildWidth, bounds.width);
-            y += bounds.height + _vOffset;
+                maxChildWidth = Math.max(maxChildWidth, bounds.width);
+                y += bounds.height + _vOffset;
+            }
         }
 
         if (_colHAlign != HAlign.LEFT) {
             for (ii = idx; ii < endIdx; ++ii) {
-                child = getChildAt(ii);
-                var width :Number = child.getBounds(this, R).width;
-                if (_colHAlign == HAlign.CENTER) {
-                    child.x += (maxChildWidth - width) * 0.5;
-                } else {
-                    child.x += (maxChildWidth - width);
+                if (child.visible) {
+                    child = getChildAt(ii);
+                    var width :Number = child.getBounds(this, R).width;
+                    if (_colHAlign == HAlign.CENTER) {
+                        child.x += (maxChildWidth - width) * 0.5;
+                    } else {
+                        child.x += (maxChildWidth - width);
+                    }
                 }
             }
         }
