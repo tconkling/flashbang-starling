@@ -31,7 +31,6 @@ public class UrlDataLoader extends DataLoader
         _loader.addEventListener(IOErrorEvent.IO_ERROR, fail);
 
         if (_loadTimeout > 0) {
-            trace("attempting timeout [" + (_loadTimeout * 1000) + "]");
             _loadTimer = new Timer(_loadTimeout * 1000);
 
             // any activity on the load indicates we can stop waiting for a timeout
@@ -48,7 +47,6 @@ public class UrlDataLoader extends DataLoader
     }
 
     protected function killTimer (...ignored) :void {
-        trace("killTimer [" + ignored + "]");
         if (_loadStartedRegs != null) {
             _loadStartedRegs.close();
             _loadStartedRegs = null;
@@ -84,7 +82,6 @@ public class UrlDataLoader extends DataLoader
     }
 
     override public function fail (cause :Object) :void {
-        trace("fail [" + cause + "]");
         super.fail(cause);
         killTimer();
     }
