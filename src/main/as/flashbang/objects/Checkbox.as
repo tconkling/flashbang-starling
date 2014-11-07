@@ -33,7 +33,7 @@ public class Checkbox extends Button
     }
 
     /** Subclasses must override this to display the appropriate state */
-    protected function showCheckboxState (buttonState :int, val :Boolean) :void {
+    protected function showCheckboxState (buttonState :String, val :Boolean) :void {
         throw new Error("abstract");
     }
 
@@ -46,7 +46,7 @@ public class Checkbox extends Button
         this._value.value = !this._value.value;
     }
 
-    override protected final function showState (state :int) :void {
+    override protected final function showState (state :String) :void {
         showCheckboxState(state, this._value.value);
     }
 

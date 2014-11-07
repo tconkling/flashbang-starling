@@ -65,7 +65,7 @@ public class Button extends SpriteObject
     }
 
     /** Subclasses must override this to display the appropriate state */
-    protected function showState (state :int) :void {
+    protected function showState (state :String) :void {
         throw new Error("abstract");
     }
 
@@ -153,10 +153,10 @@ public class Button extends SpriteObject
         }
     }
 
-    protected function setState (val :int) :void {
-        if (_state != val) {
-            var oldState :int = _state;
-            _state = val;
+    protected function setState (newState :String) :void {
+        if (_state != newState) {
+            var oldState :String = _state;
+            _state = newState;
             if (_state == DISABLED) {
                 cancelCapture();
             }
@@ -175,7 +175,7 @@ public class Button extends SpriteObject
      * By default, it plays the sound named "button_down", if it exists, when transitioning
      * to the DOWN state. Subclasses can override to customize the behavior.
      */
-    protected function playStateTransitionSound (fromState :int, toState :int) :void {
+    protected function playStateTransitionSound (fromState :String, toState :String) :void {
         if (toState == DOWN) {
             var sound :SoundResource = SoundResource.get(DEFAULT_DOWN_SOUND);
             if (sound != null) {
@@ -184,17 +184,17 @@ public class Button extends SpriteObject
         }
     }
 
-    protected var _state :int = 0;
+    protected var _state :String = "up";
     protected var _pointerOver :Boolean;
     protected var _pointerDown :Boolean;
     protected var _captureReg :Registration;
     protected var _pointerListener :PointerListener;
 
-    protected static const UP :int = 0;
-    protected static const DOWN :int = 1;
-    protected static const OVER :int = 2;
-    protected static const DISABLED :int = 3;
+    protected static const UP :String = "up";
+    protected static const DOWN :String = "down";
+    protected static const OVER :String = "over";
+    protected static const DISABLED :String = "disabled";
 
-    protected static const P :Point = new Point();
+    private static const P :Point = new Point();
 }
 }

@@ -19,18 +19,14 @@ public class MovieButton extends Button
         _movie.playChildrenOnly();
     }
 
-    override protected function showState (state :int) :void {
+    override protected function showState (state :String) :void {
         // use UP as a fallback when we don't have a label for the given state
-        if (state != UP && !_movie.hasLabel(STATE_LABELS[state])) {
+        if (state != UP && !_movie.hasLabel(state)) {
             state = UP;
         }
-        _movie.goTo(STATE_LABELS[state]);
+        _movie.goTo(state);
     }
 
     protected var _movie :Movie;
-
-    protected static const STATE_LABELS :Vector.<String> = new <String>[
-        "up", "down", "over", "disabled"
-    ];
 }
 }

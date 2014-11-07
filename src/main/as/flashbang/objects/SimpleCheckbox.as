@@ -38,7 +38,7 @@ public class SimpleCheckbox extends Checkbox
         _sprite.addChild(_container);
     }
 
-    override protected function showCheckboxState (buttonState :int, val :Boolean) :void {
+    override protected function showCheckboxState (buttonState :String, val :Boolean) :void {
         _check.visible = val;
 
         // recolor

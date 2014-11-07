@@ -27,7 +27,7 @@ public class SimpleTextButton extends Button
         _sprite.addChild(_tf);
     }
 
-    override protected function showState (state :int) :void {
+    override protected function showState (state :String) :void {
         _bg.color = BG_COLORS[state];
         _tf.color = TEXT_COLORS[state];
     }
@@ -37,19 +37,19 @@ public class SimpleTextButton extends Button
 
     protected static const PADDING :Number = 4;
 
-    protected static const BG_COLORS :Vector.<uint> = new <uint>[
-        0x6699CC,   // up
-        0x0F3792,   // down
-        0x6699CC,   // over
-        0x939393,   // disabled
-    ];
+    protected static const BG_COLORS :Object = {
+        "up": 0x6699CC,
+        "down": 0x0F3792,
+        "over": 0x6699CC,
+        "disabled": 0x939393
+    };
 
-    protected static const TEXT_COLORS :Vector.<uint> = new <uint>[
-        0x0F3792,   // up
-        0x6699CC,   // down
-        0x0F3792,   // over
-        0x3B3B3B,   // disabled
-    ];
+    protected static const TEXT_COLORS :Object = {
+        "up": 0x0F3792,
+        "down": 0x6699CC,
+        "over": 0x0F3792,
+        "disabled": 0x3B3B3B
+    };
 
 }
 }
