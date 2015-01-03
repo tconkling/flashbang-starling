@@ -15,7 +15,7 @@ import starling.utils.VAlign;
  */
 public class GridLayoutSprite extends LayoutSprite
 {
-    public function GridLayoutSprite (hOffset :Number = 2, vOffset :Number = 2,
+    public function GridLayoutSprite (hOffset :Number = 0, vOffset :Number = 0,
         maxWidth :Number = 200, maxHeight :Number = 0) {
         _hOffset = hOffset;
         _vOffset = vOffset;

@@ -15,7 +15,7 @@ import starling.utils.VAlign;
  */
 public class HLayoutSprite extends LayoutSprite
 {
-    public function HLayoutSprite (hOffset :Number = 2, vAlign :String = "center") {
+    public function HLayoutSprite (hOffset :Number = 0, vAlign :String = "center") {
         _hOffset = hOffset;
         _vAlign = vAlign;
     }
