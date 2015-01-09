@@ -13,8 +13,6 @@ import flash.net.URLLoaderDataFormat;
 import flash.net.URLRequest;
 import flash.utils.Timer;
 
-import flashbang.util.Listeners;
-
 public class UrlDataLoader extends DataLoader
 {
     public function UrlDataLoader (request :URLRequest, dataFormat :String = null,
@@ -29,48 +27,22 @@ public class UrlDataLoader extends DataLoader
         _loader.dataFormat = _format;
         _loader.addEventListener(Event.COMPLETE, onLoadComplete);
         _loader.addEventListener(IOErrorEvent.IO_ERROR, fail);
+        _loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, fail);
 
         if (_loadTimeout > 0) {
-            _loadTimer = new Timer(_loadTimeout * 1000);
+            _timeoutTimer = new Timer(_loadTimeout * 1000, 1);
 
             // any activity on the load indicates we can stop waiting for a timeout
-            _loadStartedRegs = new Listeners();
-            _loadStartedRegs.addEventListener(_loader, SecurityErrorEvent.SECURITY_ERROR,
-                killTimer);
-            _loadStartedRegs.addEventListener(_loader, ProgressEvent.PROGRESS, killTimer);
-            _loadStartedRegs.addEventListener(_loadTimer, TimerEvent.TIMER, timeout);
+            _loader.addEventListener(ProgressEvent.PROGRESS, shutdownTimeoutTimer);
+            _timeoutTimer.addEventListener(TimerEvent.TIMER, timeout);
 
-            _loadTimer.start();
+            _timeoutTimer.start();
         }
 
         _loader.load(_request);
     }
 
-    protected function killTimer (...ignored) :void {
-        if (_loadStartedRegs != null) {
-            _loadStartedRegs.close();
-            _loadStartedRegs = null;
-        }
-        if (_loadTimer != null) {
-            _loadTimer.reset();
-            _loadTimer = null;
-        }
-    }
-
-    protected function timeout (e :Event) :void {
-        fail(new IOErrorEvent(TIMEOUT));
-    }
-
-    protected function onLoadComplete (e :Event) :void {
-        killTimer();
-        var data :* = _loader.data;
-        _loader = null;
-        succeed(data);
-    }
-
-    override protected function onCanceled () :void {
-        killTimer();
-        // Loader may already be closed.
+    protected function shutdownLoader () :void {
         if (_loader != null) {
             try {
                 _loader.close();
@@ -81,9 +53,34 @@ public class UrlDataLoader extends DataLoader
         }
     }
 
+    protected function shutdownTimeoutTimer (...ignored) :void {
+        if (_timeoutTimer != null) {
+            _timeoutTimer.stop();
+            _timeoutTimer = null;
+        }
+    }
+
+    protected function timeout (e :Event) :void {
+        fail(new IOErrorEvent(TIMEOUT));
+    }
+
+    override protected function onCanceled () :void {
+        shutdownTimeoutTimer();
+        shutdownLoader();
+    }
+
     override public function fail (cause :Object) :void {
+        shutdownTimeoutTimer();
+        shutdownLoader();
         super.fail(cause);
-        killTimer();
+    }
+
+    protected function onLoadComplete (e :Event) :void {
+        var data :* = _loader.data;
+        _loader = null;
+        shutdownTimeoutTimer();
+        // don't need to shutdown loader
+        succeed(data);
     }
 
     protected static const TIMEOUT :String = "URLLoader timed out!";
@@ -93,7 +90,6 @@ public class UrlDataLoader extends DataLoader
     protected var _loader :URLLoader;
 
     protected var _loadTimeout :Number;
-    protected var _loadStartedRegs :Listeners;
-    protected var _loadTimer :Timer;
+    protected var _timeoutTimer :Timer;
 }
 }
