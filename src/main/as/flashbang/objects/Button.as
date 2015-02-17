@@ -31,6 +31,9 @@ public class Button extends SpriteObject
     /** Fired when the button is clicked */
     public const clicked :UnitSignal = new UnitSignal();
 
+    /** Sound played when the button is pressed (null for no sound) */
+    public var downSound :String = DEFAULT_DOWN_SOUND;
+
     public function Button (sprite :Sprite = null) {
         super(sprite);
     }
@@ -172,12 +175,12 @@ public class Button extends SpriteObject
 
     /**
      * Plays a sound associated with a state transition.
-     * By default, it plays the sound named "button_down", if it exists, when transitioning
+     * By default, it plays the sound named "sfx_button_down", if it exists, when transitioning
      * to the DOWN state. Subclasses can override to customize the behavior.
      */
     protected function playStateTransitionSound (fromState :String, toState :String) :void {
-        if (toState == DOWN) {
-            var sound :SoundResource = SoundResource.get(DEFAULT_DOWN_SOUND);
+        if (toState == DOWN && this.downSound != null) {
+            var sound :SoundResource = SoundResource.get(this.downSound);
             if (sound != null) {
                 Flashbang.audio.playSound(sound);
             }
