@@ -54,16 +54,21 @@ public class HLayoutSprite extends LayoutSprite
 
     override protected function doLayout () :void {
         var ii :int;
+        var child :DisplayObject;
+
         var maxHeight :Number = 0;
         if (_vAlign != VAlign.TOP) {
             for (ii = 0; ii < this.numChildren; ++ii) {
-                maxHeight = Math.max(getChildAt(ii).height, maxHeight);
+                child = getChildAt(ii);
+                if (child.visible) {
+                    maxHeight = Math.max(child.height, maxHeight);
+                }
             }
         }
 
         var x :Number = 0;
         for (ii = 0; ii < this.numChildren; ++ii) {
-            var child :DisplayObject = getChildAt(ii);
+            child = getChildAt(ii);
             if (child.visible) {
                 child.x = 0;
                 child.y = 0;
@@ -71,9 +76,9 @@ public class HLayoutSprite extends LayoutSprite
                 child.x = -bounds.left + x;
                 child.y = -bounds.top;
                 if (_vAlign == VAlign.CENTER) {
-                    child.y += (maxHeight - child.height) * 0.5;
+                    child.y += (maxHeight - bounds.height) * 0.5;
                 } else if (_vAlign == VAlign.BOTTOM) {
-                    child.y += maxHeight - child.height;
+                    child.y += maxHeight - bounds.height;
                 }
 
                 x += bounds.width + _hOffset;
