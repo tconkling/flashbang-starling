@@ -15,6 +15,10 @@ public class ParallelTask extends ObjectTask
         }
     }
 
+    public function get numSubtasks () :uint {
+        return _subtasks.length;
+    }
+
     public function addTask (task :ObjectTask) :void {
         Preconditions.checkState(this.parent == null, "Can't modify a running ParallelTask");
         _subtasks.push(task);
