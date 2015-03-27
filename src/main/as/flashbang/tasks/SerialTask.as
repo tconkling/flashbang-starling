@@ -39,7 +39,7 @@ public class SerialTask extends ObjectTask
     }
 
     override protected function removed () :void {
-        if (_nextIdx <= _subtasks.length) {
+        if (_subtasks.length > 0 && _nextIdx <= _subtasks.length) {
             // destroy the active task
             _subtasks[_nextIdx - 1].destroySelf();
         }
