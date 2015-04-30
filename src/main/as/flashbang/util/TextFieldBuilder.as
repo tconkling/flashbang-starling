@@ -190,6 +190,12 @@ public class TextFieldBuilder
         return this;
     }
 
+    /** Specifies the scale of the TextField. @default 1.0 */
+    public function scale (val :Number) :TextFieldBuilder {
+        _props.scaleX = _props.scaleY = val;
+        return this;
+    }
+
     protected var _props :Object = {};
 }
 
