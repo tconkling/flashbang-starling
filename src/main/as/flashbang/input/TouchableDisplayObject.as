@@ -33,6 +33,10 @@ internal class TouchableDisplayObject
         return getHoverSignals().began;
     }
 
+    public function get hoverMoved () :SignalView {
+        return getHoverSignals().moved;
+    }
+
     public function get hoverEnded () :SignalView {
         return getHoverSignals().ended;
     }
@@ -109,23 +113,31 @@ import starling.events.TouchPhase;
 
 class HoverSignals {
     public const began :Signal = new Signal(Touch);
+    public const moved :Signal = new Signal(Touch);
     public const ended :UnitSignal = new UnitSignal();
 
     public function HoverSignals (disp :DisplayObject, touchEventSignal :EventSignal) {
-        var hovered :Boolean = false;
-        touchEventSignal.connect(function (e :TouchEvent) :void {
-            var touch :Touch = null;
-            if (!hovered && (touch = e.getTouch(disp, TouchPhase.HOVER)) != null) {
-                hovered = true;
-                began.emit(touch);
-            } else if (hovered) {// && !e.interactsWith(disp)) {
-                if (!e.interactsWith(disp)) {
-                    hovered = false;
-                    ended.emit();
-                }
-            }
-        });
+        _disp = disp;
+        touchEventSignal.connect(onTouchEvent);
     }
+
+    protected function onTouchEvent (e :TouchEvent) :void {
+        var touch :Touch = e.getTouch(_disp, TouchPhase.HOVER);
+        if (touch != null) {
+            if (!_hovered) {
+                _hovered = true;
+                this.began.emit(touch);
+            } else {
+                this.moved.emit(touch);
+            }
+        } else if (_hovered && !e.interactsWith(_disp)) {
+            _hovered = false;
+            this.ended.emit();
+        }
+    }
+
+    protected var _disp :DisplayObject;
+    protected var _hovered :Boolean;
 }
 
 class FilteredTouchSignal extends Signal {

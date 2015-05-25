@@ -20,8 +20,11 @@ public interface Touchable
      */
     function get touchEvent () :SignalView; // Signal<TouchEvent>
 
-    /** Fired when a Touch in the HOVER phase is dispatched on the object */
+    /** Fired when a Touch in the HOVER phase is dispatched on the previously-unhovered object */
     function get hoverBegan () :SignalView; // Signal<Touch>
+
+    /** Fired when a Touch in the HOVER phase is dispatched on the hovered object */
+    function get hoverMoved () :SignalView; // Signal<Touch>
 
     /** Fired when a hovered object loses its hovered status */
     function get hoverEnded () :SignalView; // UnitSignal<>

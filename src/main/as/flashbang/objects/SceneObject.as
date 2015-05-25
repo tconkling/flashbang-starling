@@ -39,6 +39,10 @@ public class SceneObject extends GameObject
         return getTouchable().hoverBegan;
     }
 
+    public function get hoverMoved () :SignalView { // Signal<Touch>
+        return getTouchable().hoverMoved;
+    }
+
     public function get hoverEnded () :SignalView { // UnitSignal<>
         return getTouchable().hoverEnded;
     }
