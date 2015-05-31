@@ -407,7 +407,7 @@ public class DisplayUtil
 
         disp.x = 0;
         disp.y = 0;
-        var dispBounds :Rectangle = disp.getBounds(disp.parent || disp, R);
+        var dispBounds :Rectangle = disp.getBounds(disp.parent, R); // works when parent is null
         switch (dispHAlign) {
         case HAlign.LEFT: x -= dispBounds.left; break;
         case HAlign.RIGHT: x -= dispBounds.right; break;
