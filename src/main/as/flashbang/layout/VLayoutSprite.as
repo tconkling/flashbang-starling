@@ -20,6 +20,18 @@ public class VLayoutSprite extends LayoutSprite
         _hAlign = hAlign;
     }
 
+    public function get reversed () :Boolean {
+        return _reversed;
+    }
+
+    /** If true, then children are laid out bottom-to-top instead of top-to-bottom */
+    public function set reversed (val :Boolean) :void {
+        if (_reversed != val) {
+            _reversed = val;
+            _needsLayout = true;
+        }
+    }
+
     public function get vOffset () :Number {
         return _vOffset;
     }
@@ -66,8 +78,19 @@ public class VLayoutSprite extends LayoutSprite
             }
         }
 
+        var from :int, to :int, inc :int;
+        if (_reversed) {
+            from = this.numChildren - 1;
+            to = -1;
+            inc = -1;
+        } else {
+            from = 0;
+            to = this.numChildren;
+            inc = 1;
+        }
+
         var y :Number = 0;
-        for (ii = 0; ii < this.numChildren; ++ii) {
+        for (ii = from; ii != to; ii += inc) {
             child = getChildAt(ii);
             if (child.visible) {
                 child.x = 0;
@@ -88,6 +111,7 @@ public class VLayoutSprite extends LayoutSprite
 
     protected var _vOffset :Number;
     protected var _hAlign :String;
+    protected var _reversed :Boolean;
 
     protected static const R :Rectangle = new Rectangle();
 }

@@ -20,6 +20,18 @@ public class HLayoutSprite extends LayoutSprite
         _vAlign = vAlign;
     }
 
+    public function get reversed () :Boolean {
+        return _reversed;
+    }
+
+    /** If true, then children are laid out right-to-left instead of left-to-right */
+    public function set reversed (val :Boolean) :void {
+        if (_reversed != val) {
+            _reversed = val;
+            _needsLayout = true;
+        }
+    }
+
     public function get hOffset () :Number {
         return _hOffset;
     }
@@ -66,8 +78,19 @@ public class HLayoutSprite extends LayoutSprite
             }
         }
 
+        var from :int, to :int, inc :int;
+        if (_reversed) {
+            from = this.numChildren - 1;
+            to = -1;
+            inc = -1;
+        } else {
+            from = 0;
+            to = this.numChildren;
+            inc = 1;
+        }
+
         var x :Number = 0;
-        for (ii = 0; ii < this.numChildren; ++ii) {
+        for (ii = from; ii != to; ii += inc) {
             child = getChildAt(ii);
             if (child.visible) {
                 child.x = 0;
@@ -88,6 +111,7 @@ public class HLayoutSprite extends LayoutSprite
 
     protected var _hOffset :Number;
     protected var _vAlign :String;
+    protected var _reversed :Boolean;
 
     protected static const R :Rectangle = new Rectangle();
 }
