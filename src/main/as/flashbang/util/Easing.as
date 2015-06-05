@@ -20,5 +20,9 @@ public class Easing
         }
         return from + ((to - from) * (dt / t));
     }
+
+    public static function none (from :Number, to :Number, dt :Number, t :Number) :Number {
+        return (dt >= t ? to : from);
+    }
 }
 }
