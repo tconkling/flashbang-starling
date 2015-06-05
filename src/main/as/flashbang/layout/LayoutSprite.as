@@ -11,6 +11,10 @@ import starling.display.Sprite;
  */
 public class LayoutSprite extends Sprite
 {
+    public function get needsLayout () :Boolean {
+        return _needsLayout;
+    }
+
     override public function addChildAt (child :DisplayObject, index :int) :DisplayObject {
         _needsLayout = true;
         return super.addChildAt(child, index);
