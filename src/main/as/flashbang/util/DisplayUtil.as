@@ -237,19 +237,21 @@ public class DisplayUtil
     }
 
     /** Returns a rectangle filled with the given color */
-    public static function fillRect (width :Number, height :Number, color :uint) :Quad {
-        return new Quad(width, height, color);
+    public static function fillRect (width :Number, height :Number, color :uint, alpha :Number = 1) :Quad {
+        var r :Quad = new Quad(width, height, color);
+        r.alpha = alpha;
+        return r;
     }
 
     /** Returns a rectangle outlined with the given color */
-    public static function lineRect (width :Number, height :Number, color :uint, lineSize :Number) :Sprite {
-        return outlineFillRectImpl(width, height, 0, lineSize, color, false);
+    public static function lineRect (width :Number, height :Number, color :uint, lineSize :Number, alpha :Number = 1) :Sprite {
+        return outlineFillRectImpl(width, height, 0, lineSize, color, false, alpha);
     }
 
     /** Returns a rectangle filled and outlined with the given colors */
     public static function outlineFillRect (width :Number, height :Number, fillColor :uint,
-        outlineSize :Number, outlineColor :uint) :Sprite {
-        return outlineFillRectImpl(width, height, fillColor, outlineSize, outlineColor, true);
+        outlineSize :Number, outlineColor :uint, alpha :Number = 1) :Sprite {
+        return outlineFillRectImpl(width, height, fillColor, outlineSize, outlineColor, true, alpha);
     }
 
     /** Transforms a point from one DisplayObject's coordinate space to another's. */
@@ -425,7 +427,7 @@ public class DisplayUtil
 
     /** Returns a rectangle filled and outlined with the given colors */
     protected static function outlineFillRectImpl (width :Number, height :Number, fillColor :uint,
-        outlineSize :Number, outlineColor :uint, fill :Boolean) :Sprite {
+        outlineSize :Number, outlineColor :uint, fill :Boolean, alpha :Number) :Sprite {
 
         var sprite :Sprite = new Sprite();
         if (fill) {
@@ -444,6 +446,8 @@ public class DisplayUtil
         sprite.addChild(bottom);
         sprite.addChild(left);
         sprite.addChild(right);
+
+        sprite.alpha = alpha;
 
         return sprite;
     }
