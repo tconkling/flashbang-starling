@@ -55,7 +55,7 @@ public class BatchLoader extends DataLoader
                 _loaded.push(loader);
                 loadMore();
             }
-        }).onFailure(function (e :Error) :void {
+        }).onFailure(function (e :*) :void {
             // we may have gotten canceled
             if (self.state == LoadState.LOADING) {
                 removeFirst(_loading, loader);
