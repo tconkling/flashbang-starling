@@ -245,7 +245,7 @@ public class Viewport
             }
 
             mode.disposeInternal();
-            _modeStack.splice(index, 1);
+            _modeStack.removeAt(index);
         }
 
         // create a new _pendingModeTransitionQueue right now

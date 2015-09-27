@@ -83,7 +83,7 @@ public class BatchLoader extends DataLoader
         var len :int = v.length;
         for (var ii :int = 0; ii < len; ++ii) {
             if (v[ii] == l) {
-                v.splice(ii, 1);
+                v.removeAt(ii);
                 break;
             }
         }

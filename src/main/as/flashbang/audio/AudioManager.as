@@ -153,7 +153,7 @@ public class AudioManager
                         "' for higher-priority sound '" + sound.name + "'");
                 }
                 stop(lowestPriorityChannel);
-                _activeChannels.splice(lowestPriorityChannelIdx, 1);
+                _activeChannels.removeAt(lowestPriorityChannelIdx);
             } else {
                 // We're out of luck
                 log.info("Discarding sound '" + sound.name +

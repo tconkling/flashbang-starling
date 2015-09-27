@@ -276,7 +276,7 @@ public class AudioControls
             childController.update(dt, _globalState);
             if (childController.needsCleanup) {
                 // @TODO - use a linked list?
-                _children.splice(ii--, 1);
+                _children.removeAt(ii--);
             }
         }
     }
