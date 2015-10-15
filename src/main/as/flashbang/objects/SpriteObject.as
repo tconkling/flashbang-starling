@@ -10,8 +10,8 @@ import starling.display.Sprite;
  */
 public class SpriteObject extends SceneObject
 {
-    public function SpriteObject (sprite :Sprite = null, id :Object = null, group :Object = null) {
-        super(sprite || new Sprite(), id, group);
+    public function SpriteObject (sprite :Sprite = null) {
+        super(sprite || new Sprite());
         _sprite = Sprite(_displayObject);
     }
 

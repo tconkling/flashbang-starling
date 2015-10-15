@@ -18,8 +18,7 @@ import starling.display.DisplayObject;
 public class SceneObject extends GameObject
     implements DisplayComponent, Touchable
 {
-    public function SceneObject (displayObject :DisplayObject, id :Object = null,
-        group :Object = null) {
+    public function SceneObject (displayObject :DisplayObject) {
         _displayObject = displayObject;
     }
 
@@ -63,14 +62,6 @@ public class SceneObject extends GameObject
         return getTouchable().touchEnded;
     }
 
-    override public function get ids () :Array {
-        return (_id != null ? [ _id ].concat(super.ids) : super.ids);
-    }
-
-    override public function get groups () :Array {
-        return (_group != null ? [ _group ].concat(super.groups) : super.groups);
-    }
-
     override protected function dispose () :void {
         super.dispose();
         if (_displayObject != null) {
@@ -88,9 +79,6 @@ public class SceneObject extends GameObject
 
     protected var _displayObject :DisplayObject;
     protected var _touchable :Touchable; // lazily instantiated
-
-    protected var _id :Object;
-    protected var _group :Object;
 }
 
 }
