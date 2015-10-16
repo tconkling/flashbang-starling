@@ -168,11 +168,9 @@ public class FlashbangApp extends flash.display.Sprite
     }
 
     public function removeUpdatable (obj :Updatable) :void {
-        for (var ii :int = _updatables.length - 1; ii >= 0; --ii) {
-            if (_updatables[ii] == obj) {
-                _updatables.splice(ii, 1);
-                break;
-            }
+        var idx :int = _updatables.indexOf(obj);
+        if (idx >= 0) {
+            _updatables.removeAt(idx);
         }
     }
 
@@ -318,7 +316,7 @@ public class FlashbangApp extends flash.display.Sprite
                     viewport.update(dt);
                 }
                 if (viewport.isDisposed) {
-                    _viewports.splice(ii, 1);
+                    _viewports.removeAt(ii);
                     viewport.disposeNow();
                 }
             }
