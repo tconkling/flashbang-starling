@@ -3,7 +3,6 @@
 
 package flashbang.core {
 
-import aspire.ui.KeyboardCodes;
 import aspire.util.F;
 
 import flash.display.Sprite;
@@ -14,6 +13,7 @@ import flash.events.UncaughtErrorEvent;
 import flash.geom.Rectangle;
 import flash.system.Capabilities;
 import flash.system.TouchscreenType;
+import flash.ui.Keyboard;
 import flash.utils.getTimer;
 
 import flashbang.audio.AudioManager;
@@ -98,9 +98,9 @@ public class FlashbangApp extends flash.display.Sprite
      */
     public function handleKeyboardEvent (e :KeyboardEvent) :void {
         // TouchInput needs to know whether ctrl or shift is down for TouchEvent dispatching
-        if (e.keyCode == KeyboardCodes.CONTROL || e.keyCode == KeyboardCodes.COMMAND) {
+        if (e.keyCode == Keyboard.CONTROL || e.keyCode == Keyboard.COMMAND) {
             TouchInput._ctrlDown = (e.type == KeyboardEvent.KEY_DOWN);
-        } else if (e.keyCode == KeyboardCodes.SHIFT) {
+        } else if (e.keyCode == Keyboard.SHIFT) {
             TouchInput._shiftDown = (e.type == KeyboardEvent.KEY_DOWN);
         }
 

@@ -3,8 +3,9 @@
 
 package flashbang.input {
 
-import aspire.ui.KeyboardCodes;
 import aspire.util.Log;
+
+import flash.ui.Keyboard;
 
 import flashbang.core.Flashbang;
 
@@ -56,6 +57,6 @@ public class KeyboardState
 
     protected static const log :Log = Log.getLog(KeyboardState);
 
-    protected static const MAX_KEYCODE :uint = KeyboardCodes.QUOTE; // 222
+    protected static const MAX_KEYCODE :uint = Keyboard.QUOTE; // 222
 }
 }
