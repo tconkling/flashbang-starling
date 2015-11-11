@@ -36,7 +36,7 @@ public class PlayMovieTask extends ObjectTask
                     "PlayMovieTask: object doesn't implement DisplayComponent");
                 _movie = disp.display as Movie;
                 Preconditions.checkState(_movie != null,
-                    "PlayMoveiTask: object does not contain a Movie displayObject");
+                    "PlayMovieTask: object does not contain a Movie displayObject");
             }
 
             _started = true;
