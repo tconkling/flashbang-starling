@@ -62,6 +62,11 @@ public class FramerateView extends Framerate
         _tf.color = (this.fpsMean > this.slowFps ? this.normalColor : this.slowColor);
     }
 
+    override protected function dispose () :void {
+        _tf.removeFromParent(true);
+        super.dispose();
+    }
+
     protected var _tf :TextField;
 }
 

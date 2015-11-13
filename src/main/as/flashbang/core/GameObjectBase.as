@@ -171,16 +171,6 @@ public class GameObjectBase
         _parent = null;
         _mode = null;
 
-        // If we have a DisplayObject, remove it from the displayList.
-        // We do *not* dispose of the DisplayObject: that is up to the implementing object.
-        // SceneObject does this automatically in destroy().
-        if (this is DisplayComponent) {
-            var disp :DisplayObject = DisplayComponent(this).display;
-            if (null != disp) {
-                disp.removeFromParent();
-            }
-        }
-
         removed();
         if (_destroyed != null) {
             _destroyed.emit();

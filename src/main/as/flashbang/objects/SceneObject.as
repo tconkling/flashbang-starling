@@ -65,7 +65,7 @@ public class SceneObject extends GameObject
     override protected function dispose () :void {
         super.dispose();
         if (_displayObject != null) {
-            _displayObject.dispose();
+            _displayObject.removeFromParent(true);
             _displayObject = null;
         }
     }
