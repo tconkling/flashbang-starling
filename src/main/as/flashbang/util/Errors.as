@@ -3,6 +3,9 @@
 
 package flashbang.util {
 
+import aspire.util.ClassUtil;
+import aspire.util.Joiner;
+
 import flash.events.ErrorEvent;
 import flash.events.UncaughtErrorEvent;
 
@@ -42,10 +45,13 @@ public class Errors
 
         } else if (error is ErrorEvent) {
             var ee :ErrorEvent = (error as ErrorEvent);
-            msg = ee.text;
-            if (msg != null && msg.length > 0) {
-                return msg;
+            var joiner :Joiner = new Joiner(ClassUtil.tinyClassName(ee));
+            joiner.add("errorID", ee.errorID);
+            joiner.add("type", '"' + ee.type + '"');
+            if (ee.text != null && ee.text.length > 0) {
+                joiner.add("text", '"' + ee.text + '"');
             }
+            return joiner.toString();
         }
 
         return "An error occurred: " + error;
