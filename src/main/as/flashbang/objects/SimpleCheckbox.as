@@ -30,7 +30,7 @@ public class SimpleCheckbox extends Checkbox
 
         // draw an X
         var xLineLength :Number = Math.sqrt(2 * (width - 8) * (width - 8));
-        _check = drawX(xLineLength, fgColor);
+        _check = drawX(xLineLength, 0xffffff);
         _check.x = width * 0.5;
         _check.y = width * 0.5;
         _container.addChild(_check);
@@ -44,7 +44,8 @@ public class SimpleCheckbox extends Checkbox
         // recolor
         var color :uint = (buttonState == DISABLED ? _disabledColor : _fgColor);
         _outline.color = color;
-        for each (var child :Quad in _check) {
+        for (var ii :int = 0; ii < _check.numChildren; ++ii) {
+            var child :Quad = Quad(_check.getChildAt(ii));
             child.color = color;
         }
 
