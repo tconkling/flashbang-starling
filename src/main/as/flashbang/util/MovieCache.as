@@ -32,7 +32,7 @@ public class MovieCache implements Registration
             movie = cache.rsrc.create();
         } else {
             // reset properties
-            movie.goTo(0);
+            movie.recursiveGoTo(0);
             movie.x = movie.y = 0;
             movie.pivotX = movie.pivotY = 0;
             movie.scaleX = movie.scaleY = 1;
