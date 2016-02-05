@@ -143,6 +143,12 @@ public class ModeStack
         }
     }
 
+    public function render () :void {
+        if (_modeStack.length > 0) {
+            _modeStack[_modeStack.length - 1].renderInternal();
+        }
+    }
+
     /**
      * Called when the viewport receives touches.
      * By default it forwards the touches to its active mode.

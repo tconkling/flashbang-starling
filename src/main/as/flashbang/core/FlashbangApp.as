@@ -216,6 +216,7 @@ public class FlashbangApp extends flash.display.Sprite
         _regs.addEventListener(_mainSprite.stage, KeyboardEvent.KEY_DOWN, handleKeyboardEvent);
         _regs.addEventListener(_mainSprite.stage, KeyboardEvent.KEY_UP, handleKeyboardEvent);
         _regs.addEventListener(_mainSprite.stage, starling.events.Event.ENTER_FRAME, update);
+        _regs.addEventListener(_starling, starling.events.Event.RENDER, render);
         _regs.addEventListener(_starling.nativeStage, MouseEvent.MOUSE_WHEEL, function (e :MouseEvent) :void {
              handleMouseWheelEvent(createMouseWheelEvent(e));
         });
@@ -267,6 +268,10 @@ public class FlashbangApp extends flash.display.Sprite
                 disposeNow();
             }
         }
+    }
+
+    protected function render (e :starling.events.Event) :void {
+        _modeStack.render();
     }
 
     /**

@@ -72,6 +72,10 @@ public class AppMode
         return _update;
     }
 
+    public function get willRender () :SignalView {
+        return _willRender;
+    }
+
     public function get touchInput () :TouchInput {
         return _touchInput;
     }
@@ -216,6 +220,11 @@ public class AppMode
         _moviePlayer.advanceTime(dt);
     }
 
+    /** Called right before Starling renders the display list. */
+    protected function render () :void {
+        _willRender.emit();
+    }
+
     /** Called when the mode is added to the mode stack */
     protected function setup () :void {
     }
@@ -295,6 +304,10 @@ public class AppMode
         _updateComplete.emit();
     }
 
+    internal function renderInternal () :void {
+        render();
+    }
+
     internal function registerObjectInternal (obj :GameObjectBase) :void {
         // Handle IDs
         var ids :Array = obj.ids;
@@ -330,15 +343,22 @@ public class AppMode
             }
         }
 
-        // If the object is updateable, wire up its update function to our signal
-        if (obj is Updatable) {
-            obj.regs.add(_update.connect(Updatable(obj).update));
+        // Handle Updatable and Renderable
+        var updatable :Updatable = (obj as Updatable);
+        if (updatable != null) {
+            obj.regs.add(_update.connect(updatable.update));
+        }
+
+        var renderable :Renderable = (obj as Renderable);
+        if (renderable != null) {
+            obj.regs.add(_willRender.connect(renderable.willRender));
         }
 
         registerObject(obj);
     }
 
     protected const _update :Signal = new Signal(Number);
+    protected const _willRender :UnitSignal = new UnitSignal();
     protected const _updateComplete :UnitSignal = new UnitSignal();
     protected const _entered :UnitSignal = new UnitSignal();
 
