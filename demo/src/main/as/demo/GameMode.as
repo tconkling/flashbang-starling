@@ -36,7 +36,7 @@ public class GameMode extends AppMode
         pause.display.y = Demo.HEIGHT - pause.display.height - 20;
         addObject(pause, this.modeSprite);
         _regs.add(pause.clicked.connect(function () :void {
-            viewport.pushMode(new PauseMode());
+            _modeStack.pushMode(new PauseMode());
         }));
     }
 }

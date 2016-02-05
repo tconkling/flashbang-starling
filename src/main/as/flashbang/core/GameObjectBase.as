@@ -78,8 +78,8 @@ public class GameObjectBase
     /**
      * Returns the Viewport that this object is a part of
      */
-    public final function get viewport () :Viewport {
-        return _mode.viewport;
+    public final function get viewport () :ModeStack {
+        return _mode.modeStack;
     }
 
     /**

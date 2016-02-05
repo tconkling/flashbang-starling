@@ -14,39 +14,23 @@ import starling.events.KeyboardEvent;
 import starling.events.Touch;
 
 /**
- * Viewport contains the AppMode stack. The topmost AppMode in the stack gets ticked on every
- * update. Don't create a Viewport directly - call FlashbangApp.createViewport.
+ * Contains all of the app's AppMode objects. Only the top-most mode in the stack gets updates
+ * and other events - all other modes are inactive.
  */
-public class Viewport
+public class ModeStack
 {
-    public static const DEFAULT :String = "DefaultViewport";
-
     public const topModeChanged :UnitSignal = new UnitSignal();
     public const disposed :UnitSignal = new UnitSignal();
 
-    public function Viewport (app :FlashbangApp, name :String, parentSprite :Sprite) {
-        _app = app;
-        _name = name;
+    public function ModeStack (parentSprite :Sprite) {
         parentSprite.addChild(_topSprite);
-    }
-
-    public final function get name () :String {
-        return _name;
-    }
-
-    /**
-     * Causes the Viewport to be destroyed.
-     * (This won't happen immediately - it'll happen at the end of the current update loop)
-     */
-    public function dispose () :void {
-        _disposed = true;
     }
 
     /**
      * Returns the number of modes currently on the mode stack. Be aware that this value might be
      * about to change if mode transitions have been queued that have not yet been processed.
      */
-    public function get modeStackLength () :int {
+    public function get length () :int {
         return _modeStack.length;
     }
 
@@ -195,7 +179,7 @@ public class Viewport
         }
 
         var initialTopMode :AppMode = this.topMode;
-        var self :Viewport = this;
+        var self :ModeStack = this;
 
         function doPushMode (newMode :AppMode) :void {
             if (null == newMode) {
@@ -313,26 +297,17 @@ public class Viewport
         }
     }
 
-    internal function get isDisposed () :Boolean {
-        return _disposed;
-    }
-
-    internal function disposeNow () :void {
+    internal function dispose () :void {
         clearModeStackNow();
         _modeStack = null;
         _pendingModeTransitionQueue = null;
         _topSprite.removeFromParent(/*dispose=*/true);
         _topSprite = null;
-        this.disposed.emit();
     }
 
-
-    protected var _app :FlashbangApp;
-    protected var _name :String;
     protected var _topSprite :Sprite = new Sprite();
     protected var _modeStack :Vector.<AppMode> = new <AppMode>[];
     protected var _pendingModeTransitionQueue :Vector.<PendingTransition> = new <PendingTransition>[];
-    protected var _disposed :Boolean;
 }
 }
 

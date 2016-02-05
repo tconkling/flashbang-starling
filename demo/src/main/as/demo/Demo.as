@@ -14,7 +14,7 @@ public class Demo extends flashbang.core.FlashbangApp
 
     override protected function run () :void {
         // Load our assets. LoadingMode will kick off the game when it's finished.
-        this.defaultViewport.pushMode(new LoadingMode());
+        _modeStack.pushMode(new LoadingMode());
     }
 
     override protected function createConfig () :FlashbangConfig {
@@ -44,7 +44,7 @@ class LoadingMode extends AppMode
         resources.load()
             .onSuccess(function () :void {
                 // resources loaded. kick off the game.
-                viewport.changeMode(new GameMode());
+                _modeStack.changeMode(new GameMode());
             })
             .onFailure(function (e :Error) :void {
                 // there was a load error

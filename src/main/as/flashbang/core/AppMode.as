@@ -63,9 +63,9 @@ public class AppMode
         return _modeSprite;
     }
 
-    /** Returns the Viewport that this AppMode lives in */
-    public final function get viewport () :Viewport {
-        return _viewport;
+    /** Returns the ModeStack that this AppMode lives in */
+    public final function get modeStack () :ModeStack {
+        return _modeStack;
     }
 
     public function get updateBegan () :SignalView {
@@ -236,8 +236,8 @@ public class AppMode
     protected function registerObject (obj :GameObjectBase) :void {
     }
 
-    internal function setupInternal (viewport :Viewport) :void {
-        _viewport = viewport;
+    internal function setupInternal (viewport :ModeStack) :void {
+        _modeStack = viewport;
         _touchInput = new TouchInput(_modeSprite);
         _moviePlayer = new MoviePlayer(_modeSprite);
         setup();
@@ -259,7 +259,7 @@ public class AppMode
         _regs.close();
         _regs = null;
 
-        _viewport = null;
+        _modeStack = null;
 
         _touchInput.dispose();
         _touchInput = null;
@@ -343,7 +343,7 @@ public class AppMode
     protected const _entered :UnitSignal = new UnitSignal();
 
     protected var _modeSprite :Sprite = new Sprite();
-    protected var _viewport :Viewport;
+    protected var _modeStack :ModeStack;
     protected var _touchInput :TouchInput;
     protected var _keyboardInput :KeyboardInput = new KeyboardInput();
     protected var _mouseWheelInput :MouseWheelInput = new MouseWheelInput();

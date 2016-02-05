@@ -49,6 +49,10 @@ public class FlashbangApp extends flash.display.Sprite
         return _disposed;
     }
 
+    public function get modeStack () :ModeStack {
+        return _modeStack;
+    }
+
     /**
      * Provides a safe mechanism for displaying information about a fatal error and gracefully
      * shutting down.
@@ -81,20 +85,13 @@ public class FlashbangApp extends flash.display.Sprite
         }
     }
 
-    /** Called when the app receives touches. By default it forwards them to each viewport */
+    /** Called when the app receives touches. */
     public function handleTouches (touches :Vector.<Touch>) :void {
-        touches = touches.concat();
-        for (var ii :int = _viewports.length - 1; ii >= 0; --ii) {
-            _viewports[ii].handleTouches(touches);
-            if (touches.length == 0) {
-                break;
-            }
-        }
+        _modeStack.handleTouches(touches);
     }
 
     /**
      * Called when the app receives a keyboard event.
-     * By default it forwards the event each viewport
      */
     public function handleKeyboardEvent (e :KeyboardEvent) :void {
         // TouchInput needs to know whether ctrl or shift is down for TouchEvent dispatching
@@ -104,62 +101,14 @@ public class FlashbangApp extends flash.display.Sprite
             TouchInput._shiftDown = (e.type == KeyboardEvent.KEY_DOWN);
         }
 
-        for (var ii :int = _viewports.length - 1; ii >= 0; --ii) {
-            _viewports[ii].handleKeyboardEvent(e);
-        }
+        _modeStack.handleKeyboardEvent(e);
     }
 
     /**
      * Called when the app receives a MouseWheelEvent.
-     * By default it forwards the event each viewport.
      */
     public function handleMouseWheelEvent (e :MouseWheelEvent) :void {
-        for (var ii :int = _viewports.length - 1; ii >= 0; --ii) {
-            _viewports[ii].handleMouseWheelEvent(e);
-        }
-    }
-
-    /**
-     * Creates and registers a new Viewport. (Flashbang automatically creates a Viewport on
-     * initialization, so this is only necessary for creating additional ones.)
-     *
-     * Viewports must be uniquely named.
-     */
-    public function createViewport (name :String,
-        parentSprite :starling.display.Sprite = null) :Viewport
-    {
-        if (parentSprite == null) {
-            parentSprite = _mainSprite;
-        }
-
-        for each (var existing :Viewport in _viewports) {
-            if (existing.name == name) {
-                throw new Error("A viewport named '" + name + "' already exists");
-            }
-        }
-
-        var viewport :Viewport = new Viewport(this, name, parentSprite);
-        _viewports.push(viewport);
-        return viewport;
-    }
-
-    /**
-     * Returns the Viewport with the given name, if it exists.
-     */
-    public function getViewport (name :String) :Viewport {
-        for each (var viewport :Viewport in _viewports) {
-            if (viewport.name == name) {
-                return viewport;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Returns the default Viewport that was created when Flashbang was initialized
-     */
-    public function get defaultViewport () :Viewport {
-        return getViewport(Viewport.DEFAULT);
+        _modeStack.handleMouseWheelEvent(e);
     }
 
     public function addUpdatable (obj :Updatable) :Registration {
@@ -262,9 +211,7 @@ public class FlashbangApp extends flash.display.Sprite
         addUpdatable(_audio);
 
         _mainSprite = starling.display.Sprite(_starling.root);
-
-        // Create our default viewport
-        createViewport(Viewport.DEFAULT);
+        _modeStack = new ModeStack(_mainSprite);
 
         _regs.addEventListener(_mainSprite.stage, KeyboardEvent.KEY_DOWN, handleKeyboardEvent);
         _regs.addEventListener(_mainSprite.stage, KeyboardEvent.KEY_UP, handleKeyboardEvent);
@@ -276,9 +223,7 @@ public class FlashbangApp extends flash.display.Sprite
 
         run();
 
-        for (var ii :int = _viewports.length - 1; ii >= 0; --ii) {
-            _viewports[ii].handleModeTransitions();
-        }
+        _modeStack.handleModeTransitions();
     }
 
     protected function createMouseWheelEvent (e :MouseEvent) :MouseWheelEvent {
@@ -310,17 +255,7 @@ public class FlashbangApp extends flash.display.Sprite
             }
 
             // update viewports
-            for (var ii :int = _viewports.length - 1; ii >= 0; --ii) {
-                var viewport :Viewport = _viewports[ii];
-                if (!viewport.isDisposed) {
-                    viewport.update(dt);
-                }
-                if (viewport.isDisposed) {
-                    _viewports.removeAt(ii);
-                    viewport.disposeNow();
-                }
-            }
-
+            _modeStack.update(dt);
             _lastTime = newTime;
 
         } finally {
@@ -343,10 +278,7 @@ public class FlashbangApp extends flash.display.Sprite
     }
 
     protected function disposeNow () :void {
-        for each (var viewport :Viewport in _viewports) {
-            viewport.disposeNow();
-        }
-        _viewports = null;
+        _modeStack.dispose();
 
         _mainSprite = null;
         _updatables = null;
@@ -380,7 +312,7 @@ public class FlashbangApp extends flash.display.Sprite
     protected var _disposed :BoolValue = new BoolValue();
     protected var _lastTime :Number;
     protected var _updatables :Vector.<Updatable> = new <Updatable>[];
-    protected var _viewports :Vector.<Viewport> = new <Viewport>[];
+    protected var _modeStack :ModeStack;
 
     protected static var _gotFatalError :Boolean;
 
