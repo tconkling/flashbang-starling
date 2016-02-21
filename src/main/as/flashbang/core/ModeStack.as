@@ -150,7 +150,7 @@ public class ModeStack
     }
 
     /**
-     * Called when the viewport receives touches.
+     * Called when the ModeStack receives touches.
      * By default it forwards the touches to its active mode.
      */
     public function handleTouches (touches :Vector.<Touch>) :void {
@@ -160,7 +160,7 @@ public class ModeStack
     }
 
     /**
-     * Called when the viewport receives a keyboard event.
+     * Called when the ModeStack receives a keyboard event.
      * By default, it forwards the event to its active mode.
      */
     public function handleKeyboardEvent (e :KeyboardEvent) :void {
@@ -170,7 +170,7 @@ public class ModeStack
     }
 
     /**
-     * Called when the viewport receives a MouseWheelEvent.
+     * Called when the ModeStack receives a MouseWheelEvent.
      * By default, it forwards the event to its active mode.
      */
     public function handleMouseWheelEvent (e :MouseWheelEvent) :void {

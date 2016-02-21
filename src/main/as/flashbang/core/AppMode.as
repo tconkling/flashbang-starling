@@ -245,8 +245,8 @@ public class AppMode
     protected function registerObject (obj :GameObjectBase) :void {
     }
 
-    internal function setupInternal (viewport :ModeStack) :void {
-        _modeStack = viewport;
+    internal function setupInternal (modeStack :ModeStack) :void {
+        _modeStack = modeStack;
         _touchInput = new TouchInput(_modeSprite);
         _moviePlayer = new MoviePlayer(_modeSprite);
         setup();
