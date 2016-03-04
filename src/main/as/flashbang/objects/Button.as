@@ -34,6 +34,9 @@ public class Button extends SpriteObject
     /** Sound played when the button is pressed (null for no sound) */
     public var downSound :String = DEFAULT_DOWN_SOUND;
 
+    /** Sound played when the button is pressed while disabled (null for no sound) */
+    public var disabledSound :String = null;
+
     public function Button (sprite :Sprite = null) {
         super(sprite);
     }
@@ -104,6 +107,8 @@ public class Button extends SpriteObject
             _pointerDown = true;
             _pointerOver = true;
             updateState();
+        } else if (!this.enabled && this.disabledSound != null) {
+            playDisabledSound();
         }
     }
 
@@ -184,6 +189,13 @@ public class Button extends SpriteObject
             if (sound != null) {
                 Flashbang.audio.playSound(sound);
             }
+        }
+    }
+
+    protected function playDisabledSound () :void {
+        var sound :SoundResource = SoundResource.get(this.disabledSound);
+        if (sound != null) {
+            Flashbang.audio.playSound(sound);
         }
     }
 
