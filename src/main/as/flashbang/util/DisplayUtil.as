@@ -26,6 +26,40 @@ import starling.utils.VAlign;
 public class DisplayUtil
 {
     /**
+     * Inserts a DisplayObject into a DisplayObjectContainer at its proper sorted location.
+     * The DisplayObjectContainer must already be in the sort order defined by the given
+     * comparator function for this to operate correctly.
+     *
+     * @return the index that the DisplayObject was inserted at.
+     */
+    public static function sortedInsert (container :DisplayObjectContainer, disp :DisplayObject, comp :Function) :int {
+        var low :int = 0;
+        var high :int = container.numChildren - 1;
+        var insertIdx :int = -1;
+        while (low <= high) {
+            // http://googleresearch.blogspot.com/2006/06/extra-extra-read-all-about-it-nearly.html
+            var mid :int = (low + high) >>> 1;
+            var midDisp :DisplayObject = container.getChildAt(mid);
+            var cmp :int = comp(midDisp, disp);
+            if (cmp < 0) {
+                low = mid + 1;
+            } else if (cmp > 0) {
+                high = mid - 1;
+            } else {
+                insertIdx = mid;
+                break;
+            }
+        }
+
+        if (insertIdx < 0) {
+            insertIdx = low;
+        }
+
+        container.addChildAt(disp, insertIdx);
+        return insertIdx;
+    }
+
+    /**
      * Draws a "three-brush" image into a Sprite.
      * A three-brush is composed of three textures: left, center, and middle. The center image
      * is tiled as many times as is necessary to fill the given width.
