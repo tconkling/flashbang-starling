@@ -18,9 +18,27 @@ public class TextFieldBuilder
     /** Creates the TextField */
     public function build () :TextField {
         var tf :TextField = new TextField(100, 100, "");
+
         for (var key :String in _props) {
             tf[key] = _props[key];
         }
+
+        // handle width, height, and scale separately
+        if (!isNaN(_scale)) {
+            tf.scale = _scale;
+
+            // if scaleWidthHeight is set, then our max width/height are adjusted
+            // by the inverse of our scale
+            var sizeScale :Number = (_scaleWidthHeight ? 1 / _scale : 1);
+            if (!isNaN(_width)) {
+                tf.width = _width * sizeScale;
+            }
+
+            if (!isNaN(_height)) {
+                tf.height = _height * sizeScale;
+            }
+        }
+
         return tf;
     }
 
@@ -63,7 +81,7 @@ public class TextFieldBuilder
      * @default 100
      */
     public function width (val :Number) :TextFieldBuilder {
-        _props.width = val;
+        _width = val;
         return this;
     }
 
@@ -73,7 +91,7 @@ public class TextFieldBuilder
      * @default 100
      */
     public function height (val :Number) :TextFieldBuilder {
-        _props.height = val;
+        _height = val;
         return this;
     }
 
@@ -190,13 +208,32 @@ public class TextFieldBuilder
         return this;
     }
 
-    /** Specifies the scale of the TextField. @default 1.0 */
-    public function scale (val :Number) :TextFieldBuilder {
-        _props.scaleX = _props.scaleY = val;
+    /** Specifies the scale of the TextField. @default 1.0.
+     *
+     * Calling this multiple times will multiply the previously-set scale value.
+     * (Use `resetScale` to set override any previous scale changes.)
+     *
+     * @param scaleWidthHeight if true, width/height values set in the builder will be
+     * scaled by the inverse of this scale value when the TextField is created.
+     * (E.g. `width(100).scale(0.5)` will result in a 200px-wide TextField scaled to
+     * 50%, which will therefore have an adjusted width of 100px in its display parent.) */
+    public function scale (val :Number, scaleWidthHeight :Boolean = true) :TextFieldBuilder {
+        _scale *= val;
+        _scaleWidthHeight = scaleWidthHeight;
         return this;
     }
 
-    protected var _props :Object = {};
+    public function resetScale (val :Number, scaleWidthHeight :Boolean = true) :TextFieldBuilder {
+        _scale = val;
+        _scaleWidthHeight = scaleWidthHeight;
+        return this;
+    }
+
+    private var _props :Object = {};
+    private var _width :Number = NaN;
+    private var _height :Number = NaN;
+    private var _scale :Number = 1;
+    private var _scaleWidthHeight :Boolean;
 }
 
 }
