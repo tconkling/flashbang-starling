@@ -6,8 +6,7 @@ package flashbang.layout {
 import flash.geom.Rectangle;
 
 import starling.display.DisplayObject;
-import starling.utils.HAlign;
-import starling.utils.VAlign;
+import starling.utils.Align;
 
 /**
  * A Sprite that arranges its children in a grid.
@@ -139,12 +138,12 @@ public class GridLayoutSprite extends LayoutSprite
             }
         }
 
-        if (_rowVAlign != VAlign.TOP) {
+        if (_rowVAlign != Align.TOP) {
             for (ii = idx; ii < endIdx; ++ii) {
                 child = getChildAt(ii);
                 if (child.visible) {
                     var height :Number = child.getBounds(this, R).height;
-                    if (_rowVAlign == VAlign.CENTER) {
+                    if (_rowVAlign == Align.CENTER) {
                         child.y += (maxChildHeight - height) * 0.5;
                     } else {
                         child.y += (maxChildHeight - height);
@@ -183,12 +182,12 @@ public class GridLayoutSprite extends LayoutSprite
             }
         }
 
-        if (_colHAlign != HAlign.LEFT) {
+        if (_colHAlign != Align.LEFT) {
             for (ii = idx; ii < endIdx; ++ii) {
                 if (child.visible) {
                     child = getChildAt(ii);
                     var width :Number = child.getBounds(this, R).width;
-                    if (_colHAlign == HAlign.CENTER) {
+                    if (_colHAlign == Align.CENTER) {
                         child.x += (maxChildWidth - width) * 0.5;
                     } else {
                         child.x += (maxChildWidth - width);

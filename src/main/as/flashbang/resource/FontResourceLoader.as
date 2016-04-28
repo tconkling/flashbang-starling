@@ -86,7 +86,6 @@ import flash.utils.ByteArray;
 
 import flashbang.loader.DataLoader;
 
-import starling.core.Starling;
 import starling.textures.Texture;
 
 class LoadedTexture
@@ -104,10 +103,7 @@ class LoadedTexture
         }
         _tex = Texture.fromBitmapData(bmd, false, false, scale);
 
-        // If Starling doesn't need to handle lost contexts, we can close the loader right now.
-        if (!Starling.handleLostContext) {
-            closeSource();
-        }
+        // Keep the source open so that Starling can handle a context loss
     }
 
     public function get texture () :Texture {

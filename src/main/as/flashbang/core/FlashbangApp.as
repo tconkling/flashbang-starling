@@ -179,7 +179,6 @@ public class FlashbangApp extends flash.display.Sprite
         var isiOS :Boolean = Capabilities.manufacturer.indexOf("iOS") != -1;
         var hasTouchscreen :Boolean = (Capabilities.touchscreenType == TouchscreenType.FINGER);
         Starling.multitouchEnabled = hasTouchscreen;
-        Starling.handleLostContext = !isiOS;
         _starling = createStarling();
 
         // install our custom touch handler
@@ -339,7 +338,7 @@ class CallbackTouchProcessor extends TouchProcessor
 
     override protected function processTouches (touches :Vector.<Touch>, shiftDown :Boolean, ctrlDown :Boolean) :void {
         // Starling only delivers updated touches to the processTouches function. We want all touches.
-        _f(mCurrentTouches);
+        _f(_currentTouches);
     }
 
     protected var _f :Function;

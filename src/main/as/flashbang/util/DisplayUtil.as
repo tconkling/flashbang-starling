@@ -19,9 +19,8 @@ import starling.display.Quad;
 import starling.display.Sprite;
 import starling.events.Touch;
 import starling.textures.Texture;
-import starling.utils.HAlign;
+import starling.utils.Align;
 import starling.utils.RectangleUtil;
-import starling.utils.VAlign;
 
 public class DisplayUtil
 {
@@ -218,14 +217,14 @@ public class DisplayUtil
     /** Performs a hit test on the given DisplayObject for the given Touch */
     public static function hitTestTouch (d :DisplayObject, t :Touch) :DisplayObject {
         P.setTo(t.globalX, t.globalY);
-        return d.hitTest(d.globalToLocal(P, P), true);
+        return d.hitTest(d.globalToLocal(P, P));
     }
 
     /** Positions a DisplayObject so that it is centered on another DisplayObject */
     public static function center (disp :DisplayObject, relativeTo :DisplayObject,
         xOffset :Number = 0, yOffset :Number = 0) :void {
-        DisplayUtil.positionRelative(disp, HAlign.CENTER, VAlign.CENTER,
-            relativeTo, HAlign.CENTER, VAlign.CENTER, xOffset, yOffset);
+        DisplayUtil.positionRelative(disp, Align.CENTER, Align.CENTER,
+            relativeTo, Align.CENTER, Align.CENTER, xOffset, yOffset);
     }
 
     /** Positions a DisplayObject in relation to another DisplayObject */
@@ -431,28 +430,28 @@ public class DisplayUtil
         var y :Number = yOffset;
 
         switch (targetHAlign) {
-        case HAlign.LEFT: x += relativeTo.left; break;
-        case HAlign.RIGHT: x += relativeTo.right; break;
-        case HAlign.CENTER: x += relativeTo.left + (relativeTo.width * 0.5); break;
+        case Align.LEFT: x += relativeTo.left; break;
+        case Align.RIGHT: x += relativeTo.right; break;
+        case Align.CENTER: x += relativeTo.left + (relativeTo.width * 0.5); break;
         }
         switch (targetVAlign) {
-        case VAlign.TOP: y += relativeTo.top; break;
-        case VAlign.BOTTOM: y += relativeTo.bottom; break;
-        case VAlign.CENTER: y += relativeTo.top + (relativeTo.height * 0.5); break;
+        case Align.TOP: y += relativeTo.top; break;
+        case Align.BOTTOM: y += relativeTo.bottom; break;
+        case Align.CENTER: y += relativeTo.top + (relativeTo.height * 0.5); break;
         }
 
         disp.x = 0;
         disp.y = 0;
         var dispBounds :Rectangle = disp.getBounds(disp.parent, R); // works when parent is null
         switch (dispHAlign) {
-        case HAlign.LEFT: x -= dispBounds.left; break;
-        case HAlign.RIGHT: x -= dispBounds.right; break;
-        case HAlign.CENTER: x -= dispBounds.left + (dispBounds.width * 0.5); break;
+        case Align.LEFT: x -= dispBounds.left; break;
+        case Align.RIGHT: x -= dispBounds.right; break;
+        case Align.CENTER: x -= dispBounds.left + (dispBounds.width * 0.5); break;
         }
         switch (dispVAlign) {
-        case VAlign.TOP: y -= dispBounds.top; break;
-        case VAlign.BOTTOM: y -= dispBounds.bottom; break;
-        case VAlign.CENTER: y -= dispBounds.top + (dispBounds.height * 0.5); break;
+        case Align.TOP: y -= dispBounds.top; break;
+        case Align.BOTTOM: y -= dispBounds.bottom; break;
+        case Align.CENTER: y -= dispBounds.top + (dispBounds.height * 0.5); break;
         }
 
         disp.x = x;

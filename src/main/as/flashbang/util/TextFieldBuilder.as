@@ -6,8 +6,8 @@ package flashbang.util {
 import starling.text.BitmapFont;
 import starling.text.TextField;
 import starling.text.TextFieldAutoSize;
-import starling.utils.HAlign;
-import starling.utils.VAlign;
+import starling.text.TextFormat;
+import starling.utils.Align;
 
 public class TextFieldBuilder
 {
@@ -17,11 +17,11 @@ public class TextFieldBuilder
 
     /** Creates the TextField */
     public function build () :TextField {
-        var tf :TextField = new TextField(100, 100, "");
-
-        for (var key :String in _props) {
-            tf[key] = _props[key];
-        }
+        var tf :TextField = new TextField(100, 100, _text, _format);
+        tf.touchable = _touchable;
+        tf.border = _border;
+        tf.autoScale = _autoScale;
+        tf.autoSize = _autoSize;
 
         // handle width, height, and scale separately
         if (!isNaN(_scale)) {
@@ -44,13 +44,13 @@ public class TextFieldBuilder
 
     /** The text to display. @default "" */
     public function text (val :String) :TextFieldBuilder {
-        _props.text = val;
+        _text = val;
         return this;
     }
 
     /** The name of the font to use @default: "Verdana" */
     public function font (name :String) :TextFieldBuilder {
-        _props.fontName = name;
+        this.format.font = name;
         return this;
     }
 
@@ -60,7 +60,7 @@ public class TextFieldBuilder
      * @default 12
      */
     public function fontSize (val :Number) :TextFieldBuilder {
-        _props.fontSize = val;
+        this.format.size = val;
         return this;
     }
 
@@ -71,7 +71,7 @@ public class TextFieldBuilder
 
     /** The text color @default 0x0 (black) */
     public function color (val :uint) :TextFieldBuilder {
-        _props.color = val;
+        this.format.color = val;
         return this;
     }
 
@@ -101,7 +101,7 @@ public class TextFieldBuilder
      * @default "none"
      */
     public function autoSize (type :String = "bothDirections") :TextFieldBuilder {
-        _props.autoSize = type;
+        _autoSize = type;
         return this;
     }
 
@@ -126,85 +126,85 @@ public class TextFieldBuilder
      * @default false
      */
     public function autoScale (val :Boolean) :TextFieldBuilder {
-        _props.autoScale = val;
+        _autoScale = val;
         return this;
     }
 
     /** Specifies whether this object receives touch events. @default true */
     public function touchable (enabled :Boolean) :TextFieldBuilder {
-        _props.touchable = enabled;
+        _touchable = enabled;
         return this;
     }
 
     /** Horizontal alignment. @default "center" */
     public function hAlign (type :String) :TextFieldBuilder {
-        _props.hAlign = type;
+        this.format.horizontalAlign = type;
         return this;
     }
 
     /** Vertical alignment. @default "center" */
     public function vAlign (type :String) :TextFieldBuilder {
-        _props.vAlign = type;
+        this.format.verticalAlign = type;
         return this;
     }
 
-    /** Equivalent to <code>hAlign(HAlign.LEFT)</code> */
+    /** Equivalent to <code>hAlign(Align.LEFT)</code> */
     public function hAlignLeft () :TextFieldBuilder {
-        return hAlign(HAlign.LEFT);
+        return hAlign(Align.LEFT);
     }
 
-    /** Equivalent to <code>hAlign(HAlign.CENTER)</code> */
+    /** Equivalent to <code>hAlign(Align.CENTER)</code> */
     public function hAlignCenter () :TextFieldBuilder {
-        return hAlign(HAlign.CENTER);
+        return hAlign(Align.CENTER);
     }
 
-    /** Equivalent to <code>hAlign(HAlign.RIGHT)</code> */
+    /** Equivalent to <code>hAlign(Align.RIGHT)</code> */
     public function hAlignRight () :TextFieldBuilder {
-        return hAlign(HAlign.RIGHT);
+        return hAlign(Align.RIGHT);
     }
 
-    /** Equivalent to <code>vAlign(VAlign.TOP)</code> */
+    /** Equivalent to <code>vAlign(Align.TOP)</code> */
     public function vAlignTop () :TextFieldBuilder {
-        return vAlign(VAlign.TOP);
+        return vAlign(Align.TOP);
     }
 
-    /** Equivalent to <code>vAlign(VAlign.CENTER)</code> */
+    /** Equivalent to <code>vAlign(Align.CENTER)</code> */
     public function vAlignCenter () :TextFieldBuilder {
-        return vAlign(VAlign.CENTER);
+        return vAlign(Align.CENTER);
     }
 
-    /** Equivalent to <code>vAlign(VAlign.BOTTOM)</code> */
+    /** Equivalent to <code>vAlign(Align.BOTTOM)</code> */
     public function vAlignBottom () :TextFieldBuilder {
-        return vAlign(VAlign.BOTTOM);
+        return vAlign(Align.BOTTOM);
     }
 
     /** Specifies whether the text is boldface. @default false */
     public function bold (val :Boolean) :TextFieldBuilder {
-        _props.bold = val;
+        this.format.bold = val;
         return this;
     }
 
     /** Specifies whether the text is italicized. @default false */
     public function italic (val :Boolean) :TextFieldBuilder {
-        _props.italic = val;
+        this.format.italic = val;
         return this;
     }
 
     /** Specifies whether the text is underlined. @default false */
     public function underline (val :Boolean) :TextFieldBuilder {
-        _props.underline = val;
+        this.format.underline = val;
         return this;
     }
 
     /** Specifies whether a border is shown around the TextField. @default false */
     public function border (val :Boolean) :TextFieldBuilder {
-        _props.border = val;
+        _border = val;
         return this;
     }
 
     /** Specifies whether kerning is enabled. @default true */
     public function kerning (val :Boolean) :TextFieldBuilder {
-        _props.kerning = val;
+        this.format.kerning = val;
         return this;
     }
 
@@ -229,7 +229,19 @@ public class TextFieldBuilder
         return this;
     }
 
-    private var _props :Object = {};
+    private function get format () :TextFormat {
+        if (_format == null) {
+            _format = new TextFormat();
+        }
+        return _format;
+    }
+
+    private var _format :TextFormat;
+    private var _text :String;
+    private var _touchable :Boolean = true;
+    private var _border :Boolean;
+    private var _autoScale :Boolean;
+    private var _autoSize :String = TextFieldAutoSize.NONE;
     private var _width :Number = NaN;
     private var _height :Number = NaN;
     private var _scale :Number = 1;

@@ -175,7 +175,7 @@ public class Button extends SpriteObject
 
     protected function hitTest (touch :Touch) :Boolean {
         P.setTo(touch.globalX, touch.globalY);
-        return (_sprite.hitTest(_sprite.globalToLocal(P, P), true) != null);
+        return (_sprite.hitTest(_sprite.globalToLocal(P, P)) != null);
     }
 
     /**

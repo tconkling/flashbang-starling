@@ -79,9 +79,9 @@ class TouchDispatcher extends TouchProcessor {
     }
 
     public function dispatchTouches (touches :Vector.<Touch>, shiftDown :Boolean, ctrlDown :Boolean) :void {
-        mCurrentTouches.length = touches.length;
+        _currentTouches.length = touches.length;
         for (var ii :int = touches.length - 1; ii >= 0; --ii) {
-            mCurrentTouches[ii] = touches[ii];
+            _currentTouches[ii] = touches[ii];
         }
         processTouches(touches, shiftDown, ctrlDown);
     }

@@ -59,7 +59,7 @@ public class FramerateView extends Framerate
         }
 
         _tf.text = text;
-        _tf.color = (this.fpsMean > this.slowFps ? this.normalColor : this.slowColor);
+        _tf.format.color = (this.fpsMean > this.slowFps ? this.normalColor : this.slowColor);
     }
 
     override protected function dispose () :void {

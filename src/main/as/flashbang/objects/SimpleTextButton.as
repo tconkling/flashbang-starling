@@ -29,7 +29,7 @@ public class SimpleTextButton extends Button
 
     override protected function showState (state :String) :void {
         _bg.color = BG_COLORS[state];
-        _tf.color = TEXT_COLORS[state];
+        _tf.format.color = TEXT_COLORS[state];
     }
 
     protected var _tf :TextField;

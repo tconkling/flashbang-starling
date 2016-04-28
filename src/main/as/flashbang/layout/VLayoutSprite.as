@@ -7,7 +7,7 @@ import flash.geom.Rectangle;
 
 import starling.display.DisplayObject;
 import starling.display.Quad;
-import starling.utils.HAlign;
+import starling.utils.Align;
 
 /**
  * A Sprite that arranges its children vertically.
@@ -69,7 +69,7 @@ public class VLayoutSprite extends LayoutSprite
         var child :DisplayObject;
 
         var maxWidth :Number = 0;
-        if (_hAlign != HAlign.LEFT) {
+        if (_hAlign != Align.LEFT) {
             for (ii = 0; ii < this.numChildren; ++ii) {
                 child = getChildAt(ii);
                 if (child.visible) {
@@ -98,9 +98,9 @@ public class VLayoutSprite extends LayoutSprite
                 var bounds :Rectangle = child.getBounds(this, R);
                 child.y = -bounds.top + y;
                 child.x = -bounds.left;
-                if (_hAlign == HAlign.CENTER) {
+                if (_hAlign == Align.CENTER) {
                     child.x += (maxWidth - bounds.width) * 0.5;
-                } else if (_hAlign == HAlign.RIGHT) {
+                } else if (_hAlign == Align.RIGHT) {
                     child.x += maxWidth - bounds.width;
                 }
 
