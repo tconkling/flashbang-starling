@@ -5,10 +5,6 @@ package flashbang.core {
 
 public class ObjectTask extends GameObjectBase
 {
-    override public final function get isSingleton () :Boolean {
-        return false;
-    }
-
     override public final function get groups () :Array {
         return EMPTY_ARRAY;
     }

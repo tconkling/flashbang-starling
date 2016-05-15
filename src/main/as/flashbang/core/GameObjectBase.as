@@ -3,7 +3,6 @@
 
 package flashbang.core {
 
-import aspire.util.ClassUtil;
 import aspire.util.Preconditions;
 import aspire.util.StringUtil;
 
@@ -25,11 +24,6 @@ public class GameObjectBase
         return _destroyed;
     }
 
-    /** Subclasses can return true to have their class automatically used as an object ID */
-    public function get isSingleton () :Boolean {
-        return false;
-    }
-
     /**
      * Returns the IDs of this object. (Objects can have multiple IDs.)
      * Two objects in the same mode cannot have the same ID.
@@ -42,7 +36,7 @@ public class GameObjectBase
      * </code>
      */
     public function get ids () :Array {
-        return (this.isSingleton ? [ ClassUtil.getClass(this) ] : EMPTY_ARRAY);
+        return EMPTY_ARRAY;
     }
 
     /**
