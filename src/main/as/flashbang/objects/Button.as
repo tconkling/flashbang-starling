@@ -26,7 +26,7 @@ import starling.events.Touch;
 public class Button extends SpriteObject
     implements Disableable
 {
-    public static const DEFAULT_DOWN_SOUND :String = "sfx_button_down";
+    public static var DEFAULT_DOWN_SOUND :String = "sfx_button_down";
 
     /** Fired when the button is clicked */
     public const clicked :UnitSignal = new UnitSignal();
