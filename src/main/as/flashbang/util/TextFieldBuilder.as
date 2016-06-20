@@ -23,20 +23,16 @@ public class TextFieldBuilder
         tf.autoScale = _autoScale;
         tf.autoSize = _autoSize;
 
-        // handle width, height, and scale separately
         if (!isNaN(_scale)) {
             tf.scale = _scale;
+        }
 
-            // if scaleWidthHeight is set, then our max width/height are adjusted
-            // by the inverse of our scale
-            var sizeScale :Number = (_scaleWidthHeight ? 1 / _scale : 1);
-            if (!isNaN(_width)) {
-                tf.width = _width * sizeScale;
-            }
+        if (!isNaN(_width)) {
+            tf.width = _width;
+        }
 
-            if (!isNaN(_height)) {
-                tf.height = _height * sizeScale;
-            }
+        if (!isNaN(_height)) {
+            tf.height = _height;
         }
 
         return tf;
@@ -211,21 +207,14 @@ public class TextFieldBuilder
     /** Specifies the scale of the TextField. @default 1.0.
      *
      * Calling this multiple times will multiply the previously-set scale value.
-     * (Use `resetScale` to set override any previous scale changes.)
-     *
-     * @param scaleWidthHeight if true, width/height values set in the builder will be
-     * scaled by the inverse of this scale value when the TextField is created.
-     * (E.g. `width(100).scale(0.5)` will result in a 200px-wide TextField scaled to
-     * 50%, which will therefore have an adjusted width of 100px in its display parent.) */
-    public function scale (val :Number, scaleWidthHeight :Boolean = true) :TextFieldBuilder {
+     * (Use `resetScale` to set override any previous scale changes.) */
+    public function scale (val :Number) :TextFieldBuilder {
         _scale *= val;
-        _scaleWidthHeight = scaleWidthHeight;
         return this;
     }
 
-    public function resetScale (val :Number, scaleWidthHeight :Boolean = true) :TextFieldBuilder {
+    public function resetScale (val :Number) :TextFieldBuilder {
         _scale = val;
-        _scaleWidthHeight = scaleWidthHeight;
         return this;
     }
 
@@ -245,7 +234,6 @@ public class TextFieldBuilder
     private var _width :Number = NaN;
     private var _height :Number = NaN;
     private var _scale :Number = 1;
-    private var _scaleWidthHeight :Boolean;
 }
 
 }
