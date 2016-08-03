@@ -11,7 +11,6 @@ import react.Registration;
 
 import starling.display.DisplayObjectContainer;
 import starling.events.Touch;
-import starling.events.TouchProcessor;
 
 use namespace flashbang_internal;
 
