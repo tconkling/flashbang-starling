@@ -5,12 +5,12 @@ package flashbang.audio {
 
 import aspire.util.F;
 import aspire.util.Log;
-import aspire.util.Preconditions;
 
 import flash.events.Event;
 import flash.media.SoundTransform;
 import flash.utils.getTimer;
 
+import flashbang.core.Flashbang;
 import flashbang.core.Updatable;
 import flashbang.resource.SoundResource;
 
@@ -94,12 +94,18 @@ public class AudioManager
 
     public function playSoundNamed (name :String, parentControls :AudioControls = null,
         loopCount :int = 0) :AudioChannel {
-        return playSound(SoundResource.require(name), parentControls, loopCount);
+
+        return playSound(Flashbang.rsrcs.requireResource(name), parentControls, loopCount);
     }
 
-    public function playSound (sound :SoundResource, parentControls :AudioControls = null,
+    public function playSound (soundSet :SoundSet, parentControls :AudioControls = null,
         loopCount :int = 0) :AudioChannel {
-        Preconditions.checkArgument(sound != null);
+
+        // it's acceptable for SoundSet.nextSound to return null
+        var sound :SoundResource = soundSet.nextSound();
+        if (sound == null) {
+            return new AudioChannel();
+        }
 
         // get the appropriate parent controls
         if (null == parentControls) {
@@ -268,9 +274,7 @@ public class AudioManager
     protected var _soundTypeControls :Vector.<AudioControls>;
 
     protected static const log :Log = Log.getLog(AudioManager);
-
     protected static const DEFAULT_AUDIO_STATE :AudioState = AudioState.defaultState();
-
     protected static const SOUND_PLAYED_RECENTLY_DELTA :int = 1000 / 20;
 }
 

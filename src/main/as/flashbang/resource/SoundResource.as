@@ -5,10 +5,12 @@ package flashbang.resource {
 
 import flash.media.Sound;
 
+import flashbang.audio.SoundSet;
+
 import flashbang.core.Flashbang;
 import flashbang.audio.SoundType;
 
-public class SoundResource extends Resource
+public class SoundResource extends Resource implements SoundSet
 {
     /** Returns the SoundResource with the given name, or null if it doesn't exist */
     public static function get (name :String) :SoundResource {
@@ -29,6 +31,11 @@ public class SoundResource extends Resource
         _priority = priority;
         _volume = volume;
         _pan = pan;
+    }
+
+    public function nextSound () :SoundResource {
+        // We are a SoundSet with a single sound
+        return this;
     }
 
     override protected function dispose () :void {
