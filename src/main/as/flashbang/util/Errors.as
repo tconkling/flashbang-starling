@@ -26,23 +26,11 @@ public class Errors
         // Error() is a top-level function that creates a new error object, rather than performing
         // a class-cast, as expected.
 
-        var msg :String;
         if (error is Error) {
             var e :Error = (error as Error);
-            msg = (e.message || "");
-            if (wantStackTrace) {
-                if (msg.length > 0) {
-                    msg += "\n";
-                }
-                msg += e.getStackTrace();
-            }
-
-            if (msg.length > 0) {
-                return msg;
-            }
+            return (wantStackTrace ? e.getStackTrace() : e.message || "");
         } else if (error is UncaughtErrorEvent) {
             return getMessageInternal(error.error, wantStackTrace);
-
         } else if (error is ErrorEvent) {
             var ee :ErrorEvent = (error as ErrorEvent);
             var joiner :Joiner = new Joiner(ClassUtil.tinyClassName(ee));
