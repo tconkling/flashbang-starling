@@ -10,7 +10,7 @@ import flashbang.util.DisplayUtil;
 import starling.display.Quad;
 import starling.display.Sprite;
 
-public class SimpleCheckbox extends Checkbox
+public class SimpleCheckbox extends ToggleButton
 {
     public function SimpleCheckbox (width :Number, fgColor :uint = 0x0, bgColor :uint = 0xffffff,
         disabledColor :uint = 0x3B3B3B) {
@@ -38,7 +38,7 @@ public class SimpleCheckbox extends Checkbox
         _sprite.addChild(_container);
     }
 
-    override protected function showCheckboxState (buttonState :String, val :Boolean) :void {
+    override protected function showToggleState (buttonState :String, val :Boolean) :void {
         _check.visible = val;
 
         // recolor

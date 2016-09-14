@@ -8,15 +8,13 @@ import react.ValueView;
 
 import starling.display.Sprite;
 
-/**
- * A Checkbox base class. Abstract.
- */
-public class Checkbox extends Button
+/** A two-state Button whose value is toggled on click (e.g. a checkbox). */
+public /*abstract*/ class ToggleButton extends Button
 {
-    public function Checkbox (sprite :Sprite = null) {
+    public function ToggleButton (sprite :Sprite = null) {
         super(sprite);
 
-        clicked.connect(onClicked);
+        this.clicked.connect(onClicked);
         _value.connect(onValueChanged);
     }
 
@@ -33,12 +31,12 @@ public class Checkbox extends Button
     }
 
     /** Subclasses must override this to display the appropriate state */
-    protected function showCheckboxState (buttonState :String, val :Boolean) :void {
+    protected function showToggleState (buttonState :String, value :Boolean) :void {
         throw new Error("abstract");
     }
 
-    protected function onValueChanged (newVal :Boolean) :void {
-        showCheckboxState(_state, newVal);
+    protected function onValueChanged (newValue :Boolean) :void {
+        showToggleState(_state, newValue);
     }
 
     protected function onClicked () :void {
@@ -47,7 +45,7 @@ public class Checkbox extends Button
     }
 
     override protected final function showState (state :String) :void {
-        showCheckboxState(state, this._value.value);
+        showToggleState(state, this._value.value);
     }
 
     protected const _value :BoolValue = new BoolValue();
