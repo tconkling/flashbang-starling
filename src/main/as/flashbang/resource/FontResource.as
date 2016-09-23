@@ -36,11 +36,11 @@ public class FontResource extends Resource
         Preconditions.checkState(TextField.getBitmapFont(name) == null,
             "A font with this name already exists", "name", name);
 
-        TextField.registerBitmapFont(_font, name);
+        TextField.registerCompositor(_font, name);
     }
 
     override protected function dispose () :void {
-        TextField.unregisterBitmapFont(_name, /*dispose=*/true);
+        TextField.unregisterCompositor(_name, /*dispose=*/true);
         _font = null;
     }
 
