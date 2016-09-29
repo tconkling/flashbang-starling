@@ -17,9 +17,9 @@ public class ImageResource extends FlumpResource
      * Creates an Image from the ImageResource with the given name.
      * Throws an error if the resource doesn't exist.
      */
-    public static function createImage (name :String) :Image {
+    public static function createImage (name :String, pixelSnapping :Boolean = false) :Image {
         var rsrc :ImageResource = Flashbang.rsrcs.requireResource(name);
-        return rsrc.create();
+        return rsrc.create(pixelSnapping);
     }
 
     /** Returns the ImageResource with the given name, or null if it doesn't exist */
@@ -36,8 +36,10 @@ public class ImageResource extends FlumpResource
         super(library, libraryName, imageName);
     }
 
-    public function create () :Image {
-        return _library.createImage(_symbolName);
+    public function create (pixelSnapping :Boolean = false) :Image {
+        var img :Image = _library.createImage(_symbolName);
+        img.pixelSnapping = pixelSnapping;
+        return img;
     }
 
     /** from FlumpResource */
