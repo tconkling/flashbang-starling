@@ -197,12 +197,6 @@ public class DisplayUtil
         }
     }
 
-    /** Returns the global/stage location of the given displayObject */
-    public static function getGlobalLoc (d :DisplayObject, out :Point = null) :Point {
-        P.setTo(d.x, d.y);
-        return d.localToGlobal(P, out);
-    }
-
     /** Returns true if potentialAncestor is an ancestor of the given DisplayObect on the display list */
     public static function isAncestor (d :DisplayObject, potentialAncestor :DisplayObject) :Boolean {
         while (d.parent != null) {
