@@ -100,6 +100,18 @@ public class DisplayUtil
         return sprite;
     }
 
+    public static function drawThreeBrushWithTextures (
+        textures :Vector.<Texture>,
+        w :Number, x :Number = 0, y :Number = 0, sprite :Sprite = null,
+        firstTextIdx :int = 0) :Sprite {
+
+        return drawThreeBrush(
+            textures[firstTextIdx + 0],
+            textures[firstTextIdx + 1],
+            textures[firstTextIdx + 2],
+            w, x, y, sprite);
+    }
+
     /**
      * Draws a "three-brush" image into a Sprite.
      * The center image will be stretched, rather than tiled, to fill the given width.
@@ -134,6 +146,18 @@ public class DisplayUtil
         }
 
         return sprite;
+    }
+
+    public static function drawStretchedThreeBrushWithTextures (
+        textures :Vector.<Texture>,
+        w :Number, x :Number = 0, y :Number = 0, sprite :Sprite = null,
+        firstTextIdx :int = 0) :Sprite {
+
+        return drawStretchedThreeBrush(
+            textures[firstTextIdx + 0],
+            textures[firstTextIdx + 1],
+            textures[firstTextIdx + 2],
+            w, x, y, sprite);
     }
 
     /**
@@ -175,6 +199,26 @@ public class DisplayUtil
         }
 
         return sprite;
+    }
+
+    public static function drawNineBrushWithTextures (
+        textures :Vector.<Texture>,
+        w :Number, h :Number,
+        x :Number = 0, y :Number = 0,
+        sprite :Sprite = null,
+        firstTexIdx :int = 0) :Sprite {
+
+        return drawNineBrush(
+            textures[firstTexIdx + 0],
+            textures[firstTexIdx + 1],
+            textures[firstTexIdx + 2],
+            textures[firstTexIdx + 3],
+            textures[firstTexIdx + 4],
+            textures[firstTexIdx + 5],
+            textures[firstTexIdx + 6],
+            textures[firstTexIdx + 7],
+            textures[firstTexIdx + 8],
+            w, h, x, y, sprite);
     }
 
     /** Clamps the given texture's width. */
