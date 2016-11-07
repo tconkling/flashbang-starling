@@ -60,7 +60,7 @@ public class DisplayUtil
 
     /**
      * Draws a "three-brush" image into a Sprite.
-     * A three-brush is composed of three textures: left, center, and middle. The center image
+     * A three-brush is composed of three textures: left, center, and right. The center image
      * is tiled as many times as is necessary to fill the given width.
      */
     public static function drawThreeBrush (
@@ -158,6 +158,110 @@ public class DisplayUtil
             textures[firstTextIdx + 1],
             textures[firstTextIdx + 2],
             w, x, y, sprite);
+    }
+
+
+
+    /**
+     * Draws a vertical "three-brush" image into a Sprite.
+     * A three-brush is composed of three textures: top, middle, and bottom. The center image
+     * is tiled as many times as is necessary to fill the given width.
+     */
+    public static function drawVerticalThreeBrush (
+        t :Texture, m :Texture, b :Texture, h :Number,
+        x :Number = 0, y :Number = 0, sprite :Sprite = null) :Sprite {
+
+        if (sprite == null) {
+            sprite = new Sprite();
+        }
+
+        // top
+        var top :Image = new Image(t);
+        top.x = x;
+        top.y = y;
+        sprite.addChild(top);
+
+        // bottom
+        var bottom :Image = new Image(b);
+        bottom.x = x;
+        bottom.y = y + h - b.height;
+        sprite.addChild(bottom);
+
+        // tile the middle
+        var remaining :Number = h - t.height - b.height;
+        y += t.height;
+        while (remaining > 0) {
+            var tileHeight :Number = Math.min(m.height, remaining);
+            var tile :Image = new Image(clampTexHeight(m, tileHeight));
+            tile.x = x;
+            tile.y = y;
+            sprite.addChild(tile);
+
+            y += tileHeight;
+            remaining -= tileHeight;
+        }
+
+        return sprite;
+    }
+
+    public static function drawVerticalThreeBrushWithTextures (
+        textures :Vector.<Texture>,
+        h :Number, x :Number = 0, y :Number = 0, sprite :Sprite = null,
+        firstTextIdx :int = 0) :Sprite {
+
+        return drawVerticalThreeBrush(
+            textures[firstTextIdx + 0],
+            textures[firstTextIdx + 1],
+            textures[firstTextIdx + 2],
+            h, x, y, sprite);
+    }
+
+    /**
+     * Draws a "three-brush" image into a Sprite.
+     * The center image will be stretched, rather than tiled, to fill the given height.
+     */
+    public static function drawVerticalStretchedThreeBrush (
+        t :Texture, m :Texture, b :Texture, h :Number,
+        x :Number = 0, y :Number = 0, sprite :Sprite = null) :Sprite {
+
+        if (sprite == null) {
+            sprite = new Sprite();
+        }
+
+        // top
+        var top :Image = new Image(t);
+        top.x = x;
+        top.y = y;
+        sprite.addChild(top);
+
+        // bottom
+        var bottom :Image = new Image(b);
+        bottom.x = x;
+        bottom.y = y + h - b.height;
+        sprite.addChild(bottom);
+
+        // center
+        var remaining :Number = h - t.height - b.height;
+        if (remaining > 0) {
+            var center :Image = new Image(m);
+            center.height = remaining;
+            center.y = t.height;
+            sprite.addChild(center);
+        }
+
+        return sprite;
+    }
+
+    public static function drawVerticalStretchedThreeBrushWithTextures (
+        textures :Vector.<Texture>,
+        h :Number, x :Number = 0, y :Number = 0, sprite :Sprite = null,
+        firstTextIdx :int = 0) :Sprite {
+
+        return drawVerticalStretchedThreeBrush(
+            textures[firstTextIdx + 0],
+            textures[firstTextIdx + 1],
+            textures[firstTextIdx + 2],
+            h, x, y, sprite);
     }
 
     /**
