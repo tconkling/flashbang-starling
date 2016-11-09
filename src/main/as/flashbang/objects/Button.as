@@ -41,6 +41,11 @@ public class Button extends SpriteObject
         super(sprite);
     }
 
+    override protected function dispose () :void {
+        super.dispose();
+        cancelCapture();
+    }
+
     public function get enabled () :Boolean {
         return (_state != DISABLED);
     }
@@ -101,9 +106,10 @@ public class Button extends SpriteObject
                 _pointerListener = Input.newPointerListener()
                     .onPointerMove(this.onPointerMove)
                     .onPointerEnd(this.onPointerEnd)
+                    .onPointerPreempted(this.onPointerInputPreempted)
                     .build();
             }
-            _captureReg = this.regs.add(this.mode.touchInput.registerListener(_pointerListener));
+            _captureReg = this.mode.touchInput.registerListener(_pointerListener);
             _pointerDown = true;
             _pointerOver = true;
             updateState();
@@ -133,6 +139,13 @@ public class Button extends SpriteObject
         if (_pointerOver) {
             this.clicked.emit();
         }
+    }
+
+    protected function onPointerInputPreempted (touch :Touch) :void {
+        _pointerDown = false;
+        _pointerOver = hitTest(touch);
+        updateState();
+        cancelCapture();
     }
 
     protected function set pointerDown (val :Boolean) :void {

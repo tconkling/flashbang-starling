@@ -12,5 +12,6 @@ public interface PointerListener extends TouchListener
     function onPointerMove (touch :Touch) :Boolean;
     function onPointerEnd (touch :Touch) :Boolean;
     function onPointerHover (touch :Touch) :Boolean;
+    function onPointerPreempted (touch :Touch) :void;
 }
 }

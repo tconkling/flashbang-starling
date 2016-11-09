@@ -50,16 +50,18 @@ class PointerListenerBuilderImpl
     public function onPointerMove (f :Function) :PointerListenerBuilder { _onPointerMove = f; return this; }
     public function onPointerEnd (f :Function) :PointerListenerBuilder { _onPointerEnd = f; return this; }
     public function onPointerHover (f :Function) :PointerListenerBuilder { _onPointerHover = f; return this; }
+    public function onPointerPreempted (f :Function) :PointerListenerBuilder { _onPointerPreempted = f; return this; }
     public function consumeOtherTouches (val :Boolean) :PointerListenerBuilder { _consumeOtherTouches = val; return this; }
     public function build () :PointerListener {
         return new CallbackPointerListener(_onPointerStart, _onPointerMove, _onPointerEnd,
-            _onPointerHover, _consumeOtherTouches, _defaultHandledValue);
+            _onPointerHover, _onPointerPreempted, _consumeOtherTouches, _defaultHandledValue);
     }
 
     protected var _onPointerStart :Function;
     protected var _onPointerMove :Function;
     protected var _onPointerEnd :Function;
     protected var _onPointerHover :Function;
+    protected var _onPointerPreempted :Function;
     protected var _consumeOtherTouches :Boolean = true;
     protected var _defaultHandledValue :Boolean;
 }
@@ -68,13 +70,15 @@ class CallbackPointerListener extends PointerAdapter
 {
     public function CallbackPointerListener (onPointerStart :Function,
         onPointerMove :Function, onPointerEnd :Function, onPointerHover :Function,
-        consumeOtherTouches :Boolean, defaultHandledValue :Boolean)
+        onPointerPreempted: Function, consumeOtherTouches :Boolean,
+        defaultHandledValue :Boolean)
     {
         super(consumeOtherTouches);
         _onPointerStart = onPointerStart;
         _onPointerMove = onPointerMove;
         _onPointerEnd = onPointerEnd;
         _onPointerHover = onPointerHover;
+        _onPointerPreempted = onPointerPreempted;
         _defaultHandledValue = defaultHandledValue;
     }
 
@@ -110,10 +114,17 @@ class CallbackPointerListener extends PointerAdapter
         return _defaultHandledValue;
     }
 
+    override public function onPointerPreempted (touch :Touch) :void {
+        if (_onPointerPreempted != null) {
+            _onPointerPreempted(touch);
+        }
+    }
+
     protected var _onPointerStart :Function;
     protected var _onPointerMove :Function;
     protected var _onPointerEnd :Function;
     protected var _onPointerHover :Function;
+    protected var _onPointerPreempted :Function;
     protected var _defaultHandledValue :Boolean;
 }
 
@@ -127,6 +138,9 @@ class CallbackTouchListener
     public function onTouchesUpdated (touches :Vector.<Touch>) :Boolean {
         var result :* = _f(touches);
         return (result === undefined ? true : result as Boolean);
+    }
+
+    public function onTouchesPreempted (touches :Vector.<Touch>) :void {
     }
 
     protected var _f :Function;

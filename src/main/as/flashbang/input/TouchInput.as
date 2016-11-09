@@ -45,9 +45,10 @@ public class TouchInput
         var handled :Boolean = false;
         try {
             for (var e :LinkedElement = _listeners.beginIteration(); e != null; e = e.next) {
-                handled = TouchListener(e.data).onTouchesUpdated(touches);
-                if (handled) {
-                    break;
+                if (!handled) {
+                    handled = TouchListener(e.data).onTouchesUpdated(touches);
+                } else {
+                    TouchListener(e.data).onTouchesPreempted(touches);
                 }
             }
         } finally {

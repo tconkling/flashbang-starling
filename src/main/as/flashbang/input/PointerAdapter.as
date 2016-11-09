@@ -15,12 +15,7 @@ public class PointerAdapter
     /** If true, the PointerAdapter will consume unrelated touches. */
     public var consumeOtherTouches :Boolean;
 
-    /**
-     * Constructs a new PointerAdapter
-     *
-     * @param consumeAllTouches if true, unrelated touches are consumed by the PointerAdapter,
-     * so that they will not be passed to other listeners for further processing.
-     */
+    /** Constructs a new PointerAdapter */
     public function PointerAdapter (consumeOtherTouches :Boolean = true) {
         this.consumeOtherTouches = consumeOtherTouches;
     }
@@ -32,10 +27,8 @@ public class PointerAdapter
 
         var foundTouch :Boolean = false;
         var handled :Boolean = false;
-        for (var ii :int = 0; ii < touches.length && !foundTouch; ++ii) {
-            var touch :Touch = touches[ii];
+        for each (var touch :Touch in touches) {
             if (touch.id == _curTouchId) {
-                foundTouch = true;
                 switch (touch.phase) {
                 case TouchPhase.BEGAN: handled = onPointerStart(touch); break;
                 case TouchPhase.MOVED: handled = onPointerMove(touch); break;
@@ -44,6 +37,9 @@ public class PointerAdapter
                 case TouchPhase.HOVER: handled = onPointerHover(touch); break;
                 case TouchPhase.STATIONARY: break;
                 }
+
+                foundTouch = true;
+                break;
             }
         }
 
@@ -54,10 +50,20 @@ public class PointerAdapter
         return handled || this.consumeOtherTouches;
     }
 
+    public function onTouchesPreempted (touches :Vector.<Touch>) :void {
+        for each (var touch :Touch in touches) {
+            if (_curTouchId < 0 || touch.id == _curTouchId) {
+                onPointerPreempted(touch);
+                break;
+            }
+        }
+    }
+
     public function onPointerStart (touch :Touch) :Boolean { return true; }
     public function onPointerMove (touch :Touch) :Boolean { return true; }
     public function onPointerEnd (touch :Touch) :Boolean { return true; }
     public function onPointerHover (touch :Touch) :Boolean { return true; }
+    public function onPointerPreempted (touch :Touch) :void {}
 
     protected var _curTouchId :int = -1;
 }
