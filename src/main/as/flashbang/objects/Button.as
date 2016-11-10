@@ -89,15 +89,11 @@ public class Button extends SpriteObject
     }
 
     protected function onHoverBegan () :void {
-        if (_state != DISABLED) {
-            this.pointerOver = true;
-        }
+        this.pointerOver = true;
     }
 
     protected function onHoverEnded () :void {
-        if (_state != DISABLED) {
-            this.pointerOver = false;
-        }
+        this.pointerOver = false;
     }
 
     protected function onTouchBegan () :void {
@@ -112,7 +108,7 @@ public class Button extends SpriteObject
             _captureReg = this.mode.touchInput.registerListener(_pointerListener);
             _pointerDown = true;
             _pointerOver = true;
-            updateState();
+            updateEnabledState();
         } else if (!this.enabled && this.disabledSound != null) {
             playDisabledSound();
         }
@@ -130,39 +126,40 @@ public class Button extends SpriteObject
     }
 
     protected function onPointerEnd (touch :Touch) :void {
+        var wasPointerOver :Boolean = _pointerOver;
         _pointerDown = false;
-        _pointerOver = hitTest(touch);
-        updateState();
+        _pointerOver = false;
+        updateEnabledState();
         cancelCapture();
         // emit the signal after doing everything else, because a signal handler could change
         // our state
-        if (_pointerOver) {
+        if (wasPointerOver) {
             this.clicked.emit();
         }
     }
 
     protected function onPointerInputPreempted (touch :Touch) :void {
         _pointerDown = false;
-        _pointerOver = hitTest(touch);
-        updateState();
+        _pointerOver = false;
+        updateEnabledState();
         cancelCapture();
     }
 
     protected function set pointerDown (val :Boolean) :void {
         if (_pointerDown != val) {
             _pointerDown = val;
-            updateState();
+            updateEnabledState();
         }
     }
 
     protected function set pointerOver (val :Boolean) :void {
         if (_pointerOver != val) {
             _pointerOver = val;
-            updateState();
+            updateEnabledState();
         }
     }
 
-    protected function updateState () :void {
+    protected function updateEnabledState () :void {
         if (_state == DISABLED) {
             return;
         }
