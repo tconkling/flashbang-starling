@@ -13,8 +13,6 @@ public /*abstract*/ class ToggleButton extends Button
 {
     public function ToggleButton (sprite :Sprite = null) {
         super(sprite);
-
-        this.clicked.connect(onClicked);
         _value.connect(onValueChanged);
     }
 
@@ -37,11 +35,6 @@ public /*abstract*/ class ToggleButton extends Button
 
     protected function onValueChanged (newValue :Boolean) :void {
         showToggleState(_state, newValue);
-    }
-
-    protected function onClicked () :void {
-        // toggle our value
-        this._value.value = !this._value.value;
     }
 
     override protected final function showState (state :String) :void {

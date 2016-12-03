@@ -36,6 +36,8 @@ public class SimpleCheckbox extends ToggleButton
         _container.addChild(_check);
 
         _sprite.addChild(_container);
+
+        this.clicked.connect(onClicked);
     }
 
     override protected function showToggleState (buttonState :String, val :Boolean) :void {
@@ -50,6 +52,11 @@ public class SimpleCheckbox extends ToggleButton
         }
 
         _container.y = (buttonState == DOWN ? 2 : 0);
+    }
+
+    protected function onClicked () :void {
+        // toggle our value
+        this._value.value = !this._value.value;
     }
 
     protected static function drawX (lineLength :Number, color :uint) :Sprite {
