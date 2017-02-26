@@ -35,6 +35,16 @@ public class TextFieldBuilder
             tf.height = _height;
         }
 
+        if (_autoSize != TextFieldAutoSize.NONE) {
+            if (!isNaN(_maxWidth) && tf.width > _maxWidth) {
+                tf.scale *= _maxWidth / tf.width
+            }
+
+            if (!isNaN(_maxHeight) && tf.height > _maxHeight) {
+                tf.scale *= _maxHeight / tf.height;
+            }
+        }
+
         return tf;
     }
 
@@ -94,10 +104,29 @@ public class TextFieldBuilder
     /**
      * Sets the TextField's autoSize param.
      * Called without a parameter is equivalent to TextFieldAutoSize.BOTH_DIRECTIONS.
+     *
      * @default "none"
      */
     public function autoSize (type :String = "bothDirections") :TextFieldBuilder {
         _autoSize = type;
+        return this;
+    }
+
+    /**
+     * If set, the TextField will be scaled down, if necessary, so that its width == maxWidth.
+     * Ignored if TextFieldAutoSize is NONE.
+     */
+    public function maxWidth (val :Number) :TextFieldBuilder {
+        _maxWidth = val;
+        return this;
+    }
+
+    /**
+     * If set, the TextField will be scaled down, if necessary, so that its height == maxHeight.
+     * Ignored if TextFieldAutoSize is NONE.
+     */
+    public function maxHeight (val :Number) :TextFieldBuilder {
+        _maxHeight = val;
         return this;
     }
 
@@ -231,6 +260,8 @@ public class TextFieldBuilder
     private var _border :Boolean;
     private var _autoScale :Boolean;
     private var _autoSize :String = TextFieldAutoSize.NONE;
+    private var _maxWidth :Number = NaN;
+    private var _maxHeight :Number = NaN;
     private var _width :Number = NaN;
     private var _height :Number = NaN;
     private var _scale :Number = 1;
