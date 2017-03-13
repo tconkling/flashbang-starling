@@ -43,6 +43,18 @@ public class AudioManager
         return getControlsForSoundType(SoundType.SFX);
     }
 
+    public function get maxActiveChannels () :int {
+        return _maxChannels;
+    }
+
+    public function get numActiveChannels () :int {
+        return _activeChannels.length;
+    }
+
+    public function get numFreeChannels () :int {
+        return _maxChannels - this.numActiveChannels;
+    }
+
     public function getControlsForSoundType (type :SoundType) :AudioControls {
         return _soundTypeControls[type.ordinal()];
     }
