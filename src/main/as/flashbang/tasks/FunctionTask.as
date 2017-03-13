@@ -9,7 +9,7 @@ import flashbang.core.Updatable;
 /**
  * A Task that calls a function repeatedly.
  * The function may take up to two arguments: (dt :Number, obj :GameObject).
- * The function will be called until it returns false.
+ * The function will be called until it returns any value other than 'false'.
  */
 public class FunctionTask extends ObjectTask
     implements Updatable
