@@ -31,6 +31,9 @@ public class Button extends SpriteObject
     /** Fired when the button is clicked */
     public const clicked :UnitSignal = new UnitSignal();
 
+    /** Fired when the button is down and the mouse is released outside the hitbounds */
+    public const clickCanceled :UnitSignal = new UnitSignal();
+
     /** Sound played when the button is pressed (null for no sound) */
     public var downSound :String = DEFAULT_DOWN_SOUND;
 
@@ -43,7 +46,7 @@ public class Button extends SpriteObject
 
     override protected function dispose () :void {
         super.dispose();
-        cancelCapture();
+        cancelCapture(false);
     }
 
     public function get enabled () :Boolean {
@@ -114,10 +117,14 @@ public class Button extends SpriteObject
         }
     }
 
-    protected function cancelCapture () :void {
+    protected function cancelCapture (emitCancelEvent :Boolean) :void {
         if (_captureReg != null) {
             _captureReg.close();
             _captureReg = null;
+
+            if (emitCancelEvent) {
+                this.clickCanceled.emit();
+            }
         }
     }
 
@@ -130,7 +137,7 @@ public class Button extends SpriteObject
         _pointerDown = false;
         _pointerOver = false;
         updateEnabledState();
-        cancelCapture();
+        cancelCapture(!wasPointerOver);
         // emit the signal after doing everything else, because a signal handler could change
         // our state
         if (wasPointerOver) {
@@ -142,7 +149,7 @@ public class Button extends SpriteObject
         _pointerDown = false;
         _pointerOver = false;
         updateEnabledState();
-        cancelCapture();
+        cancelCapture(true);
     }
 
     protected function set pointerDown (val :Boolean) :void {
@@ -176,7 +183,7 @@ public class Button extends SpriteObject
             var oldState :String = _state;
             _state = newState;
             if (_state == DISABLED) {
-                cancelCapture();
+                cancelCapture(true);
             }
             showState(_state);
             playStateTransitionSound(oldState, _state);
