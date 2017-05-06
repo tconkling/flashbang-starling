@@ -39,7 +39,7 @@ public class ResourceSet extends BatchLoader
                 } else if (thisResult is Vector.<Resource>) {
                     resources = resources.concat(Vector.<Resource>(thisResult));
                 } else {
-                    fail(Error("ResourceLoader.result must be a Resource or Vector of Resources"));
+                    fail("ResourceLoader.result must be a Resource or Vector of Resources");
                     return;
                 }
             }
