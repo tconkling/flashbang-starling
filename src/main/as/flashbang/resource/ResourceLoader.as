@@ -8,11 +8,35 @@ import aspire.util.ClassUtil;
 import flash.events.ErrorEvent;
 
 import flashbang.loader.DataLoader;
+import flashbang.util.Process;
 
-public class ResourceLoader extends DataLoader
+import react.NumberValue;
+import react.NumberView;
+
+public class ResourceLoader extends DataLoader implements Process
 {
+    /** The loadSize of the resource (optional, defaults to 1) */
+    public static const LOAD_SIZE :String = "loadSize";
+
     public function ResourceLoader (params :Object) {
         _params = params;
+    }
+
+    /**
+     * The "size" of the resource being loaded. This is a relative value that indicates
+     * how long the resource will take to load in relation to other resources.
+     * It does not necessarily correspond to any sort of byte size on disk.
+     */
+    public final function get processSize () :Number {
+        return getLoadParam(LOAD_SIZE, 1);
+    }
+
+    /**
+     * Subclasses can optionally expose a loadProgress that they update incrementally while
+     * their resource is loading. LoadProgress values are Numbers between 0 and 1.
+     */
+    public final function get progress () :NumberView {
+        return _loadProgress;
     }
 
     protected function hasLoadParam (name :String) :Boolean {
@@ -32,6 +56,13 @@ public class ResourceLoader extends DataLoader
             throw new Error("Bad load param [name=" + name + " type=" + type + "]");
         }
         return param;
+    }
+
+    override public function succeed (value :Object = null) :void {
+        if (!this.wasCanceled) {
+            _loadProgress.value = 1;
+        }
+        super.succeed(value);
     }
 
     override public function fail (cause :Object) :void {
@@ -57,5 +88,6 @@ public class ResourceLoader extends DataLoader
     }
 
     protected var _params :Object;
+    protected var _loadProgress :NumberValue = new NumberValue(0);
 }
 }

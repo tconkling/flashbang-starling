@@ -3,9 +3,10 @@
 
 package flashbang.resource {
 
-import flash.utils.ByteArray;
-
 import aspire.util.ClassUtil;
+
+import flash.events.ProgressEvent;
+import flash.utils.ByteArray;
 
 import flump.display.Library;
 import flump.display.LibraryLoader;
@@ -31,14 +32,6 @@ public class FlumpLibraryLoader extends ResourceLoader
      */
     public static const MIPMAPS :String = "mipmaps";
 
-    /**
-     * An optional function parameter that will receive progress updates in the flump loading
-     * process. The signature should be function (progress :flash.events.ProgressEvent) :void {}.
-     * Will only receive updates for URL loads (when the data parameter is an URL instead of a
-     * ByteArray).
-     */
-    public static const ON_PROGRESS :String = "onProgress";
-
     public function FlumpLibraryLoader (params :Object) {
         super(params);
     }
@@ -60,10 +53,6 @@ public class FlumpLibraryLoader extends ResourceLoader
             f = loader.loadBytes(ByteArray(data));
 
         } else if (data is String) {
-            var progress :Function = getLoadParam(ON_PROGRESS);
-            if (progress != null) {
-                loader.urlLoadProgressed.connect(progress);
-            }
             f = loader.loadURL(data as String);
 
         } else {
@@ -71,8 +60,14 @@ public class FlumpLibraryLoader extends ResourceLoader
                 ClassUtil.tinyClassName(data) + "'");
         }
 
+        loader.urlLoadProgressed.connect(onLoadProgress);
+
         f.succeeded.connect(libraryLoaded);
         f.failed.connect(fail);
+    }
+
+    protected function onLoadProgress (e :ProgressEvent) :void {
+        _loadProgress.value = (e.bytesLoaded / e.bytesTotal);
     }
 
     protected function createLibraryLoader () :LibraryLoader {
@@ -109,9 +104,9 @@ public class FlumpLibraryLoader extends ResourceLoader
 }
 }
 
-import flump.display.Library;
-
 import flashbang.resource.Resource;
+
+import flump.display.Library;
 
 class LibraryResource extends Resource {
     public function LibraryResource (name :String, lib :Library) {

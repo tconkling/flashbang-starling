@@ -6,15 +6,29 @@ package flashbang.resource {
 import flashbang.core.Flashbang;
 import flashbang.loader.BatchLoader;
 import flashbang.loader.DataLoader;
+import flashbang.util.BatchProcess;
+import flashbang.util.Process;
 
-public class ResourceSet extends BatchLoader
+import react.NumberView;
+
+public class ResourceSet extends BatchLoader implements Process
 {
     public function ResourceSet (maxSimultaneous :int = 0) {
         super(maxSimultaneous);
     }
 
+    public function get processSize () :Number {
+        return _batchProcess.processSize;
+    }
+
+    public function get progress () :NumberView {
+        return _batchProcess.progress;
+    }
+
     public function add (loadParams :Object) :void {
-        addLoader(Flashbang.rsrcs.createLoader(loadParams));
+        var loader :ResourceLoader = Flashbang.rsrcs.createLoader(loadParams);
+        addLoader(loader);
+        _batchProcess.add(loader);
     }
 
     public function addAll (loadParamsArray :Array) :void {
@@ -51,6 +65,8 @@ public class ResourceSet extends BatchLoader
         // to the resources
         super.succeed();
     }
+
+    private var _batchProcess :BatchProcess = new BatchProcess();
 }
 
 }

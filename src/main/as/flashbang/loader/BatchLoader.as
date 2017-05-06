@@ -3,6 +3,7 @@
 
 package flashbang.loader {
 
+import aspire.util.Arrays;
 import aspire.util.Preconditions;
 
 public class BatchLoader extends DataLoader
@@ -47,22 +48,33 @@ public class BatchLoader extends DataLoader
 
     protected function loadOne (loader :DataLoader) :void {
         var self :BatchLoader = this;
-        _loading.push(loader);
+        _loading[_loading.length] = loader;
         loader.load().onSuccess(function () :void {
             // we may have gotten canceled
             if (self.state == LoadState.LOADING) {
-                removeFirst(_loading, loader);
-                _loaded.push(loader);
+                Arrays.removeFirst(_loading, loader);
+                _loaded[_loaded.length] = loader;
+                loaderCompleted(loader);
                 loadMore();
             }
         }).onFailure(function (e :*) :void {
             // we may have gotten canceled
             if (self.state == LoadState.LOADING) {
-                removeFirst(_loading, loader);
+                Arrays.removeFirst(_loading, loader);
                 onCanceled();
                 fail(e);
             }
         });
+
+        loaderBegan(loader);
+    }
+
+    /** Called when a single loader has begun loading */
+    protected function loaderBegan (loader :DataLoader) :void {
+    }
+
+    /** Called when a single loader has finished loading */
+    protected function loaderCompleted (loader :DataLoader) :void {
     }
 
     override protected function onCanceled () :void {
@@ -77,16 +89,6 @@ public class BatchLoader extends DataLoader
         _pending = null;
         _loading = null;
         _loaded = null;
-    }
-
-    protected static function removeFirst (v :Vector.<DataLoader>, l :DataLoader) :void {
-        var len :int = v.length;
-        for (var ii :int = 0; ii < len; ++ii) {
-            if (v[ii] == l) {
-                v.removeAt(ii);
-                break;
-            }
-        }
     }
 
     protected var _maxSimultaneous :int;
