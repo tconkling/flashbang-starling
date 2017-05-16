@@ -73,7 +73,7 @@ public class AudioManager
         var hasStoppedChannels :Boolean = false;
         for each (var channel :AudioChannel in _activeChannels) {
             if (channel.isPlaying) {
-                var audioState :AudioState = channel.controls.state;
+                var audioState :AudioState = channel._controls.state;
                 var channelPaused :Boolean = channel.isPaused;
                 if (audioState.stopped) {
                     stop(channel);
@@ -82,13 +82,13 @@ public class AudioManager
                 } else if (!audioState.paused && channelPaused) {
                     resume(channel);
                 } else if (!channelPaused) {
-                    var curTransform :SoundTransform = channel.channel.soundTransform;
+                    var curTransform :SoundTransform = channel._channel.soundTransform;
                     var curVolume :Number = curTransform.volume;
                     var curPan :Number = curTransform.pan;
-                    var newVolume :Number = audioState.actualVolume * channel.sound.volume;
-                    var newPan :Number = audioState.pan * channel.sound.pan;
+                    var newVolume :Number = audioState.actualVolume * channel._sound.volume;
+                    var newPan :Number = audioState.pan * channel._sound.pan;
                     if (newVolume != curVolume || newPan != curPan) {
-                        channel.channel.soundTransform = new SoundTransform(newVolume, newPan);
+                        channel._channel.soundTransform = new SoundTransform(newVolume, newPan);
                     }
                 }
             }
@@ -144,8 +144,8 @@ public class AudioManager
         for (var ii :int = 0; ii < _activeChannels.length; ++ii) {
             var activeChannel :AudioChannel = _activeChannels[ii];
             if (activeChannel.isPlaying) {
-                if (activeChannel.sound == sound &&
-                    (timeNow - activeChannel.startTime) < SOUND_PLAYED_RECENTLY_DELTA) {
+                if (activeChannel._sound == sound &&
+                    (timeNow - activeChannel._startTime) < SOUND_PLAYED_RECENTLY_DELTA) {
                     /*log.info("Discarding sound '" + soundResource.resourceName +
                                "' (recently played)");*/
                     return new AudioChannel();
@@ -166,8 +166,8 @@ public class AudioManager
             if (null != lowestPriorityChannel &&
                 sound.priority > lowestPriorityChannel.priority) {
                 // steal the channel from a lower-priority sound
-                if (lowestPriorityChannel.sound != null) {
-                    log.info("Interrupting sound '" + lowestPriorityChannel.sound.name +
+                if (lowestPriorityChannel._sound != null) {
+                    log.info("Interrupting sound '" + lowestPriorityChannel._sound.name +
                         "' for higher-priority sound '" + sound.name + "'");
                 }
                 stop(lowestPriorityChannel);
@@ -182,20 +182,20 @@ public class AudioManager
 
         // Create the channel
         var channel :AudioChannel = new AudioChannel();
-        channel.completeHandler = F.bind(handleComplete, channel);
-        channel.controls = new AudioControls(parentControls);
-        channel.controls.retain();
-        channel.sound = sound;
-        channel.playPosition = 0;
-        channel.startTime = timeNow;
-        channel.loopCount = loopCount;
+        channel._completeHandler = F.bind(handleComplete, channel);
+        channel._controls = new AudioControls(parentControls);
+        channel._controls.retain();
+        channel._sound = sound;
+        channel._savedPlayPosition = 0;
+        channel._startTime = timeNow;
+        channel._loopCount = loopCount;
 
         // start playing
         if (!audioState.paused) {
             playChannel(channel, audioState, 0);
 
             // Flash must've run out of sound channels
-            if (null == channel.channel) {
+            if (null == channel._channel) {
                 log.info("Discarding sound '" + sound.name +
                     "' (Flash is out of channels)");
                 return new AudioChannel();
@@ -216,58 +216,58 @@ public class AudioManager
 
     public function stop (channel :AudioChannel) :void {
         if (channel.isPlaying) {
-            if (null != channel.channel) {
-                channel.channel.removeEventListener(Event.SOUND_COMPLETE, channel.completeHandler);
-                channel.channel.stop();
-                channel.channel = null;
+            if (null != channel._channel) {
+                channel._channel.removeEventListener(Event.SOUND_COMPLETE, channel._completeHandler);
+                channel._channel.stop();
+                channel._channel = null;
             }
 
-            channel.controls.release();
-            channel.controls = null;
+            channel._controls.release();
+            channel._controls = null;
 
-            channel.sound = null;
+            channel._sound = null;
         }
     }
 
     public function pause (channel :AudioChannel) :void {
         if (channel.isPlaying && !channel.isPaused) {
             // save the channel's current play position
-            channel.playPosition = channel.channel.position;
+            channel._savedPlayPosition = channel._channel.position;
 
             // stop playing
-            channel.channel.removeEventListener(Event.SOUND_COMPLETE, channel.completeHandler);
-            channel.channel.stop();
-            channel.channel = null;
+            channel._channel.removeEventListener(Event.SOUND_COMPLETE, channel._completeHandler);
+            channel._channel.stop();
+            channel._channel = null;
         }
     }
 
     public function resume (channel :AudioChannel) :void {
         if (channel.isPlaying && channel.isPaused) {
-            playChannel(channel, channel.controls.state, channel.playPosition);
+            playChannel(channel, channel._controls.state, channel._savedPlayPosition);
         }
     }
 
     protected function handleComplete (channel :AudioChannel) :void {
         // does the sound need to loop?
-        if (channel.loopCount == 0) {
+        if (channel._loopCount == 0) {
             stop(channel);
             channel.completed.emit();
 
-        } else if (playChannel(channel, channel.controls.state, 0)) {
-            channel.loopCount--;
+        } else if (playChannel(channel, channel._controls.state, 0)) {
+            channel._loopCount--;
         }
     }
 
     protected function playChannel (channel :AudioChannel, audioState :AudioState,
         playPosition :Number) :Boolean
     {
-        var volume :Number = audioState.actualVolume * channel.sound.volume;
-        var pan :Number = audioState.pan * channel.sound.pan;
-        channel.channel = channel.sound.sound.play(playPosition, 0,
+        var volume :Number = audioState.actualVolume * channel._sound.volume;
+        var pan :Number = audioState.pan * channel._sound.pan;
+        channel._channel = channel._sound.sound.play(playPosition, 0,
             new SoundTransform(volume, pan));
 
-        if (null != channel.channel) {
-            channel.channel.addEventListener(Event.SOUND_COMPLETE, channel.completeHandler);
+        if (null != channel._channel) {
+            channel._channel.addEventListener(Event.SOUND_COMPLETE, channel._completeHandler);
             return true;
 
         } else {

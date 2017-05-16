@@ -19,37 +19,45 @@ public class AudioChannel
     public const completed :UnitSignal = new UnitSignal();
 
     public function get isPlaying () :Boolean  {
-        return (null != sound);
+        return (null != _sound);
     }
 
     public function get priority () :int {
-        return (null != sound ? sound.priority : int.MIN_VALUE);
+        return (null != _sound ? _sound.priority : int.MIN_VALUE);
     }
 
     public function get isPaused () :Boolean {
-        return (null != sound && null == channel);
+        return (null != _sound && null == _channel);
     }
 
     public function get audioControls () :AudioControls {
-        return (null != controls ? controls : DUMMY_CONTROLS);
+        return (null != _controls ? _controls : DUMMY_CONTROLS);
     }
 
     /**
      * Returns the length of the sound in milliseconds, or 0 if the sound doesn't exist.
      */
     public function get length () :Number {
-        return null == sound ? 0 : sound.sound.length;
+        return null == _sound ? 0 : _sound.sound.length;
+    }
+
+    /**
+     * Returns the elapsed time of the playing sounds, in milliseconds. If the channel has no
+     * sound attached, or if it is stopped or paused, 0 will be returned.
+     */
+    public function get position () :Number {
+        return null == _channel ? 0 : _channel.position;
     }
 
     // managed by AudioManager
 
-    internal var completeHandler :Function;
-    internal var controls :AudioControls;
-    internal var sound :SoundResource;
-    internal var channel :SoundChannel;
-    internal var playPosition :Number;
-    internal var startTime :int;
-    internal var loopCount :int;
+    internal var _completeHandler :Function;
+    internal var _controls :AudioControls;
+    internal var _sound :SoundResource;
+    internal var _channel :SoundChannel;
+    internal var _savedPlayPosition :Number;
+    internal var _startTime :int;
+    internal var _loopCount :int;
 
     internal static const DUMMY_CONTROLS :AudioControls = new AudioControls();
 }
