@@ -30,10 +30,16 @@ public class Input
     public static function newKeyboardListener (onKeyboardEvent :Function) :KeyboardListener {
         return new CallbackKeyboardListener(onKeyboardEvent);
     }
+
+    public static function newMouseWheelListener (onMouseWheelEvent :Function) :MouseWheelListener {
+        return new CallbackMouseWheelListener(onMouseWheelEvent);
+    }
 }
 }
 
 import flashbang.input.KeyboardListener;
+import flashbang.input.MouseWheelEvent;
+import flashbang.input.MouseWheelListener;
 import flashbang.input.PointerAdapter;
 import flashbang.input.PointerListener;
 import flashbang.input.PointerListenerBuilder;
@@ -155,6 +161,21 @@ class CallbackKeyboardListener
 
     public function onKeyboardEvent (k :KeyboardEvent) :Boolean {
         var result :* = _f(k);
+        return (result === undefined ? true : result as Boolean);
+    }
+
+    protected var _f :Function;
+}
+
+class CallbackMouseWheelListener
+    implements MouseWheelListener
+{
+    public function CallbackMouseWheelListener (f :Function) {
+        _f = f;
+    }
+
+    public function onMouseWheelEvent (e :MouseWheelEvent) :Boolean {
+        var result :* = _f(e);
         return (result === undefined ? true : result as Boolean);
     }
 
