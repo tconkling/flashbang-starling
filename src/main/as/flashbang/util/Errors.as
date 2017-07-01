@@ -33,6 +33,10 @@ public class Errors
             return getMessageInternal(error.error, wantStackTrace);
         } else if (error is ErrorEvent) {
             var ee :ErrorEvent = (error as ErrorEvent);
+            if (ee.errorID == 2032) {
+                return "Error 2032 (stream error)"
+            }
+
             var joiner :Joiner = new Joiner(ClassUtil.tinyClassName(ee));
             joiner.add("errorID", ee.errorID);
             joiner.add("type", '"' + ee.type + '"');
