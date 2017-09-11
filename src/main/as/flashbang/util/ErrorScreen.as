@@ -62,7 +62,7 @@ public class ErrorScreen extends Sprite
 
     protected static function logError (error :*) :void {
         if (error is MultiFailureError) {
-            for each (var child :Error in MultiFailureError(error).failures) {
+            for each (var child :Object in MultiFailureError(error).failures) {
                 logError(child);
             }
         } else {
