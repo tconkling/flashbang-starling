@@ -58,6 +58,7 @@ public class ImageResource extends FlumpResource
     override protected function dispose () :void {
         super.dispose();
         _texture = null;
+        // the Texture will be disposed by its Library
     }
 
     protected var _texture :Texture;
