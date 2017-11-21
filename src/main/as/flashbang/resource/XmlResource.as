@@ -3,6 +3,8 @@
 
 package flashbang.resource {
 
+import flash.system.System;
+
 import flashbang.core.Flashbang;
 
 public class XmlResource extends Resource
@@ -28,6 +30,7 @@ public class XmlResource extends Resource
     }
 
     override protected function dispose () :void  {
+        System.disposeXML(_xml);
         _xml = null;
     }
 

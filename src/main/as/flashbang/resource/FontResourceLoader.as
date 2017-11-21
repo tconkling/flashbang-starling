@@ -3,6 +3,8 @@
 
 package flashbang.resource {
 
+import flash.system.System;
+
 import flashbang.loader.BatchLoader;
 import flashbang.loader.XmlLoader;
 
@@ -53,6 +55,7 @@ public class FontResourceLoader extends ResourceLoader
                 var xml :XML = xmlLoader.result;
                 var font :BitmapFont = new BitmapFont(texture.texture, xml);
                 rsrc = new FontResource(name, font);
+                System.disposeXML(xml);
             } catch (e :Error) {
                 fail(e);
                 return;
