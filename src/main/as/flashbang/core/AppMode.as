@@ -261,7 +261,6 @@ public class AppMode
         _rootObject.disposeInternal();
         _rootObject = null;
 
-        _deadGroupedObjects = null;
         _idObjects = null;
         _groupedObjects = null;
 
@@ -375,7 +374,6 @@ public class AppMode
 
     protected var _idObjects :Map = Maps.newMapOf(Object); // <Object,GameObject>
     protected var _groupedObjects :Map = ValueComputingMap.newArrayMapOf(Object);
-    protected var _deadGroupedObjects :Vector.<GameObject> = new <GameObject>[];
 
     protected var _regs :Listeners = new Listeners();
 
