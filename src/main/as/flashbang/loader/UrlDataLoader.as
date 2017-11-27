@@ -61,7 +61,8 @@ public class UrlDataLoader extends DataLoader
     }
 
     protected function timeout (e :Event) :void {
-        fail(new IOErrorEvent(TIMEOUT));
+        fail(new TimeoutErrorEvent(TimeoutErrorEvent.TIMEOUT,
+            "URLLoader timed out [url=" + _request.url + ", timeout=" + _loadTimeout + "]"));
     }
 
     override protected function onCanceled () :void {
@@ -82,8 +83,6 @@ public class UrlDataLoader extends DataLoader
         // don't need to shutdown loader
         succeed(data);
     }
-
-    protected static const TIMEOUT :String = "URLLoader timed out!";
 
     protected var _request :URLRequest;
     protected var _format :String;
