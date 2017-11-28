@@ -84,6 +84,10 @@ public class UrlDataLoader extends DataLoader
         succeed(data);
     }
 
+    public function toString () :String {
+        return "UrlDataLoader [url=" + (_request != null ? _request.url : null) + "]";
+    }
+
     protected var _request :URLRequest;
     protected var _format :String;
     protected var _loader :URLLoader;
