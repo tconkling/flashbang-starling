@@ -110,6 +110,10 @@ public class SoundResourceLoader extends ResourceLoader
         }
     }
 
+    public function toString () :String {
+        return getLoadParam(NAME) + " (" + ClassUtil.tinyClassName(this) + ")";
+    }
+
     protected var _sound :Sound;
 }
 }

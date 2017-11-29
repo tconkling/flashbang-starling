@@ -98,6 +98,10 @@ public class FlumpLibraryLoader extends ResourceLoader
         }
     }
 
+    public function toString () :String {
+        return getLoadParam(NAME) + " (" + ClassUtil.tinyClassName(this) + ")";
+    }
+
     protected var _name :String;
     protected var _mipmaps :Boolean;
     protected var _exec :Executor;

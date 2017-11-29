@@ -3,6 +3,8 @@
 
 package flashbang.resource {
 
+import aspire.util.ClassUtil;
+
 import flashbang.loader.XmlLoader;
 
 public class XmlResourceLoader extends ResourceLoader
@@ -38,6 +40,10 @@ public class XmlResourceLoader extends ResourceLoader
             _loader.close();
             _loader = null;
         }
+    }
+
+    public function toString () :String {
+        return getLoadParam(NAME) + " (" + ClassUtil.tinyClassName(this) + ")";
     }
 
     protected var _loader :XmlLoader;

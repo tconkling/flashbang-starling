@@ -3,6 +3,8 @@
 
 package flashbang.resource {
 
+import aspire.util.ClassUtil;
+
 import flash.system.System;
 
 import flashbang.loader.BatchLoader;
@@ -71,6 +73,10 @@ public class FontResourceLoader extends ResourceLoader
             _batch.close();
             _batch = null;
         }
+    }
+
+    public function toString () :String {
+        return getLoadParam(NAME) + " (" + ClassUtil.tinyClassName(this) + ")";
     }
 
     protected var _batch :BatchLoader;
