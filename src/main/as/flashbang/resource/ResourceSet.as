@@ -3,6 +3,8 @@
 
 package flashbang.resource {
 
+import aspire.util.Log;
+
 import flashbang.core.Flashbang;
 import flashbang.loader.BatchLoader;
 import flashbang.loader.DataLoader;
@@ -41,6 +43,14 @@ public class ResourceSet extends BatchLoader implements Process
         Flashbang.rsrcs.unloadSet(this);
     }
 
+    override protected function loaderBegan (loader :DataLoader) :void {
+        log.debug("Loading '" + loader + "'...");
+    }
+
+    override protected function loaderCompleted (loader :DataLoader) :void {
+        log.debug("Completed '" + loader + "'");
+    }
+
     override public function succeed (value :Object = null) :void {
         // get all our resources
         var loaded :Vector.<DataLoader> = Vector.<DataLoader>(value);
@@ -67,6 +77,8 @@ public class ResourceSet extends BatchLoader implements Process
     }
 
     private var _batchProcess :BatchProcess = new BatchProcess();
+
+    private static const log :Log = Log.getLog(ResourceSet);
 }
 
 }
