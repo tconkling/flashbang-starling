@@ -49,7 +49,17 @@ public class BatchLoader extends DataLoader
     protected function loadOne (loader :DataLoader) :void {
         var self :BatchLoader = this;
         _loading[_loading.length] = loader;
+
+        var began :Boolean = false;
+
         loader.load().onSuccess(function () :void {
+            if (!began) {
+                // If the load finishes immediately, we'll reach this point
+                // before the end of the outer function
+                loaderBegan(loader);
+                began = true;
+            }
+
             // we may have gotten canceled
             if (self.state == LoadState.LOADING) {
                 Arrays.removeFirst(_loading, loader);
@@ -66,7 +76,10 @@ public class BatchLoader extends DataLoader
             }
         });
 
-        loaderBegan(loader);
+        if (!began) {
+            loaderBegan(loader);
+            began = true;
+        }
     }
 
     /** Called when a single loader has begun loading */
