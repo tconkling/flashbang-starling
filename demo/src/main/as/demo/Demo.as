@@ -7,7 +7,7 @@ import flashbang.core.FlashbangApp;
 import flashbang.core.FlashbangConfig;
 
 [SWF(width="480", height="320", frameRate="60", backgroundColor="#222222")]
-public class Demo extends flashbang.core.FlashbangApp
+public class Demo extends FlashbangApp
 {
     public static const WIDTH :int = 480;
     public static const HEIGHT :int = 320;

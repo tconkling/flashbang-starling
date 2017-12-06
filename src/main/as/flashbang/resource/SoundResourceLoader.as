@@ -4,24 +4,22 @@
 package flashbang.resource {
 
 import aspire.util.ClassUtil;
-import aspire.util.F;
 
-import flash.events.Event;
-import flash.events.IOErrorEvent;
 import flash.media.Sound;
-import flash.net.URLRequest;
 
 import flashbang.audio.SoundType;
+import flashbang.loader.SoundLoader;
 
-public class SoundResourceLoader extends ResourceLoader
-{
-    /** Load params */
+import react.Executor;
+import react.Future;
+import react.NumberView;
 
+public class SoundResourceLoader implements ResourceLoader {
     /** The name of the Sound (required) */
     public static const NAME :String = "name";
 
-    /** a String containing a URL to load the Sound from OR an [Embed]ed Sound class (required) */
-    public static const DATA :String = "data";
+    /** a String containing a URL to load the Sound (required) */
+    public static const URL :String = "url";
 
     /** The sound type. String. Valid values: "sfx", "music". (optional, @default "sfx") */
     public static const TYPE :String = "soundType";
@@ -45,75 +43,64 @@ public class SoundResourceLoader extends ResourceLoader
      */
     public static const STREAM :String = "stream";
 
+    /** The loadSize of the resource (optional, defaults to 1) */
+    public static const LOAD_SIZE :String = "loadSize";
+
     public function SoundResourceLoader (params :Object) {
-        super(params);
+        _name = Params.require(params, NAME, String);
+        _loadSize = Params.get(params, LOAD_SIZE, 1);
+
+        var priority :Number = Params.get(params, PRIORITY, 0);
+        var volume :Number = Params.get(params, VOLUME, 1);
+        var pan :Number = Params.get(params, PAN, 0);
+        var type :SoundType = SoundType.valueOf(Params.get(params, TYPE, SoundType.SFX.name()));
+        var url :String = Params.require(params, URL, String);
+        var stream :Boolean = Params.get(params, STREAM, false);
+
+        _loader = new SoundLoader(url, stream);
+        _result = _loader.result.map(function (sound :Sound) :SoundResource {
+            return new SoundResource(_name, sound, type, priority, volume, pan);
+        });
     }
 
-    override protected function doLoad () :void {
-        // parse loadParams
-        var name :String = getLoadParam(NAME);
-        var typeName :String = getLoadParam(TYPE, SoundType.SFX.name());
-        var type :SoundType = SoundType.valueOf(typeName.toUpperCase());
-        var priority :int = getLoadParam(PRIORITY, 0);
-        var volume :Number = getLoadParam(VOLUME, 1);
-        var pan :Number = getLoadParam(PAN, 0);
+    public function get processSize () :Number {
+        return _loadSize;
+    }
 
-        var data :Object = requireLoadParam(DATA, Object);
-        if (data is String) {
+    public function get result () :Future {
+        return _result;
+    }
 
-            _sound = new Sound();
+    public function get progress () :NumberView {
+        return _loader.progress;
+    }
 
-            // Immediately set up the error listener to protect against blowing up
-            var self :SoundResourceLoader = this;
-            _sound.addEventListener(IOErrorEvent.IO_ERROR, function (e :IOErrorEvent) :void {
-                if (!self.isComplete.value) {
-                    fail(e);
-                } else {
-                    log.error("An error occurred on an already-completed sound", e);
-                }
-            });
+    public function executor (exec :Executor) :void {
+        _exec = exec;
+    }
 
-            // And THEN start it loading
-            _sound.load(new URLRequest(data as String));
-
-            var result :SoundResource = new SoundResource(name, _sound, type, priority, volume, pan);
-
-            // If this is a streaming sound, we don't wait for it to finish loading before
-            // we make it available. Sounds loaded in this manner can be played without
-            // issue as long as they download quickly enough.
-            if (getLoadParam(STREAM, false)) {
-                succeed(result);
+    public function begin () :Future {
+        if (!_began) {
+            _began = true;
+            if (_exec != null) {
+                _exec.submit(_loader.begin);
             } else {
-                _sound.addEventListener(Event.COMPLETE, F.bind(succeed, result));
+                _loader.begin();
             }
-
-        } else if (data is Class) {
-            var clazz :Class = Class(data);
-            _sound = Sound(new clazz());
-            succeed(new SoundResource(name, _sound, type, priority, volume, pan));
-
-        } else {
-            throw new Error("Unrecognized Sound data source: '" +
-                ClassUtil.tinyClassName(data) + "'");
         }
-    }
-
-    override protected function onCanceled () :void {
-        if (_sound != null) {
-            try {
-                _sound.close();
-            } catch (e :Error) {
-                // The sound may or may not be currently streaming data.
-                // We'll get an error if it isn't and we try to close its stream- but we don't care.
-            }
-            _sound = null;
-        }
+        return _result;
     }
 
     public function toString () :String {
-        return getLoadParam(NAME) + " (" + ClassUtil.tinyClassName(this) + ")";
+        return _name + " (" + ClassUtil.tinyClassName(this) + ")";
     }
 
-    protected var _sound :Sound;
+    protected var _name :String;
+    protected var _loadSize :Number;
+
+    protected var _exec :Executor;
+    protected var _result :Future;
+    protected var _loader :SoundLoader;
+    protected var _began :Boolean;
 }
 }

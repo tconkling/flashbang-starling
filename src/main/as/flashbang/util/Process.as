@@ -3,18 +3,21 @@
 
 package flashbang.util {
 
-import react.NumberView;
+import react.Future;
 
-/** Enables observation of a process that will eventually complete */
-public interface Process {
+/** Represents a process that will eventually complete */
+public interface Process extends HasProgress {
     /**
-     * The "size" of the process being observed. This is a relative value that indicates
-     * how long the process will take to load in relation to other processes being observed in
-     * a BatchProcess.
+     * The process's result. The behavior of calling `result` before `begin` has been called
+     * is up to subclasses.
      */
-    function get processSize () :Number;
+    function get result () :Future;
 
-    /** Emits progress updates, which are values between [0, 1]. Progress never decreases. */
-    function get progress () :NumberView;
+    /**
+     * Begins the process if it hasn't already begun. Returns `result` for convenience.
+     * It is not an error to call this multiple times. If the process has already begun,
+     * `begin` is a no-op that simply returns `result`.
+     */
+    function begin () :Future;
 }
 }

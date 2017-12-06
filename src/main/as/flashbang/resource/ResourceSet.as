@@ -3,82 +3,113 @@
 
 package flashbang.resource {
 
-import aspire.util.Log;
+import aspire.util.Preconditions;
 
 import flashbang.core.Flashbang;
-import flashbang.loader.BatchLoader;
-import flashbang.loader.DataLoader;
 import flashbang.util.BatchProcess;
+import flashbang.util.HasProcessSize;
 import flashbang.util.Process;
 
+import react.Executor;
+import react.Future;
 import react.NumberView;
 
-public class ResourceSet extends BatchLoader implements Process
-{
-    public function ResourceSet (maxSimultaneous :int = 0) {
-        super(maxSimultaneous);
-    }
-
-    public function get processSize () :Number {
-        return _batchProcess.processSize;
+public class ResourceSet implements Process, HasProcessSize {
+    public function get isLoaded () :Boolean {
+        return _result != null && _result.isComplete.value;
     }
 
     public function get progress () :NumberView {
-        return _batchProcess.progress;
+        return _batch.progress;
     }
 
-    public function add (loadParams :Object) :void {
+    public function get processSize () :Number {
+        return _batch.processSize;
+    }
+
+    /**
+     * Our result is a Future<Void> - we add our resources to the ResourceManager directly on
+     * success, and they are not accessible externally. This will be null before load() is called.
+     */
+    public function get result () :Future {
+        return _result;
+    }
+
+    public function executor (exec :Executor) :ResourceSet {
+        Preconditions.checkState(!this.began, "Already loaded");
+        // We don't add the Executor to the BatchProcess, because we need to be more granular.
+        // The Executor is used by individual resource loaders to limit the number of
+        // simultaneous file loading operations.
+        _exec = exec;
+        return this;
+    }
+
+    public function add (loadParams :Object) :ResourceSet {
+        Preconditions.checkState(!this.began, "Already loaded");
         var loader :ResourceLoader = Flashbang.rsrcs.createLoader(loadParams);
-        addLoader(loader);
-        _batchProcess.add(loader);
+        _children[_children.length] = loader;
+        _batch.add(loader);
+        return this;
     }
 
-    public function addAll (loadParamsArray :Array) :void {
+    public function addAll (loadParamsArray :Array) :ResourceSet {
         for each (var params :Object in loadParamsArray) {
             add(params);
         }
+        return this;
+    }
+
+    /** An alias for begin() */
+    public function load () :Future {
+        return begin();
+    }
+
+    public function begin () :Future {
+        if (!this.began) {
+            if (_exec != null) {
+                for each (var child :ResourceLoader in _children) {
+                    child.executor(_exec);
+                }
+            }
+            _result = _batch.begin().flatMap(onResourcesLoaded);
+        }
+        return _result;
     }
 
     public function unload () :void {
         Flashbang.rsrcs.unloadSet(this);
     }
 
-    override protected function loaderBegan (loader :DataLoader) :void {
-        log.debug("Loading '" + loader + "'...");
-    }
-
-    override protected function loaderCompleted (loader :DataLoader) :void {
-        log.debug("Completed '" + loader + "'");
-    }
-
-    override public function succeed (value :Object = null) :void {
+    protected function onResourcesLoaded (results :Array) :Future {
         // get all our resources
-        var loaded :Vector.<DataLoader> = Vector.<DataLoader>(value);
         var resources :Vector.<Resource> = new <Resource>[];
-        for each (var l :DataLoader in loaded) {
-            if (l is ResourceLoader) {
-                var thisResult :* = l.result;
-                if (thisResult is Resource) {
-                    resources.push(Resource(thisResult));
-                } else if (thisResult is Vector.<Resource>) {
-                    resources = resources.concat(Vector.<Resource>(thisResult));
-                } else {
-                    fail("ResourceLoader.result must be a Resource or Vector of Resources");
-                    return;
-                }
+        for each (var result :* in results) {
+            if (result is Resource) {
+                resources[resources.length] = result;
+            } else if (result is Vector.<Resource>) {
+                resources = resources.concat(Vector.<Resource>(result));
+            } else {
+                return Future.failure("ResourceLoader.result must be a Resource or Vector of Resources");
             }
         }
 
-        Flashbang.rsrcs.addSet(this, resources);
+        try {
+            Flashbang.rsrcs.addSet(this, resources);
+        } catch (err :Error) {
+            return Future.failure(err);
+        }
 
-        // Don't pass result through to BatchLoader. We don't want extra references
-        // to the resources
-        super.succeed();
+        return Future.success();
     }
 
-    private var _batchProcess :BatchProcess = new BatchProcess();
+    protected function get began () :Boolean {
+        return _result != null;
+    }
 
-    private static const log :Log = Log.getLog(ResourceSet);
+    protected var _batch :BatchProcess = new BatchProcess();
+    protected var _children :Vector.<ResourceLoader> = new <ResourceLoader>[];
+    protected var _exec :Executor;
+    protected var _result :Future;
 }
 
 }
