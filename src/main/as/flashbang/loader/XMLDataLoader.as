@@ -15,14 +15,14 @@ import flash.net.URLLoaderDataFormat;
 import flash.net.URLRequest;
 import flash.utils.ByteArray;
 
-public class XmlLoader extends DataLoader
+public class XMLDataLoader extends DataLoader
 {
     /**
-     * Creates a new XmlLoader.
+     * Creates a new XMLDataLoader.
      * @source the data source to load the XML from. Can be an embedded Class, a ByteArray,
      * or a String containing a URL.
      */
-    public function XmlLoader (source :Object) {
+    public function XMLDataLoader (source :Object) {
         _source = source;
     }
 

@@ -8,7 +8,7 @@ import aspire.util.ClassUtil;
 import flash.system.System;
 
 import flashbang.loader.BatchLoader;
-import flashbang.loader.XmlLoader;
+import flashbang.loader.XMLDataLoader;
 
 import starling.text.BitmapFont;
 
@@ -43,7 +43,7 @@ public class FontResourceLoader extends ResourceLoader
     override protected function doLoad () :void {
         var name :String = requireLoadParam(NAME, String);
 
-        var xmlLoader :XmlLoader = new XmlLoader(requireLoadParam(XML_DATA));
+        var xmlLoader :XMLDataLoader = new XMLDataLoader(requireLoadParam(XML_DATA));
         var textureLoader :TextureLoader =
             new TextureLoader(requireLoadParam(TEXTURE_DATA), getLoadParam(SCALE, 1));
 

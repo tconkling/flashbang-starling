@@ -5,7 +5,7 @@ package flashbang.resource {
 
 import aspire.util.ClassUtil;
 
-import flashbang.loader.XmlLoader;
+import flashbang.loader.XMLDataLoader;
 
 public class XmlResourceLoader extends ResourceLoader
 {
@@ -29,7 +29,7 @@ public class XmlResourceLoader extends ResourceLoader
     override protected function doLoad () :void {
         var name :String = requireLoadParam(NAME, String);
 
-        _loader = new XmlLoader(requireLoadParam(DATA, Object));
+        _loader = new XMLDataLoader(requireLoadParam(DATA, Object));
         _loader.load().onSuccess(function (result :XML) :void {
             succeed(new XmlResource(name, result));
         }).onFailure(fail);
@@ -46,6 +46,6 @@ public class XmlResourceLoader extends ResourceLoader
         return getLoadParam(NAME) + " (" + ClassUtil.tinyClassName(this) + ")";
     }
 
-    protected var _loader :XmlLoader;
+    protected var _loader :XMLDataLoader;
 }
 }
