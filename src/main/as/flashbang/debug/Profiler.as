@@ -3,12 +3,11 @@
 
 package flashbang.debug {
 
-import flash.system.Capabilities;
-import flash.utils.getTimer;
-
 import aspire.util.Log;
-import aspire.util.Map;
-import aspire.util.Maps;
+
+import flash.system.Capabilities;
+import flash.utils.Dictionary;
+import flash.utils.getTimer;
 
 public class Profiler
 {
@@ -16,7 +15,7 @@ public class Profiler
 
     public static function resetAllTimers () :void {
         if (ENABLED) {
-            _timers = Maps.newMapOf(String);
+            _timers = new Dictionary();
         }
     }
 
@@ -44,10 +43,10 @@ public class Profiler
 
     public static function startTimer (timerName :String) :String {
         if (ENABLED) {
-            var timer :PerfTimer = getTimer(timerName);
+            var timer :PerfTimer = getPerfTimer(timerName);
             timer.timesRun++;
             if (timer.curRunCount++ == 0) {
-                timer.startTime = flash.utils.getTimer();
+                timer.startTime = getTimer();
             }
         }
 
@@ -56,10 +55,10 @@ public class Profiler
 
     public static function stopTimer (timerName :String) :void {
         if (ENABLED) {
-            var timer :PerfTimer = getTimer(timerName);
+            var timer :PerfTimer = getPerfTimer(timerName);
             if (timer.curRunCount > 0) {
                 if (--timer.curRunCount == 0) {
-                    timer.totalTime += flash.utils.getTimer() - timer.startTime;
+                    timer.totalTime += getTimer() - timer.startTime;
                 }
             }
         }
@@ -75,9 +74,9 @@ public class Profiler
         var stats :String = "";
         if (ENABLED) {
             stats += "Performance stats: \n";
-            _timers.forEach(function (timerName :String, timer :PerfTimer) :void {
+            for (var timerName :String in _timers) {
                 stats += getPerformanceSummary(timerName) + "\n";
-            });
+            }
         }
 
         return stats;
@@ -86,29 +85,29 @@ public class Profiler
     public static function getPerformanceSummary (timerName :String) :String {
         var summary :String = "";
         if (ENABLED) {
-            var timer :PerfTimer = getTimer(timerName);
+            var timer :PerfTimer = _timers[timerName];
             if (timer != null) {
                 summary = "* " + timerName +
                     "\n\tTimes run: " + timer.timesRun +
-                    "\n\tTotal time: " + timer.totalTime +
-                    "\n\tAvg time: " + timer.totalTime / timer.timesRun;
-            };
+                    "\n\tTotal time: " + timer.totalTime + "ms" +
+                    "\n\tAvg time: " + timer.totalTime / timer.timesRun + "ms";
+            }
         }
         return summary;
     }
 
-    protected static function getTimer (timerName :String) :PerfTimer {
-        var timer :PerfTimer = _timers.get(timerName);
+    private static function getPerfTimer (timerName :String) :PerfTimer {
+        var timer :PerfTimer = _timers[timerName];
         if (null == timer) {
             timer = new PerfTimer();
-            _timers.put(timerName, timer);
+            _timers[timerName] = timer;
         }
 
         return timer;
     }
 
     protected static var _runningTimerNames :Array = [];
-    protected static var _timers :Map = Maps.newMapOf(String);
+    protected static var _timers :Dictionary = new Dictionary();
     protected static const log :Log = Log.getLog(Profiler);
 }
 
