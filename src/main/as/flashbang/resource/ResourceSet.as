@@ -19,8 +19,8 @@ public class ResourceSet extends BatchLoader implements Process
         super(maxSimultaneous);
     }
 
-    public function get processSize () :Number {
-        return _batchProcess.processSize;
+    public function get totalSize () :Number {
+        return _batchProcess.totalSize;
     }
 
     public function get progress () :NumberView {

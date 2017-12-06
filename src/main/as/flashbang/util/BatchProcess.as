@@ -10,17 +10,18 @@ import react.NumberView;
 
 /** Measures the progress of multiple Processes */
 public class BatchProcess implements Process {
-    public function add (process :Process) :void {
-        _children[process] = 0;
-        _totalSize += process.processSize;
+    public function add (process :Process, size :Number = 1) :void {
+        var subProcess :SubProcess = new SubProcess(process, size);
+        _children[subProcess] = true;
+        _totalSize += size;
 
         process.progress.connect(function (progress :Number) :void {
-            _children[process] = progress;
+            subProcess.progress = progress;
             updateTotalProgress();
         });
     }
 
-    public function get processSize () :Number {
+    public function get totalSize () :Number {
         return _totalSize;
     }
 
@@ -30,9 +31,8 @@ public class BatchProcess implements Process {
 
     private function updateTotalProgress () :void {
         var totalProgress :Number = 0;
-        for (var process :Process in _children) {
-            var thisProgress :Number = _children[process];
-            totalProgress += (thisProgress * process.processSize);
+        for (var subProcess :SubProcess in _children) {
+            totalProgress += (subProcess.progress * subProcess.size);
         }
 
         _totalProgress.value = totalProgress / _totalSize;
@@ -42,4 +42,17 @@ public class BatchProcess implements Process {
     private var _totalSize :Number = 0;
     private var _totalProgress :NumberValue = new NumberValue(0);
 }
+}
+
+import flashbang.util.Process;
+
+class SubProcess {
+    public var process :Process;
+    public var size :Number;
+    public var progress :Number = 0;
+
+    public function SubProcess (process :Process, size :Number) {
+        this.process = process;
+        this.size = size;
+    }
 }
