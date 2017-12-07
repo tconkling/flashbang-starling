@@ -10,7 +10,7 @@ import flash.net.URLLoaderDataFormat;
 import flashbang.util.CancelableProcess;
 
 /** Loads XML from a URL */
-public class XMLLoader extends AbstractURLLoader {
+public class XMLLoader extends URLDataLoader {
     public static function load (url :String, timeout :Number = -1) :CancelableProcess {
         var loader :XMLLoader = new XMLLoader(url, timeout);
         loader.begin();

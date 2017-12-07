@@ -8,7 +8,7 @@ import flash.net.URLLoaderDataFormat;
 import flashbang.util.CancelableProcess;
 
 /** Loads JSON from a URL */
-public class JSONLoader extends AbstractURLLoader {
+public class JSONLoader extends URLDataLoader {
     public static function load (url :String, timeout :Number = -1) :CancelableProcess {
         var loader :JSONLoader = new JSONLoader(url, timeout);
         loader.begin();

@@ -20,8 +20,8 @@ import react.NumberValue;
 import react.NumberView;
 import react.Promise;
 
-public class AbstractURLLoader implements CancelableProcess {
-    public function AbstractURLLoader (url :String, dataFormat :String, timeout :Number = -1) {
+public class URLDataLoader implements CancelableProcess {
+    public function URLDataLoader (url :String, dataFormat :String, timeout :Number = -1) {
         _url = url;
         _timeout = timeout;
         _dataFormat = dataFormat;
