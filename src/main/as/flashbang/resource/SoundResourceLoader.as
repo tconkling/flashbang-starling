@@ -12,8 +12,9 @@ import flash.media.Sound;
 import flash.net.URLRequest;
 
 import flashbang.audio.SoundType;
+import flashbang.loader.SoundLoader;
 
-public class SoundResourceLoader extends ResourceLoader
+public class SoundResourceLoader implements IResourceLoader
 {
     /** Load params */
 
@@ -114,6 +115,7 @@ public class SoundResourceLoader extends ResourceLoader
         return getLoadParam(NAME) + " (" + ClassUtil.tinyClassName(this) + ")";
     }
 
-    protected var _sound :Sound;
+    protected var _params :Object;
+    protected var _loader :SoundLoader;
 }
 }

@@ -31,10 +31,6 @@ public class AbstractResourceLoader implements IResourceLoader {
         throw new Error("abstract");
     }
 
-    public function cancel () :void {
-        throw new Error("abstract");
-    }
-
     protected function hasLoadParam (name :String) :Boolean {
         return _params.hasOwnProperty(name);
     }

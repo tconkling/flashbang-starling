@@ -10,11 +10,14 @@ import flash.utils.ByteArray;
 
 import flump.display.Library;
 import flump.display.LibraryLoader;
-import flump.executor.Executor;
 import flump.executor.Future;
 
-public class FlumpLibraryLoader extends ResourceLoader
-{
+import react.Future;
+import react.NumberValue;
+import react.NumberView;
+import react.Promise;
+
+public class FlumpLibraryLoader implements IResourceLoader {
     /** The name of the Library (required) */
     public static const NAME :String = "name";
 
@@ -32,42 +35,61 @@ public class FlumpLibraryLoader extends ResourceLoader
      */
     public static const MIPMAPS :String = "mipmaps";
 
+    /** The loadSize of the resource (optional, defaults to 1) */
+    public static const LOAD_SIZE :String = "loadSize";
+
     public function FlumpLibraryLoader (params :Object) {
-        super(params);
+        _params = params;
     }
 
-    override protected function doLoad () :void {
-        _name = requireLoadParam(NAME, String);
-        var data :Object = requireLoadParam(DATA, Object);
-        if (data is Class) {
-            var clazz :Class = Class(data);
-            data = ByteArray(new clazz());
+    public function get loadSize () :Number {
+        return Params.get(_params, LOAD_SIZE, 1);
+    }
+
+    public function get progress () :NumberView {
+        return _progress;
+    }
+
+    public function get result () :react.Future {
+        return _result;
+    }
+
+    public function load () :Future {
+        try {
+            _name = Params.require(_params, NAME, String);
+            var data :Object = Params.require(_params, DATA, Object);
+            if (data is Class) {
+                var clazz :Class = Class(data);
+                data = ByteArray(new clazz());
+            }
+            _mipmaps = Params.get(_params, MIPMAPS, false) as Boolean;
+
+            var loader :LibraryLoader = createLibraryLoader();
+
+            var flumpFuture :flump.executor.Future;
+            if (data is ByteArray) {
+                flumpFuture = loader.loadBytes(ByteArray(data));
+
+            } else if (data is String) {
+                flumpFuture = loader.loadURL(data as String);
+
+            } else {
+                _result.fail("Unrecognized Flump Library data source: '" + ClassUtil.tinyClassName(data) + "'");
+                return _result;
+            }
+
+            loader.urlLoadProgressed.connect(onLoadProgress);
+
+            flumpFuture.succeeded.connect(libraryLoaded);
+            flumpFuture.failed.connect(_result.fail);
+
+        } catch (e :Error) {
+            _result.fail(e);
         }
-        _mipmaps = getLoadParam(MIPMAPS, false) as Boolean;
-
-        var loader :LibraryLoader = createLibraryLoader();
-        loader.setExecutor(_exec = new Executor());
-
-        var f :Future;
-        if (data is ByteArray) {
-            f = loader.loadBytes(ByteArray(data));
-
-        } else if (data is String) {
-            f = loader.loadURL(data as String);
-
-        } else {
-            throw new Error("Unrecognized Flump Library data source: '" +
-                ClassUtil.tinyClassName(data) + "'");
-        }
-
-        loader.urlLoadProgressed.connect(onLoadProgress);
-
-        f.succeeded.connect(libraryLoaded);
-        f.failed.connect(fail);
     }
 
     protected function onLoadProgress (e :ProgressEvent) :void {
-        _loadProgress.value = (e.bytesLoaded / e.bytesTotal);
+        _progress.value = (e.bytesLoaded / e.bytesTotal);
     }
 
     protected function createLibraryLoader () :LibraryLoader {
@@ -88,23 +110,18 @@ public class FlumpLibraryLoader extends ResourceLoader
             resources.push(new ImageResource(library, _name, imageName));
         }
 
-        succeed(resources);
-    }
-
-    override protected function onCanceled () :void {
-        if (_exec != null) {
-            _exec.shutdownNow();
-            _exec = null;
-        }
+        _result.succeed(resources);
     }
 
     public function toString () :String {
-        return getLoadParam(NAME) + " (" + ClassUtil.tinyClassName(this) + ")";
+        return Params.get(_params, NAME) + " (" + ClassUtil.tinyClassName(this) + ")";
     }
 
+    protected var _params :Object;
     protected var _name :String;
     protected var _mipmaps :Boolean;
-    protected var _exec :Executor;
+    protected var _progress :NumberValue = new NumberValue();
+    protected var _result :Promise = new Promise();
 }
 }
 
@@ -123,5 +140,5 @@ class LibraryResource extends Resource {
         _lib = null;
     }
 
-    protected var _lib :Library;
+    private var _lib :Library;
 }

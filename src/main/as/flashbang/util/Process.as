@@ -4,14 +4,17 @@
 package flashbang.util {
 
 import react.Future;
-import react.NumberView;
 
-/** Enables observation of a process that will eventually complete */
-public interface Process {
-    /** Emits progress updates, which are values between [0, 1]. Progress never decreases. */
-    function get progress () :NumberView;
-
-    /** The process's result */
+/** Represents a process that will eventually complete */
+public interface Process extends HasProgress {
+    /** The process's result. */
     function get result () :Future;
+
+    /**
+     * Begins the process if it hasn't already begun. Returns `result` for convenience.
+     * It is not an error to call this multiple times. If the process has already begun,
+     * `begin` is a no-op that simply returns `result`.
+     */
+    function begin () :Future;
 }
 }

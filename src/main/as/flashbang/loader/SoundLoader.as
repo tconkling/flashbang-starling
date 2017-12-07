@@ -10,6 +10,7 @@ import flash.media.Sound;
 import flash.net.URLRequest;
 
 import flashbang.util.CancelableProcess;
+import flashbang.util.CanceledError;
 
 import react.Future;
 import react.NumberValue;
@@ -18,22 +19,13 @@ import react.Promise;
 
 public class SoundLoader implements CancelableProcess {
     public static function load (url :String) :CancelableProcess {
-        return new SoundLoader(url);
+        var loader :SoundLoader = new SoundLoader(url);
+        loader.begin();
+        return loader;
     }
 
     public function SoundLoader (url :String) {
-        _result = new Promise();
-
-        _sound = new Sound();
-        _sound.addEventListener(IOErrorEvent.IO_ERROR, onErrorEvent);
-        _sound.addEventListener(Event.COMPLETE, onComplete);
-        _sound.addEventListener(ProgressEvent.PROGRESS, onProgress);
-
-        try {
-            _sound.load(new URLRequest(_url));
-        } catch (error :Error) {
-            _result.fail(error);
-        }
+        _url = url;
     }
 
     public function get result () :Future {
@@ -42,6 +34,23 @@ public class SoundLoader implements CancelableProcess {
 
     public function get progress () :NumberView {
         return _progress;
+    }
+
+    public function begin () :Future {
+        if (!_began) {
+            _began = true;
+            _sound = new Sound();
+            _sound.addEventListener(IOErrorEvent.IO_ERROR, onErrorEvent);
+            _sound.addEventListener(Event.COMPLETE, onComplete);
+            _sound.addEventListener(ProgressEvent.PROGRESS, onProgress);
+
+            try {
+                _sound.load(new URLRequest(_url));
+            } catch (error :Error) {
+                _result.fail(error);
+            }
+        }
+        return _result;
     }
 
     public function cancel () :void {
@@ -70,9 +79,11 @@ public class SoundLoader implements CancelableProcess {
         _progress.value = (e.bytesLoaded / e.bytesTotal);
     }
 
+    protected const _result :Promise = new Promise();
+    protected const _progress :NumberValue = new NumberValue();
+
     protected var _url :String;
-    protected var _result :Promise;
     protected var _sound :Sound;
-    protected var _progress :NumberValue = new NumberValue();
+    protected var _began :Boolean;
 }
 }

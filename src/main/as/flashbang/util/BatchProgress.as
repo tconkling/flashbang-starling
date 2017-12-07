@@ -8,8 +8,8 @@ import flash.utils.Dictionary;
 import react.NumberValue;
 import react.NumberView;
 
-/** Measures the progress of multiple Processes */
-public class BatchProcess implements Process {
+/** Measures the progress of multiple Progressables */
+public class BatchProgress implements HasProgress {
     public function add (process :Process, size :Number = 1) :void {
         var subProcess :SubProcess = new SubProcess(process, size);
         _children[subProcess] = true;

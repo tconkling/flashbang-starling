@@ -7,7 +7,7 @@ import aspire.util.Log;
 import aspire.util.Preconditions;
 
 import flashbang.core.Flashbang;
-import flashbang.util.BatchProcess;
+import flashbang.util.BatchProgress;
 import flashbang.util.Process;
 
 import react.Executor;
@@ -93,7 +93,7 @@ public class ResourceSet implements Process {
         return _loaders == null;
     }
 
-    private var _batchProcess :BatchProcess = new BatchProcess();
+    private var _batchProcess :BatchProgress = new BatchProgress();
     private var _loaders :Array = [];
     private var _result :Future;
 
