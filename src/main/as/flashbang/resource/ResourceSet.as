@@ -3,7 +3,6 @@
 
 package flashbang.resource {
 
-import aspire.util.Log;
 import aspire.util.Preconditions;
 
 import flashbang.core.Flashbang;
@@ -52,13 +51,15 @@ public class ResourceSet implements Process {
         return this;
     }
 
+    /** An alias for begin() */
+    public function load () :Future {
+        return begin();
+    }
+
     public function begin () :Future {
         if (_loaders == null) {
             return _result;
         }
-
-        // Null out our loaders Array to indicate we've already loaded
-        _loaders = null;
 
         if (_exec == null) {
             _exec = new Executor();
@@ -67,6 +68,9 @@ public class ResourceSet implements Process {
         var futures :Array = _loaders.map(function (loader :IResourceLoader, ..._) :Future {
             return _exec.submit(loader.begin);
         });
+
+        // Null out our loaders Array to indicate we've already loaded
+        _loaders = null;
 
         _result = Future.sequence(futures).flatMap(onResourcesLoaded);
 
@@ -108,8 +112,6 @@ public class ResourceSet implements Process {
     private var _batchProcess :BatchProgress = new BatchProgress();
     private var _loaders :Array = [];
     private var _result :Future;
-
-    private static const log :Log = Log.getLog(ResourceSet);
 }
 
 }
