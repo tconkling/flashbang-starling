@@ -9,13 +9,15 @@ import flash.events.ProgressEvent;
 import flash.media.Sound;
 import flash.net.URLRequest;
 
+import flashbang.util.CancelableProcess;
+
 import react.Future;
 import react.NumberValue;
 import react.NumberView;
 import react.Promise;
 
-public class SoundLoader implements LoadProcess {
-    public static function load (url :String) :LoadProcess {
+public class SoundLoader implements CancelableProcess {
+    public static function load (url :String) :CancelableProcess {
         return new SoundLoader(url);
     }
 

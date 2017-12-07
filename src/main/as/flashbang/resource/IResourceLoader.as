@@ -3,11 +3,11 @@
 
 package flashbang.resource {
 
-import flashbang.loader.LoadProcess;
+import flashbang.util.Process;
 
 import react.Future;
 
-public interface IResourceLoader extends LoadProcess {
+public interface IResourceLoader extends Process {
     /**
      * The size of the resource to be loaded.
      * This is intended for progress bar updating, and therefore doesn't need to be an absolute
@@ -17,9 +17,9 @@ public interface IResourceLoader extends LoadProcess {
 
     /**
      * Starts the loading process.
-     * LoadProcess.result should resolve with the Resources to be added to the ResourceManager.
+     * CancelableProcess.result should resolve with the Resources to be added to the ResourceManager.
      *
-     * @return LoadProcess.result
+     * @return Process.result
      */
     function load () :Future;
 }

@@ -1,9 +1,9 @@
 //
 // aciv
 
-package flashbang.loader {
+package flashbang.util {
 
-/** When a LoadProcess is cancelled, its result fails with a CanceledError */
+/** When a CancelableProcess is cancelled, its result fails with a CanceledError */
 public class CanceledError extends Error {
     public function CanceledError () {
         super("Canceled");

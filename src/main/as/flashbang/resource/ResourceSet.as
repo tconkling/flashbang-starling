@@ -7,14 +7,14 @@ import aspire.util.Log;
 import aspire.util.Preconditions;
 
 import flashbang.core.Flashbang;
-import flashbang.loader.LoadProcess;
 import flashbang.util.BatchProcess;
+import flashbang.util.Process;
 
 import react.Executor;
 import react.Future;
 import react.NumberView;
 
-public class ResourceSet implements LoadProcess {
+public class ResourceSet implements Process {
     public function get progress () :NumberView {
         return _batchProcess.progress;
     }
@@ -60,10 +60,6 @@ public class ResourceSet implements LoadProcess {
         _loaders = null;
 
         return _result;
-    }
-
-    public function cancel () :void {
-        throw new Error("Unimplemented");
     }
 
     public function unload () :void {

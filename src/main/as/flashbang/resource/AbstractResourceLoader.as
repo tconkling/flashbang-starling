@@ -6,7 +6,6 @@ package flashbang.resource {
 import react.Future;
 import react.NumberValue;
 import react.NumberView;
-import react.Promise;
 
 public class AbstractResourceLoader implements IResourceLoader {
     /** The loadSize of the resource (optional, defaults to 1) */
@@ -25,7 +24,7 @@ public class AbstractResourceLoader implements IResourceLoader {
     }
 
     public function get result () :Future {
-        return _result;
+        throw new Error("abstract");
     }
 
     public function load () :Future {
@@ -56,7 +55,6 @@ public class AbstractResourceLoader implements IResourceLoader {
     }
 
     protected var _params :Object;
-    protected var _result :Promise = new Promise();
     protected var _progress :NumberValue = new NumberValue();
 }
 }

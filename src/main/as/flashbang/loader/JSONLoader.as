@@ -5,9 +5,11 @@ package flashbang.loader {
 
 import flash.net.URLLoaderDataFormat;
 
+import flashbang.util.CancelableProcess;
+
 /** Loads JSON from a URL */
 public class JSONLoader extends AbstractURLLoader {
-    public static function load (url :String, timeout :Number = -1) :LoadProcess {
+    public static function load (url :String, timeout :Number = -1) :CancelableProcess {
         return new JSONLoader(url, timeout);
     }
 

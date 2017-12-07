@@ -1,15 +1,11 @@
 //
 // aciv
 
-package flashbang.loader {
+package flashbang.util {
 
 import flashbang.util.Process;
 
-import react.Future;
-
-public interface LoadProcess extends Process {
-    function get result () :Future;
-
+public interface CancelableProcess extends Process {
     /**
      * Stops the load if it hasn't completed. `result` will fail with a CanceledError.
      * This is a no-op if the load has already completed.

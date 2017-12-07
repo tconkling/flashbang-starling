@@ -12,12 +12,15 @@ import flash.net.URLLoader;
 import flash.net.URLRequest;
 import flash.utils.Timer;
 
+import flashbang.util.CancelableProcess;
+import flashbang.util.CanceledError;
+
 import react.Future;
 import react.NumberValue;
 import react.NumberView;
 import react.Promise;
 
-public class AbstractURLLoader implements LoadProcess {
+public class AbstractURLLoader implements CancelableProcess {
     public function AbstractURLLoader (url :String, dataFormat :String, timeout :Number = -1) {
         _url = url;
         _timeout = timeout;
