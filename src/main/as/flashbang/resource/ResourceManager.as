@@ -51,14 +51,14 @@ public class ResourceManager
         _resources = Maps.newMapOf(String);
     }
 
-    internal function createLoader (loadParams :Object) :ResourceLoader {
+    internal function createLoader (loadParams :Object) :IResourceLoader {
         var type :String = loadParams["type"];
         Preconditions.checkArgument(type != null, "'type' must be specified");
 
         var clazz :Class = _loaderClasses.get(type);
         Preconditions.checkNotNull(clazz, "Unrecognized resource type", "type", type);
 
-        var loader :ResourceLoader = new clazz(loadParams);
+        var loader :IResourceLoader = new clazz(loadParams);
         return loader;
     }
 
