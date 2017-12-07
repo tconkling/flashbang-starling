@@ -5,8 +5,6 @@ package flashbang.resource {
 
 import flashbang.util.Process;
 
-import react.Future;
-
 public interface IResourceLoader extends Process {
     /**
      * The size of the resource to be loaded.
@@ -14,13 +12,5 @@ public interface IResourceLoader extends Process {
      * value, just relative to other resources in the game.
      */
     function get loadSize () :Number;
-
-    /**
-     * Starts the loading process.
-     * CancelableProcess.result should resolve with the Resources to be added to the ResourceManager.
-     *
-     * @return Process.result
-     */
-    function load () :Future;
 }
 }

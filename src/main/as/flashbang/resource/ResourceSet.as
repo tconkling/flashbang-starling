@@ -31,33 +31,44 @@ public class ResourceSet implements Process {
         return _result;
     }
 
-    public function add (loadParams :Object) :void {
+    public function executor (exec :Executor) :ResourceSet {
+        Preconditions.checkState(!this.hasLoaded, "Already loaded");
+        _exec = exec;
+        return this;
+    }
+
+    public function add (loadParams :Object) :ResourceSet {
         Preconditions.checkState(!this.hasLoaded, "Already loaded");
         var loader :IResourceLoader = Flashbang.rsrcs.createLoader(loadParams);
         _loaders[_loaders.length] = loader;
         _batchProcess.add(loader, loader.loadSize);
+        return this;
     }
 
-    public function addAll (loadParamsArray :Array) :void {
+    public function addAll (loadParamsArray :Array) :ResourceSet {
         for each (var params :Object in loadParamsArray) {
             add(params);
         }
+        return this;
     }
 
-    public function load (exec :Executor = null) :Future {
-        Preconditions.checkState(!this.hasLoaded, "Already loaded");
-        if (exec == null) {
-            exec = new Executor();
+    public function begin () :Future {
+        if (_loaders == null) {
+            return _result;
         }
-
-        var futures :Array = _loaders.map(function (loader :IResourceLoader, ..._) :Future {
-            return exec.submit(loader.load);
-        });
-
-        _result = Future.sequence(futures).flatMap(onResourcesLoaded);
 
         // Null out our loaders Array to indicate we've already loaded
         _loaders = null;
+
+        if (_exec == null) {
+            _exec = new Executor();
+        }
+
+        var futures :Array = _loaders.map(function (loader :IResourceLoader, ..._) :Future {
+            return _exec.submit(loader.begin);
+        });
+
+        _result = Future.sequence(futures).flatMap(onResourcesLoaded);
 
         return _result;
     }
@@ -93,6 +104,7 @@ public class ResourceSet implements Process {
         return _loaders == null;
     }
 
+    private var _exec :Executor;
     private var _batchProcess :BatchProgress = new BatchProgress();
     private var _loaders :Array = [];
     private var _result :Future;
