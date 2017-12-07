@@ -7,7 +7,10 @@ import react.Future;
 
 /** Represents a process that will eventually complete */
 public interface Process extends HasProgress {
-    /** The process's result. Result is undefined before begin has been called. */
+    /**
+     * The process's result. The behavior of calling `result` before `begin` has been called
+     * is up to subclasses.
+     */
     function get result () :Future;
 
     /**

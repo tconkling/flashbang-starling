@@ -27,6 +27,7 @@ public class URLDataLoader implements CancelableProcess {
         _dataFormat = dataFormat;
     }
 
+    /** Valid before begin() has been called */
     public function get result () :Future {
         return _result;
     }
