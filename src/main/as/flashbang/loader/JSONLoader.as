@@ -4,6 +4,7 @@
 package flashbang.loader {
 
 import flash.net.URLLoaderDataFormat;
+import flash.net.URLRequest;
 
 import flashbang.util.CancelableProcess;
 
@@ -16,7 +17,7 @@ public class JSONLoader extends URLDataLoader {
     }
 
     public function JSONLoader (url :String, timeout :Number = -1) {
-        super(url, URLLoaderDataFormat.TEXT, timeout);
+        super(new URLRequest(url), URLLoaderDataFormat.TEXT, timeout);
     }
 
     override protected function succeed (data :*) :void {
@@ -24,7 +25,7 @@ public class JSONLoader extends URLDataLoader {
         try {
             json = JSON.parse(data);
         } catch (err :Error) {
-            fail(new Error("JSON parsing failed: " + err.message + " [url=" + _url + "]"));
+            fail(new Error("JSON parsing failed: " + err.message + " [url=" + _request.url + "]"));
             return;
         }
 

@@ -21,8 +21,8 @@ import react.NumberView;
 import react.Promise;
 
 public class URLDataLoader implements CancelableProcess {
-    public function URLDataLoader (url :String, dataFormat :String, timeout :Number = -1) {
-        _url = url;
+    public function URLDataLoader (request :URLRequest, dataFormat :String, timeout :Number = -1) {
+        _request = request;
         _timeout = timeout;
         _dataFormat = dataFormat;
     }
@@ -55,7 +55,7 @@ public class URLDataLoader implements CancelableProcess {
         }
 
         try {
-            _loader.load(new URLRequest(_url));
+            _loader.load(_request);
         } catch (e :Error) {
             fail(e);
         }
@@ -78,7 +78,7 @@ public class URLDataLoader implements CancelableProcess {
 
     protected function onTimeout (e :Event) :void {
         fail(new TimeoutErrorEvent(TimeoutErrorEvent.TIMEOUT,
-            "URLLoader timed out [url=" + _url + ", timeout=" + _timeout + "]"));
+            "URLLoader timed out [url=" + _request.url + ", timeout=" + _timeout + "]"));
     }
 
     protected function succeed (data :*) :void {
@@ -118,7 +118,7 @@ public class URLDataLoader implements CancelableProcess {
     protected const _result :Promise = new Promise();
     protected const _progress :NumberValue = new NumberValue();
 
-    protected var _url :String;
+    protected var _request :URLRequest;
     protected var _dataFormat :String;
     protected var _timeout :Number;
 
