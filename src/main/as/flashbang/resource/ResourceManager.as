@@ -3,9 +3,9 @@
 
 package flashbang.resource {
 
-import aspire.util.Map;
-import aspire.util.Maps;
 import aspire.util.Preconditions;
+
+import flash.utils.Dictionary;
 
 public class ResourceManager
 {
@@ -26,35 +26,37 @@ public class ResourceManager
     }
 
     public function registerResourceLoader (resourceType :String, loaderClass :Class) :void {
-        _loaderClasses.put(resourceType, loaderClass);
+        _loaderClasses[resourceType] = loaderClass;
     }
 
     public function getResource (resourceName :String) :* {
-        return _resources.get(resourceName);
+        return _resources[resourceName];
     }
 
     public function requireResource (resourceName :String) :* {
-        var rsrc :Resource = getResource(resourceName);
-        Preconditions.checkNotNull(rsrc, "missing required resource", "name", resourceName);
+        var rsrc :Resource = _resources[resourceName];
+        if (rsrc == null) {
+            throw new Error("Missing required resource [name=" + resourceName + "]");
+        }
         return rsrc;
     }
 
     public function isResourceLoaded (name :String) :Boolean {
-        return (null != getResource(name));
+        return name in _resources;
     }
 
     public function unloadAll () :void {
-        _resources.forEach(function (name :String, rsrc :Resource) :void {
+        for each (var rsrc :Resource in _resources) {
             rsrc.disposeInternal();
-        });
-        _resources = Maps.newMapOf(String);
+        }
+        _resources = new Dictionary();
     }
 
     internal function createLoader (loadParams :Object) :IResourceLoader {
         var type :String = loadParams["type"];
         Preconditions.checkArgument(type != null, "'type' must be specified");
 
-        var clazz :Class = _loaderClasses.get(type);
+        var clazz :Class = _loaderClasses[type];
         Preconditions.checkNotNull(clazz, "Unrecognized resource type", "type", type);
 
         var loader :IResourceLoader = new clazz(loadParams);
@@ -65,27 +67,27 @@ public class ResourceManager
         var rsrc :Resource;
         // validate all resources before adding them
         for each (rsrc in resources) {
-            Preconditions.checkArgument(getResource(rsrc.name) == null,
+            Preconditions.checkArgument(!isResourceLoaded(rsrc.name),
                 "A resource named '" + rsrc.name + "' already exists");
         }
 
         for each (rsrc in resources) {
             rsrc.addedInternal(resourceSet);
-            _resources.put(rsrc.name, rsrc);
+            _resources[rsrc.name] = rsrc;
         }
     }
 
     internal function unloadSet (resourceSet :ResourceSet) :void {
-        for each (var rsrc :Resource in _resources.values()) {
+        for each (var rsrc :Resource in _resources) {
             if (rsrc._set == resourceSet) {
-                _resources.remove(rsrc.name);
+                delete _resources[rsrc.name];
                 rsrc.disposeInternal();
             }
         }
     }
 
-    protected var _resources :Map = Maps.newMapOf(String); // Map<name, resource>
-    protected var _loaderClasses :Map = Maps.newMapOf(String);
+    protected var _resources :Dictionary = new Dictionary(); // <name, resource>
+    protected var _loaderClasses :Dictionary = new Dictionary(); // <name, Class>
 }
 
 }
