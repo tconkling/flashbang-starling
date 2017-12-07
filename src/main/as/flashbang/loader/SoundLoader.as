@@ -69,7 +69,7 @@ public class SoundLoader implements CancelableProcess {
         return _result;
     }
 
-    public function cancel () :void {
+    public function close () :void {
         if (!_result.isComplete.value && _sound != null) {
             try {
                 _sound.close();

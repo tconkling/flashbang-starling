@@ -64,7 +64,7 @@ public class URLDataLoader implements CancelableProcess {
         return _result;
     }
 
-    public function cancel () :void {
+    public function close () :void {
         fail(new CanceledError());
     }
 

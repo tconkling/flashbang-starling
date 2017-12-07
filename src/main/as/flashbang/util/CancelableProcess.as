@@ -3,12 +3,10 @@
 
 package flashbang.util {
 
-public interface CancelableProcess extends Process {
-    /**
-     * Stops the load if it hasn't completed. `result` will fail with a CanceledError.
-     * This is a no-op if the load has already completed.
-     */
-    function cancel () :void;
+import react.Registration;
+
+/** A process that can be canceled via Registration.close() */
+public interface CancelableProcess extends Process, Registration {
 }
 
 }
