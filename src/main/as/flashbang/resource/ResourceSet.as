@@ -38,7 +38,7 @@ public class ResourceSet implements Process {
 
     public function add (loadParams :Object) :ResourceSet {
         Preconditions.checkState(!this.hasLoaded, "Already loaded");
-        var loader :IResourceLoader = Flashbang.rsrcs.createLoader(loadParams);
+        var loader :ResourceLoader = Flashbang.rsrcs.createLoader(loadParams);
         _loaders[_loaders.length] = loader;
         _batchProcess.add(loader, loader.loadSize);
         return this;
@@ -65,7 +65,7 @@ public class ResourceSet implements Process {
             _exec = new Executor();
         }
 
-        var futures :Array = _loaders.map(function (loader :IResourceLoader, ..._) :Future {
+        var futures :Array = _loaders.map(function (loader :ResourceLoader, ..._) :Future {
             return _exec.submit(loader.begin);
         });
 

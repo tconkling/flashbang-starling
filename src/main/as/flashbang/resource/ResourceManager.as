@@ -52,14 +52,14 @@ public class ResourceManager
         _resources = new Dictionary();
     }
 
-    internal function createLoader (loadParams :Object) :IResourceLoader {
+    internal function createLoader (loadParams :Object) :ResourceLoader {
         var type :String = loadParams["type"];
         Preconditions.checkArgument(type != null, "'type' must be specified");
 
         var clazz :Class = _loaderClasses[type];
         Preconditions.checkNotNull(clazz, "Unrecognized resource type", "type", type);
 
-        var loader :IResourceLoader = new clazz(loadParams);
+        var loader :ResourceLoader = new clazz(loadParams);
         return loader;
     }
 

@@ -17,7 +17,7 @@ import react.NumberView;
 import starling.text.BitmapFont;
 import starling.textures.Texture;
 
-public class FontResourceLoader implements IResourceLoader {
+public class FontResourceLoader implements ResourceLoader {
     /** The name of the Font (required) */
     public static const NAME :String = "name";
 

@@ -5,7 +5,7 @@ package flashbang.resource {
 
 import flashbang.util.Process;
 
-public interface IResourceLoader extends Process {
+public interface ResourceLoader extends Process {
     /**
      * The size of the resource to be loaded.
      * This is intended for progress bar updating, and therefore doesn't need to be an absolute

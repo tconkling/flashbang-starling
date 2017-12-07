@@ -17,7 +17,7 @@ import react.NumberValue;
 import react.NumberView;
 import react.Promise;
 
-public class FlumpLibraryLoader implements IResourceLoader {
+public class FlumpLibraryLoader implements ResourceLoader {
     /** The name of the Library (required) */
     public static const NAME :String = "name";
 

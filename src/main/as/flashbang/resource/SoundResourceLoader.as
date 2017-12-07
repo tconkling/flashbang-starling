@@ -8,7 +8,7 @@ import aspire.util.ClassUtil;
 import flashbang.audio.SoundType;
 import flashbang.loader.SoundLoader;
 
-public class SoundResourceLoader extends SoundLoader implements IResourceLoader {
+public class SoundResourceLoader extends SoundLoader implements ResourceLoader {
     /** The name of the Sound (required) */
     public static const NAME :String = "name";
 
