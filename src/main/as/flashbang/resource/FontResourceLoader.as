@@ -7,203 +7,81 @@ import aspire.util.ClassUtil;
 
 import flash.system.System;
 
-import flashbang.loader.BatchLoader;
-import flashbang.loader.XMLDataLoader;
+import flashbang.loader.TextureLoader;
+import flashbang.loader.XMLLoader;
+import flashbang.util.BatchProgress;
+
+import react.Future;
+import react.NumberView;
 
 import starling.text.BitmapFont;
+import starling.textures.Texture;
 
-public class FontResourceLoader extends ResourceLoader
-{
+public class FontResourceLoader implements IResourceLoader {
     /** The name of the Font (required) */
     public static const NAME :String = "name";
 
-    /**
-     * a String containing a URL to load the XML from OR
-     * a ByteArray containing the XML OR
-     * an [Embed]ed class containing the XML
-     * (required)
-     */
-    public static const XML_DATA :String = "xmlData";
+    /** a String containing a URL to load the XML (required) */
+    public static const XML_URL :String = "xmlURL";
 
-    /**
-     * a String containing a URL to load the texture BitmapData from from OR
-     * a ByteArray containing the BitmapData OR
-     * a Class that will instantiate a Bitmap
-     * (required)
-     */
-    public static const TEXTURE_DATA :String = "textureData";
+    /** a String containing a URL to load the texture BitmapData from (required) */
+    public static const IMAGE_URL :String = "textureData";
 
     /** The scale of the font texture (optional, @default 1) */
     public static const SCALE :String = "scale";
 
     public function FontResourceLoader (params :Object) {
-        super(params);
+        _name = Params.require(params, NAME, String);
+        _xmlURL = Params.require(params, XML_URL, String);
+        _imageURL = Params.require(params, IMAGE_URL, String);
+        _imageScale = Params.get(params, SCALE, 1);
     }
 
-    override protected function doLoad () :void {
-        var name :String = requireLoadParam(NAME, String);
-
-        var xmlLoader :XMLDataLoader = new XMLDataLoader(requireLoadParam(XML_DATA));
-        var textureLoader :TextureLoader =
-            new TextureLoader(requireLoadParam(TEXTURE_DATA), getLoadParam(SCALE, 1));
-
-        _batch = new BatchLoader();
-        _batch.addLoader(xmlLoader);
-        _batch.addLoader(textureLoader);
-        _batch.load().onSuccess(function () :void {
-            var rsrc :FontResource;
-            try {
-                var texture :LoadedTexture = textureLoader.result;
-                var xml :XML = xmlLoader.result;
-                var font :BitmapFont = new BitmapFont(texture.texture, xml);
-                rsrc = new FontResource(name, font);
-                System.disposeXML(xml);
-            } catch (e :Error) {
-                fail(e);
-                return;
-            }
-
-            succeed(rsrc);
-
-        }).onFailure(fail);
+    public function get loadSize () :Number {
+        return _batchProgress.totalSize;
     }
 
-    override protected function onCanceled () :void {
-        if (_batch != null) {
-            _batch.close();
-            _batch = null;
+    public function get progress () :NumberView {
+        return _batchProgress.progress;
+    }
+
+    public function get result () :Future {
+        return _result;
+    }
+
+    public function begin () :Future {
+        if (_result != null) {
+            return _result;
         }
+
+        var xmlLoader :XMLLoader = new XMLLoader(_xmlURL);
+        var texLoader :TextureLoader = new TextureLoader(_imageURL, _imageScale);
+        _batchProgress = new BatchProgress();
+        _batchProgress.add(xmlLoader);
+        _batchProgress.add(texLoader);
+
+        _result = Future.sequence([xmlLoader.begin(), texLoader.begin()])
+            .map(function (results :Array) :FontResource {
+                var xml :XML = results[0];
+                var tex :Texture = results[1];
+                var font :BitmapFont = new BitmapFont(tex, xml);
+                System.disposeXML(xml);
+                return new FontResource(_name, font);
+            });
+
+        return _result;
     }
 
     public function toString () :String {
-        return getLoadParam(NAME) + " (" + ClassUtil.tinyClassName(this) + ")";
+        return _name + " (" + ClassUtil.tinyClassName(this) + ")";
     }
 
-    protected var _batch :BatchLoader;
+    protected var _name :String;
+    protected var _xmlURL :String;
+    protected var _imageURL :String;
+    protected var _imageScale :Number;
+
+    protected var _batchProgress :BatchProgress;
+    protected var _result :Future;
 }
-}
-
-import aspire.util.ClassUtil;
-
-import flash.display.Bitmap;
-import flash.display.BitmapData;
-import flash.display.Loader;
-import flash.events.Event;
-import flash.events.IOErrorEvent;
-import flash.net.URLRequest;
-import flash.utils.ByteArray;
-
-import flashbang.loader.DataLoader;
-
-import starling.textures.Texture;
-
-class LoadedTexture
-{
-    public function LoadedTexture (source :*, scale :Number) {
-        _source = source;
-
-        var bmd :BitmapData;
-        if (source is Loader) {
-            bmd = Bitmap(Loader(source).content).bitmapData;
-        } else if (source is Bitmap) {
-            bmd = Bitmap(source).bitmapData;
-        } else {
-            throw new Error("Unknown texture source [" + ClassUtil.tinyClassName(source) + "]");
-        }
-        _tex = Texture.fromBitmapData(bmd, false, false, scale);
-
-        // Keep the source open so that Starling can handle a context loss
-    }
-
-    public function get texture () :Texture {
-        return _tex;
-    }
-
-    public function unload () :void {
-        _tex.dispose();
-        _tex = null;
-        closeSource();
-    }
-
-    protected function closeSource () :void {
-        // source may already be closed.
-        if (_source == null) {
-            return;
-        }
-
-        if (_source is Loader) {
-            try {
-                Loader(_source).close();
-            } catch (e :Error) {
-                // swallow
-            }
-        } else if (_source is Bitmap) {
-            Bitmap(_source).bitmapData.dispose();
-        }
-        _source = null;
-    }
-
-    protected var _tex :Texture;
-    protected var _source :*;
-}
-
-class TextureLoader extends DataLoader
-{
-    public function TextureLoader (data :Object, scale :Number) {
-        _data = data;
-        _scale = scale;
-    }
-
-    override protected function doLoad () :void {
-        if (_data is Class) {
-            var clazz :Class = Class(_data);
-            _data = new clazz();
-        }
-
-        if (_data is Bitmap) {
-            succeed(new LoadedTexture(_data, _scale));
-            return;
-        }
-
-        _loader = new Loader();
-
-        _loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR,
-            function (evt :IOErrorEvent) :void {
-                fail(evt);
-            });
-
-        _loader.contentLoaderInfo.addEventListener(Event.INIT, function (..._) :void {
-            try {
-                succeed(new LoadedTexture(_loader, _scale));
-                _loader = null;
-            } catch (e :Error) {
-                fail(e);
-            }
-        });
-
-        if (_data is String) {
-            _loader.load(new URLRequest(_data as String));
-        } else if (_data is ByteArray) {
-            _loader.loadBytes(_data as ByteArray);
-        } else {
-            throw new Error("Unrecognized Texture data source: '" +
-                ClassUtil.tinyClassName(_data) + "'");
-        }
-    }
-
-    override protected function onCanceled () :void {
-        // Loader may already be closed.
-        if (_loader != null) {
-            try {
-                _loader.close();
-            } catch (e :Error) {
-                // swallow
-            }
-            _loader = null;
-        }
-    }
-
-    protected var _data :Object;
-    protected var _scale :Number;
-    protected var _loader :Loader;
 }
