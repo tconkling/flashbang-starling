@@ -35,7 +35,7 @@ public class BitmapLoader implements CancelableProcess {
         }
     }
 
-    /** @return Future<BitmapData> */
+    /** @return Future<BitmapData>. Valid before `begin()` has been called. */
     public function get result () :Future {
         return _result;
     }
