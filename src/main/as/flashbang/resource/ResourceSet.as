@@ -6,7 +6,7 @@ package flashbang.resource {
 import aspire.util.Preconditions;
 
 import flashbang.core.Flashbang;
-import flashbang.util.BatchProgress;
+import flashbang.util.BatchProcess;
 import flashbang.util.Process;
 
 import react.Executor;
@@ -15,11 +15,11 @@ import react.NumberView;
 
 public class ResourceSet implements Process {
     public function get progress () :NumberView {
-        return _batchProcess.progress;
+        return _batch.progress;
     }
 
     public function get totalSize () :Number {
-        return _batchProcess.totalSize;
+        return _batch.totalSize;
     }
 
     /**
@@ -31,16 +31,15 @@ public class ResourceSet implements Process {
     }
 
     public function executor (exec :Executor) :ResourceSet {
-        Preconditions.checkState(!this.hasLoaded, "Already loaded");
-        _exec = exec;
+        Preconditions.checkState(!this.began, "Already loaded");
+        _batch.executor(exec);
         return this;
     }
 
     public function add (loadParams :Object) :ResourceSet {
-        Preconditions.checkState(!this.hasLoaded, "Already loaded");
+        Preconditions.checkState(!this.began, "Already loaded");
         var loader :ResourceLoader = Flashbang.rsrcs.createLoader(loadParams);
-        _loaders[_loaders.length] = loader;
-        _batchProcess.add(loader, loader.loadSize);
+        _batch.add(loader, loader.loadSize);
         return this;
     }
 
@@ -57,23 +56,9 @@ public class ResourceSet implements Process {
     }
 
     public function begin () :Future {
-        if (_loaders == null) {
-            return _result;
+        if (!this.began) {
+            _result = _batch.begin().flatMap(onResourcesLoaded);
         }
-
-        if (_exec == null) {
-            _exec = new Executor();
-        }
-
-        var futures :Array = _loaders.map(function (loader :ResourceLoader, ..._) :Future {
-            return _exec.submit(loader.begin);
-        });
-
-        // Null out our loaders Array to indicate we've already loaded
-        _loaders = null;
-
-        _result = Future.sequence(futures).flatMap(onResourcesLoaded);
-
         return _result;
     }
 
@@ -103,14 +88,11 @@ public class ResourceSet implements Process {
         return Future.success();
     }
 
-    protected function get hasLoaded () :Boolean {
-        // We null out our loaders as soon as we begin loading
-        return _loaders == null;
+    protected function get began () :Boolean {
+        return _result != null;
     }
 
-    private var _exec :Executor;
-    private var _batchProcess :BatchProgress = new BatchProgress();
-    private var _loaders :Array = [];
+    private var _batch :BatchProcess = new BatchProcess();
     private var _result :Future;
 }
 

@@ -9,7 +9,7 @@ import flash.system.System;
 
 import flashbang.loader.TextureLoader;
 import flashbang.loader.XMLLoader;
-import flashbang.util.BatchProgress;
+import flashbang.util.BatchProcess;
 
 import react.Future;
 import react.NumberView;
@@ -38,11 +38,11 @@ public class FontResourceLoader implements ResourceLoader {
     }
 
     public function get loadSize () :Number {
-        return _batchProgress.totalSize;
+        return _batch.totalSize;
     }
 
     public function get progress () :NumberView {
-        return _batchProgress.progress;
+        return _batch.progress;
     }
 
     public function get result () :Future {
@@ -54,13 +54,11 @@ public class FontResourceLoader implements ResourceLoader {
             return _result;
         }
 
-        var xmlLoader :XMLLoader = new XMLLoader(_xmlURL);
-        var texLoader :TextureLoader = new TextureLoader(_imageURL, _imageScale);
-        _batchProgress = new BatchProgress();
-        _batchProgress.add(xmlLoader);
-        _batchProgress.add(texLoader);
+        _batch = new BatchProcess()
+            .add(new XMLLoader(_xmlURL))
+            .add(new TextureLoader(_imageURL, _imageScale));
 
-        _result = Future.sequence([xmlLoader.begin(), texLoader.begin()])
+        _result = _batch.begin()
             .map(function (results :Array) :FontResource {
                 var xml :XML = results[0];
                 var tex :Texture = results[1];
@@ -81,7 +79,7 @@ public class FontResourceLoader implements ResourceLoader {
     protected var _imageURL :String;
     protected var _imageScale :Number;
 
-    protected var _batchProgress :BatchProgress;
     protected var _result :Future;
+    protected var _batch :BatchProcess;
 }
 }
