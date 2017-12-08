@@ -9,6 +9,7 @@ import flash.events.ProgressEvent;
 import flash.events.SecurityErrorEvent;
 import flash.events.TimerEvent;
 import flash.net.URLLoader;
+import flash.net.URLLoaderDataFormat;
 import flash.net.URLRequest;
 import flash.utils.Timer;
 
@@ -21,6 +22,10 @@ import react.NumberView;
 import react.Promise;
 
 public class URLDataLoader implements CancelableProcess {
+    public static function loadText (url :String, timeout :Number = -1) :Future {
+        return new URLDataLoader(new URLRequest(url), URLLoaderDataFormat.TEXT, timeout).begin();
+    }
+
     public function URLDataLoader (request :URLRequest, dataFormat :String, timeout :Number = -1) {
         _request = request;
         _timeout = timeout;
