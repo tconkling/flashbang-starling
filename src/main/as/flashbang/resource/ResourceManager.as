@@ -21,7 +21,7 @@ public class ResourceManager
 
     public function registerDefaultLoaders () :void {
         registerResourceLoader("sound", SoundResourceLoader);
-        registerResourceLoader("flump", FlumpLibraryLoader);
+        registerResourceLoader("flump", FlumpResourceLoader);
         registerResourceLoader("font", FontResourceLoader);
     }
 
