@@ -37,13 +37,17 @@ public class ResourceSet implements Process, HasProcessSize {
 
     public function executor (exec :Executor) :ResourceSet {
         Preconditions.checkState(!this.began, "Already loaded");
-        _batch.executor(exec);
+        // We don't add the Executor to the BatchProcess, because we need to be more granular.
+        // The Executor is used by individual resource loaders to limit the number of
+        // simultaneous file loading operations.
+        _exec = exec;
         return this;
     }
 
     public function add (loadParams :Object) :ResourceSet {
         Preconditions.checkState(!this.began, "Already loaded");
         var loader :ResourceLoader = Flashbang.rsrcs.createLoader(loadParams);
+        _children[_children.length] = loader;
         _batch.add(loader);
         return this;
     }
@@ -62,6 +66,11 @@ public class ResourceSet implements Process, HasProcessSize {
 
     public function begin () :Future {
         if (!this.began) {
+            if (_exec != null) {
+                for each (var child :ResourceLoader in _children) {
+                    child.executor(_exec);
+                }
+            }
             _result = _batch.begin().flatMap(onResourcesLoaded);
         }
         return _result;
@@ -97,8 +106,10 @@ public class ResourceSet implements Process, HasProcessSize {
         return _result != null;
     }
 
-    private var _batch :BatchProcess = new BatchProcess();
-    private var _result :Future;
+    protected var _batch :BatchProcess = new BatchProcess();
+    protected var _children :Vector.<ResourceLoader> = new <ResourceLoader>[];
+    protected var _exec :Executor;
+    protected var _result :Future;
 }
 
 }
