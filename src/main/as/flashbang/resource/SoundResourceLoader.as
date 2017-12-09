@@ -51,7 +51,7 @@ public class SoundResourceLoader extends SoundLoader implements ResourceLoader {
         _loadSize = Params.get(params, LOAD_SIZE, 1);
     }
 
-    public function get loadSize () :Number {
+    public function get processSize () :Number {
         return _loadSize;
     }
 

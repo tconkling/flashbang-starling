@@ -7,19 +7,24 @@ import aspire.util.Preconditions;
 
 import flashbang.core.Flashbang;
 import flashbang.util.BatchProcess;
+import flashbang.util.HasProcessSize;
 import flashbang.util.Process;
 
 import react.Executor;
 import react.Future;
 import react.NumberView;
 
-public class ResourceSet implements Process {
+public class ResourceSet implements Process, HasProcessSize {
+    public function get isLoaded () :Boolean {
+        return _result != null && _result.isComplete.value;
+    }
+
     public function get progress () :NumberView {
         return _batch.progress;
     }
 
-    public function get totalSize () :Number {
-        return _batch.totalSize;
+    public function get processSize () :Number {
+        return _batch.processSize;
     }
 
     /**
@@ -39,7 +44,7 @@ public class ResourceSet implements Process {
     public function add (loadParams :Object) :ResourceSet {
         Preconditions.checkState(!this.began, "Already loaded");
         var loader :ResourceLoader = Flashbang.rsrcs.createLoader(loadParams);
-        _batch.add(loader, loader.loadSize);
+        _batch.add(loader);
         return this;
     }
 

@@ -37,8 +37,8 @@ public class FontResourceLoader implements ResourceLoader {
         _imageScale = Params.get(params, SCALE, 1);
     }
 
-    public function get loadSize () :Number {
-        return _batch.totalSize;
+    public function get processSize () :Number {
+        return _batch.processSize;
     }
 
     public function get progress () :NumberView {

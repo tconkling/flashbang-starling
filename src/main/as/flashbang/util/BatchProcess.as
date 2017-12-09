@@ -16,7 +16,7 @@ import react.NumberView;
 import react.Promise;
 
 /** Runs multiple processes together and observes their aggregate progress */
-public class BatchProcess implements Process {
+public class BatchProcess implements Process, HasProcessSize {
     /** Assigns an Executor for the BatchProcess to use to run sub-processes. */
     public function executor (exec :Executor) :BatchProcess {
         Preconditions.checkState(!_began, "Already running");
@@ -24,12 +24,13 @@ public class BatchProcess implements Process {
         return this;
     }
 
-    public function add (process :Process, size :Number = 1) :BatchProcess {
+    public function add (process :Process) :BatchProcess {
         Preconditions.checkState(!_began, "Already running");
 
+        var size :Number = (process is HasProcessSize ? HasProcessSize(process).processSize : 1);
         var subProcess :SubProcess = new SubProcess(process, size);
         _children[subProcess] = true;
-        _totalSize += size;
+        _processSize += size;
 
         process.progress.connect(function (progress :Number) :void {
             subProcess.progress = progress;
@@ -44,8 +45,8 @@ public class BatchProcess implements Process {
         return _result;
     }
 
-    public function get totalSize () :Number {
-        return _totalSize;
+    public function get processSize () :Number {
+        return _processSize;
     }
 
     public function get progress () :NumberView {
@@ -75,7 +76,7 @@ public class BatchProcess implements Process {
             totalProgress += (subProcess.progress * subProcess.size);
         }
 
-        _totalProgress.value = totalProgress / _totalSize;
+        _totalProgress.value = totalProgress / _processSize;
     }
 
     private const _result :Promise = new Promise();
@@ -83,7 +84,7 @@ public class BatchProcess implements Process {
 
     private var _exec :Executor;
     private var _children :Dictionary = new Dictionary();
-    private var _totalSize :Number = 0;
+    private var _processSize :Number = 0;
 
     private var _began :Boolean;
 }

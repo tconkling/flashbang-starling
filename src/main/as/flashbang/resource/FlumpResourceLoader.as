@@ -52,7 +52,7 @@ public class FlumpResourceLoader implements ResourceLoader {
         });
     }
 
-    public function get loadSize () :Number {
+    public function get processSize () :Number {
         return _loadSize;
     }
 
