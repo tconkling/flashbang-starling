@@ -17,6 +17,30 @@ import react.Promise;
 
 /** Runs multiple processes together and observes their aggregate progress */
 public class BatchProcess implements Process, HasProcessSize {
+    /** Runs 0 or more processes in a batch. Only creates a new BatchProcess if necessary. */
+    public static function runBatch (processes :Array, exec :Executor = null) :Process {
+        var process :Process;
+
+        if (processes.length == 0) {
+            return new CompletedProcess();
+        } else if (processes.length == 1) {
+            process = processes[0];
+            if (exec != null) {
+                exec.submit(process.begin);
+            } else {
+                process.begin();
+            }
+            return process;
+        } else {
+            var batch :BatchProcess = new BatchProcess().executor(exec);
+            for each (process in processes) {
+                batch.add(process);
+            }
+            batch.begin();
+            return batch;
+        }
+    }
+
     /** Assigns an Executor for the BatchProcess to use to run sub-processes. */
     public function executor (exec :Executor) :BatchProcess {
         Preconditions.checkState(!_began, "Already running");
