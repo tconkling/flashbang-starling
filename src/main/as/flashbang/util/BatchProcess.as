@@ -3,14 +3,12 @@
 
 package flashbang.util {
 
+import aspire.util.F;
+import aspire.util.Joiner;
 import aspire.util.Preconditions;
 
-import flash.utils.Dictionary;
-
 import react.Executor;
-
 import react.Future;
-
 import react.NumberValue;
 import react.NumberView;
 import react.Promise;
@@ -50,16 +48,12 @@ public class BatchProcess implements Process, HasProcessSize {
 
     public function add (process :Process) :BatchProcess {
         Preconditions.checkState(!_began, "Already running");
+        Preconditions.checkNotNull(process);
 
         var size :Number = (process is HasProcessSize ? HasProcessSize(process).processSize : 1);
         var subProcess :SubProcess = new SubProcess(process, size);
-        _children[subProcess] = true;
+        _children[_children.length] = subProcess;
         _processSize += size;
-
-        process.progress.connect(function (progress :Number) :void {
-            subProcess.progress = progress;
-            updateTotalProgress();
-        });
 
         return this;
     }
@@ -78,25 +72,38 @@ public class BatchProcess implements Process, HasProcessSize {
     }
 
     public function begin () :Future {
-        if (_began) {
-            return _result;
+        if (!_began) {
+            _began = true;
+            var futures :Array = [];
+            for each (var subProcess :SubProcess in _children) {
+                var processResult :Future = _exec == null ?
+                    beginSubprocess(subProcess) :
+                    _exec.submit(F.bind(beginSubprocess, subProcess));
+                futures[futures.length] = processResult;
+            }
+
+            Future.sequence(futures).onSuccess(_result.succeed).onFailure(_result.fail);
         }
 
-        var futures :Array = [];
-        for (var subProcess :SubProcess in _children) {
-            var processResult :Future = _exec != null ?
-                _exec.submit(subProcess.process.begin) :
-                subProcess.process.begin();
-            futures[futures.length] = processResult;
-        }
-
-        Future.sequence(futures).onSuccess(_result.succeed).onFailure(_result.fail);
         return _result;
+    }
+
+    private function beginSubprocess (subProcess :SubProcess) :Future {
+        try {
+            var result :Future = subProcess.process.begin();
+            subProcess.process.progress.connect(function (progress :Number) :void {
+                subProcess.progress = progress;
+                updateTotalProgress();
+            });
+            return result;
+        } catch (e :Error) {
+            return Future.failure(Joiner.pairs("BatchProcess.beginSubprocess failed", "process", subProcess.process, e));
+        }
     }
 
     private function updateTotalProgress () :void {
         var totalProgress :Number = 0;
-        for (var subProcess :SubProcess in _children) {
+        for each (var subProcess :SubProcess in _children) {
             totalProgress += (subProcess.progress * subProcess.size);
         }
 
@@ -107,7 +114,7 @@ public class BatchProcess implements Process, HasProcessSize {
     private const _totalProgress :NumberValue = new NumberValue(0);
 
     private var _exec :Executor;
-    private var _children :Dictionary = new Dictionary();
+    private var _children :Vector.<SubProcess> = new <SubProcess>[];
     private var _processSize :Number = 0;
 
     private var _began :Boolean;
