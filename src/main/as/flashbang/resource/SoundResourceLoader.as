@@ -5,10 +5,16 @@ package flashbang.resource {
 
 import aspire.util.ClassUtil;
 
+import flash.media.Sound;
+
 import flashbang.audio.SoundType;
 import flashbang.loader.SoundLoader;
 
-public class SoundResourceLoader extends SoundLoader implements ResourceLoader {
+import react.Executor;
+import react.Future;
+import react.NumberView;
+
+public class SoundResourceLoader implements ResourceLoader {
     /** The name of the Sound (required) */
     public static const NAME :String = "name";
 
@@ -41,22 +47,48 @@ public class SoundResourceLoader extends SoundLoader implements ResourceLoader {
     public static const LOAD_SIZE :String = "loadSize";
 
     public function SoundResourceLoader (params :Object) {
-        super(Params.require(params, URL, String), Params.get(params, STREAM, false));
-
         _name = Params.require(params, NAME, String);
-        _priority = Params.get(params, PRIORITY, 0);
-        _volume = Params.get(params, VOLUME, 1);
-        _pan = Params.get(params, PAN, 0);
-        _type = SoundType.valueOf(Params.get(params, TYPE, SoundType.SFX.name()));
         _loadSize = Params.get(params, LOAD_SIZE, 1);
+
+        var priority :Number = Params.get(params, PRIORITY, 0);
+        var volume :Number = Params.get(params, VOLUME, 1);
+        var pan :Number = Params.get(params, PAN, 0);
+        var type :SoundType = SoundType.valueOf(Params.get(params, TYPE, SoundType.SFX.name()));
+        var url :String = Params.require(params, URL, String);
+        var stream :Boolean = Params.get(params, STREAM, false);
+
+        _loader = new SoundLoader(url, stream);
+        _result = _loader.result.map(function (sound :Sound) :SoundResource {
+            return new SoundResource(_name, sound, type, priority, volume, pan);
+        });
     }
 
     public function get processSize () :Number {
         return _loadSize;
     }
 
-    override protected function onSoundReady () :void {
-        _result.succeed(new SoundResource(_name, _sound, _type, _priority, _volume, _pan));
+    public function get result () :Future {
+        return _result;
+    }
+
+    public function get progress () :NumberView {
+        return _loader.progress;
+    }
+
+    public function executor (exec :Executor) :void {
+        _exec = exec;
+    }
+
+    public function begin () :Future {
+        if (!_began) {
+            _began = true;
+            if (_exec != null) {
+                _exec.submit(_loader.begin);
+            } else {
+                _loader.begin();
+            }
+        }
+        return _result;
     }
 
     public function toString () :String {
@@ -64,10 +96,11 @@ public class SoundResourceLoader extends SoundLoader implements ResourceLoader {
     }
 
     protected var _name :String;
-    protected var _volume :Number;
-    protected var _pan :Number;
-    protected var _priority :Number;
-    protected var _type :SoundType;
     protected var _loadSize :Number;
+
+    protected var _exec :Executor;
+    protected var _result :Future;
+    protected var _loader :SoundLoader;
+    protected var _began :Boolean;
 }
 }

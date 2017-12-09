@@ -11,6 +11,7 @@ import flashbang.loader.FlumpLoader;
 
 import flump.display.Library;
 
+import react.Executor;
 import react.Future;
 import react.NumberView;
 
@@ -60,12 +61,23 @@ public class FlumpResourceLoader implements ResourceLoader {
         return _flumpLoader.progress;
     }
 
+    public function executor (exec :Executor) :void {
+        _exec = exec;
+    }
+
     public function get result () :Future {
         return _result;
     }
 
     public function begin () :Future {
-        _flumpLoader.begin();
+        if (!_began) {
+            _began = true;
+            if (_exec != null) {
+                _exec.submit(_flumpLoader.begin);
+            } else {
+                _flumpLoader.begin();
+            }
+        }
         return _result;
     }
 
@@ -76,7 +88,9 @@ public class FlumpResourceLoader implements ResourceLoader {
     protected var _name :String;
     protected var _loadSize :Number;
 
+    protected var _exec :Executor;
     protected var _flumpLoader :FlumpLoader;
     protected var _result :Future;
+    protected var _began :Boolean;
 }
 }

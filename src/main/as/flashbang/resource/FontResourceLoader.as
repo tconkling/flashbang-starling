@@ -11,6 +11,8 @@ import flashbang.loader.TextureLoader;
 import flashbang.loader.XMLLoader;
 import flashbang.util.BatchProcess;
 
+import react.Executor;
+
 import react.Future;
 import react.NumberView;
 
@@ -32,9 +34,22 @@ public class FontResourceLoader implements ResourceLoader {
 
     public function FontResourceLoader (params :Object) {
         _name = Params.require(params, NAME, String);
-        _xmlURL = Params.require(params, XML_URL, String);
-        _imageURL = Params.require(params, IMAGE_URL, String);
-        _imageScale = Params.get(params, SCALE, 1);
+
+        var xmlURL :String = Params.require(params, XML_URL, String);
+        var imageURL :String = Params.require(params, IMAGE_URL, String);
+        var imageScale :Number = Params.get(params, SCALE, 1);
+
+        _batch = new BatchProcess()
+            .add(new XMLLoader(xmlURL))
+            .add(new TextureLoader(imageURL, imageScale));
+
+        _result = _batch.result.map(function (results :Array) :FontResource {
+            var xml :XML = results[0];
+            var tex :Texture = results[1];
+            var font :BitmapFont = new BitmapFont(tex, xml);
+            System.disposeXML(xml);
+            return new FontResource(_name, font);
+        });
     }
 
     public function get processSize () :Number {
@@ -49,23 +64,17 @@ public class FontResourceLoader implements ResourceLoader {
         return _result;
     }
 
-    public function begin () :Future {
-        if (_result != null) {
-            return _result;
+    public function executor (exec :Executor) :void {
+        if (!_began) {
+            _batch.executor(exec);
         }
+    }
 
-        _batch = new BatchProcess()
-            .add(new XMLLoader(_xmlURL))
-            .add(new TextureLoader(_imageURL, _imageScale));
-
-        _result = _batch.begin()
-            .map(function (results :Array) :FontResource {
-                var xml :XML = results[0];
-                var tex :Texture = results[1];
-                var font :BitmapFont = new BitmapFont(tex, xml);
-                System.disposeXML(xml);
-                return new FontResource(_name, font);
-            });
+    public function begin () :Future {
+        if (!_began) {
+            _began = true;
+            _batch.begin();
+        }
 
         return _result;
     }
@@ -75,11 +84,9 @@ public class FontResourceLoader implements ResourceLoader {
     }
 
     protected var _name :String;
-    protected var _xmlURL :String;
-    protected var _imageURL :String;
-    protected var _imageScale :Number;
 
     protected var _result :Future;
     protected var _batch :BatchProcess;
+    protected var _began :Boolean;
 }
 }

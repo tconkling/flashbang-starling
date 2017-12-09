@@ -35,6 +35,7 @@ public class SoundLoader implements CancelableProcess {
         _isStreaming = isStreaming;
     }
 
+    /** @return Future<Sound> */
     public function get result () :Future {
         return _result;
     }
