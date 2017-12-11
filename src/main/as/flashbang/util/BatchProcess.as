@@ -53,7 +53,7 @@ public class BatchProcess implements Process, HasProcessSize {
         var size :Number = (process is HasProcessSize ? HasProcessSize(process).processSize : 1);
         var subProcess :SubProcess = new SubProcess(process, size);
         _children[_children.length] = subProcess;
-        _processSize += size;
+        _totalSize += size;
 
         return this;
     }
@@ -64,7 +64,7 @@ public class BatchProcess implements Process, HasProcessSize {
     }
 
     public function get processSize () :Number {
-        return _processSize;
+        return _totalSize;
     }
 
     public function get progress () :NumberView {
@@ -93,7 +93,7 @@ public class BatchProcess implements Process, HasProcessSize {
             var result :Future = subProcess.process.begin();
             subProcess.process.progress.connect(function (progress :Number) :void {
                 subProcess.progress = progress;
-                updateTotalProgress();
+                updateProgress();
             });
             return result;
         } catch (e :Error) {
@@ -101,13 +101,16 @@ public class BatchProcess implements Process, HasProcessSize {
         }
     }
 
-    private function updateTotalProgress () :void {
+    private function updateProgress () :void {
         var totalProgress :Number = 0;
+        _totalSize = 0;
         for each (var subProcess :SubProcess in _children) {
-            totalProgress += (subProcess.progress * subProcess.size);
+            var thisSize :Number = subProcess.size;
+            _totalSize += thisSize;
+            totalProgress += (subProcess.progress * thisSize);
         }
 
-        _totalProgress.value = totalProgress / _processSize;
+        _totalProgress.value = (_totalSize > 0 ? totalProgress / _totalSize : 0);
     }
 
     private const _result :Promise = new Promise();
@@ -115,7 +118,7 @@ public class BatchProcess implements Process, HasProcessSize {
 
     private var _exec :Executor;
     private var _children :Vector.<SubProcess> = new <SubProcess>[];
-    private var _processSize :Number = 0;
+    private var _totalSize :Number = 0;
 
     private var _began :Boolean;
 }
