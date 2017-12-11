@@ -67,8 +67,9 @@ public class ResourceManager
         var rsrc :Resource;
         // validate all resources before adding them
         for each (rsrc in resources) {
-            Preconditions.checkArgument(!isResourceLoaded(rsrc.name),
-                "A resource named '" + rsrc.name + "' already exists");
+            if (isResourceLoaded(rsrc.name)) {
+                throw new Error("A resource named '" + rsrc.name + "' already exists");
+            }
         }
 
         for each (rsrc in resources) {
