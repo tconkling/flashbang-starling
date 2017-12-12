@@ -4,6 +4,7 @@
 package flashbang.loader {
 
 import aspire.util.F;
+import aspire.util.Log;
 
 import flash.events.Event;
 import flash.events.IOErrorEvent;
@@ -49,10 +50,11 @@ public class SoundLoader implements CancelableProcess {
             _began = true;
             _sound = new Sound();
             _sound.addEventListener(IOErrorEvent.IO_ERROR, onErrorEvent);
+            _sound.addEventListener(ProgressEvent.PROGRESS, onProgress);
 
             if (!_isStreaming) {
+                // Streaming sounds will complete as soon as they get any progress
                 _sound.addEventListener(Event.COMPLETE, F.bind(onSoundReady));
-                _sound.addEventListener(ProgressEvent.PROGRESS, onProgress);
             }
 
             try {
@@ -60,11 +62,6 @@ public class SoundLoader implements CancelableProcess {
             } catch (error :Error) {
                 _result.fail(error);
                 return _result;
-            }
-
-            if (_isStreaming) {
-                _progress.value = 1;
-                onSoundReady();
             }
         }
         return _result;
@@ -89,11 +86,19 @@ public class SoundLoader implements CancelableProcess {
     protected function onErrorEvent (e :Event) :void {
         if (!_result.isComplete.value) {
             _result.fail(e);
+        } else {
+            log.warning("Got an error on an already-loaded sound",
+                "url", _url, "isStreaming", _isStreaming, e);
         }
     }
 
     protected function onProgress (e :ProgressEvent) :void {
-        _progress.value = (e.bytesLoaded / e.bytesTotal);
+        if (_isStreaming && !_result.isComplete.value) {
+            _progress.value = 1;
+            onSoundReady();
+        } else if (!_isStreaming) {
+            _progress.value = (e.bytesLoaded / e.bytesTotal);
+        }
     }
 
     protected const _result :Promise = new Promise();
@@ -103,5 +108,7 @@ public class SoundLoader implements CancelableProcess {
     protected var _isStreaming :Boolean;
     protected var _sound :Sound;
     protected var _began :Boolean;
+
+    protected static const log :Log = Log.getLog(SoundLoader);
 }
 }
