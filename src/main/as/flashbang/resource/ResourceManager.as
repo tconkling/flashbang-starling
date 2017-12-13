@@ -45,6 +45,15 @@ public class ResourceManager
         return name in _resources;
     }
 
+    /** @return a list of all loaded Resources. The returned list is a view and is safe to modify. */
+    public function getAll () :Vector.<Resource> {
+        var all :Vector.<Resource> = new <Resource>[];
+        for each (var rsrc :Resource in _resources) {
+            all[all.length] = rsrc;
+        }
+        return all;
+    }
+
     public function unloadAll () :void {
         for each (var rsrc :Resource in _resources) {
             rsrc.disposeInternal();
