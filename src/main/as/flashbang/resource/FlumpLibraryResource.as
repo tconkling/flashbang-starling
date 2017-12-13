@@ -28,6 +28,10 @@ public class FlumpLibraryResource extends Resource {
         _lib = lib;
     }
 
+    public function get lib () :Library {
+        return _lib;
+    }
+
     override protected function dispose () :void {
         _lib.dispose();
         _lib = null;
