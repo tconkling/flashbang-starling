@@ -8,6 +8,8 @@ import flash.utils.ByteArray;
 
 import flashbang.util.Process;
 
+import flump.display.CreatorFactory;
+
 import flump.display.LibraryLoader;
 import flump.executor.Future;
 
@@ -28,11 +30,6 @@ public class FlumpLoader implements Process {
         }
     }
 
-    public function generateMipmaps (val :Boolean = true) :FlumpLoader {
-        _generateMipmaps = val;
-        return this;
-    }
-
     /** @return Future<Library>. It's ok to access `result` before `begin()` is called. */
     public function get result () :react.Future {
         return _result;
@@ -42,6 +39,17 @@ public class FlumpLoader implements Process {
         return _progress;
     }
 
+    public function generateMipmaps (val :Boolean = true) :FlumpLoader {
+        _generateMipmaps = val;
+        return this;
+    }
+
+    /** Sets the CreatorFactory that Flump will use during library creation. */
+    public function creatorFactory (val :CreatorFactory) :FlumpLoader {
+        _creatorFactory = val;
+        return this;
+    }
+
     public function begin () :react.Future {
         if (_began) {
             return _result;
@@ -49,6 +57,9 @@ public class FlumpLoader implements Process {
         _began = true;
 
         var loader :LibraryLoader = new LibraryLoader().setGenerateMipMaps(_generateMipmaps);
+        if (_creatorFactory != null) {
+            loader.setCreatorFactory(_creatorFactory);
+        }
 
         var flumpFuture :flump.executor.Future = (_url != null ?
             loader.loadURL(_url) :
@@ -73,5 +84,6 @@ public class FlumpLoader implements Process {
     protected var _url :String;
     protected var _bytes :ByteArray;
     protected var _generateMipmaps :Boolean;
+    protected var _creatorFactory :CreatorFactory;
 }
 }
