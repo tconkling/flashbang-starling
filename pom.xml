@@ -5,7 +5,7 @@
   <groupId>com.timconkling</groupId>
   <artifactId>flashbang-starling</artifactId>
   <packaging>swc</packaging>
-  <version>1.4.0-SNAPSHOT</version>
+  <version>1.4.1-SNAPSHOT</version>
 
   <repositories>
     <repository>
@@ -24,7 +24,7 @@
     <dependency>
       <groupId>com.threerings.flump</groupId>
       <artifactId>flump-runtime</artifactId>
-      <version>1.5.4-SNAPSHOT</version>
+      <version>1.5.5-SNAPSHOT</version>
       <type>swc</type>
     </dependency>
     <dependency>

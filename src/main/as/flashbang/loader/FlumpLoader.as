@@ -8,9 +8,8 @@ import flash.utils.ByteArray;
 
 import flashbang.util.Process;
 
-import flump.display.CreatorFactory;
-
 import flump.display.LibraryLoader;
+import flump.display.LibraryLoaderDelegate;
 import flump.executor.Future;
 
 import react.Future;
@@ -44,9 +43,9 @@ public class FlumpLoader implements Process {
         return this;
     }
 
-    /** Sets the CreatorFactory that Flump will use during library creation. */
-    public function creatorFactory (val :CreatorFactory) :FlumpLoader {
-        _creatorFactory = val;
+    /** Sets the LibraryLoaderDelegate that Flump will use during library creation. */
+    public function delegate (val :LibraryLoaderDelegate) :FlumpLoader {
+        _libraryLoaderDelegate = val;
         return this;
     }
 
@@ -57,8 +56,8 @@ public class FlumpLoader implements Process {
         _began = true;
 
         var loader :LibraryLoader = new LibraryLoader().setGenerateMipMaps(_generateMipmaps);
-        if (_creatorFactory != null) {
-            loader.setCreatorFactory(_creatorFactory);
+        if (_libraryLoaderDelegate != null) {
+            loader.setDelegate(_libraryLoaderDelegate);
         }
 
         var flumpFuture :flump.executor.Future = (_url != null ?
@@ -84,6 +83,6 @@ public class FlumpLoader implements Process {
     protected var _url :String;
     protected var _bytes :ByteArray;
     protected var _generateMipmaps :Boolean;
-    protected var _creatorFactory :CreatorFactory;
+    protected var _libraryLoaderDelegate :LibraryLoaderDelegate;
 }
 }
