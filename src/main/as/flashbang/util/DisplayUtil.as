@@ -377,7 +377,7 @@ public class DisplayUtil
         targetHAlign :String, targetVAlign :String,
         xOffset :Number = 0, yOffset :Number = 0) :void {
 
-        positionRelativeImpl(disp,
+        positionRelativeToBounds(disp,
             dispHAlign, dispVAlign,
             relativeTo.getBounds(disp.parent || relativeTo, R),
             targetHAlign, targetVAlign,
@@ -397,7 +397,7 @@ public class DisplayUtil
             RectangleUtil.getBounds(SCREEN_BOUNDS, disp.parent.transformationMatrix, SCREEN_BOUNDS);
         }
 
-        positionRelativeImpl(disp,
+        positionRelativeToBounds(disp,
             dispHAlign, dispVAlign,
             SCREEN_BOUNDS,
             targetHAlign, targetVAlign,
@@ -561,12 +561,12 @@ public class DisplayUtil
         return walkDisplayObjectsImpl(root, maxDepth, F.adapt(callback), 0);
     }
 
-    protected static function positionRelativeImpl (
+    public static function positionRelativeToBounds (
         disp :DisplayObject,
         dispHAlign :String, dispVAlign :String,
         relativeTo :Rectangle,
         targetHAlign :String, targetVAlign :String,
-        xOffset :Number, yOffset :Number) :void {
+        xOffset :Number = 0, yOffset :Number = 0) :void {
 
         var x :Number = xOffset;
         var y :Number = yOffset;
