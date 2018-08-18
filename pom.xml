@@ -5,7 +5,7 @@
   <groupId>com.timconkling</groupId>
   <artifactId>flashbang-starling</artifactId>
   <packaging>swc</packaging>
-  <version>1.4.1-SNAPSHOT</version>
+  <version>1.4.1</version>
 
   <repositories>
     <repository>
@@ -18,13 +18,13 @@
     <dependency>
       <groupId>com.gamua</groupId>
       <artifactId>starling-framework</artifactId>
-      <version>2.3</version>
+      <version>2.4</version>
       <type>swc</type>
     </dependency>
     <dependency>
       <groupId>com.threerings.flump</groupId>
       <artifactId>flump-runtime</artifactId>
-      <version>1.5.5-SNAPSHOT</version>
+      <version>1.5.5</version>
       <type>swc</type>
     </dependency>
     <dependency>
@@ -36,7 +36,7 @@
     <dependency>
       <groupId>com.timconkling</groupId>
       <artifactId>react-as3</artifactId>
-      <version>1.2.3-SNAPSHOT</version>
+      <version>1.2.3</version>
       <type>swc</type>
     </dependency>
   </dependencies>
